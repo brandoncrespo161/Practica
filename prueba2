@@ -1,200 +1,264 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Cuenta regresiva – Congreso CIIA 2025</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Cuenta regresiva – Congreso CIIA 2025</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            /* Mantiene el fondo degradado oscuro en todo el body, como lo deseaste. */
-            background: radial-gradient(ellipse at center, #05050a 0%, #000000 100%); 
-            font-family: 'Orbitron', sans-serif;
-            color: #00fff7;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden; /* Evita barras de desplazamiento no deseadas. */
-        }
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: radial-gradient(ellipse at center, #05050a 0%, #000000 100%);
+      font-family: 'Orbitron', sans-serif;
+      color: #00fff7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden; /* Evita el scroll si el contenido se desborda */
+      text-align: center; /* Centra el texto globalmente */
+    }
 
-        .countdown-container {
-            position: relative;
-            background: rgba(10, 10, 10, 0.7);
-            border: 2px solid rgb(42, 221, 237);
-            /* **Padding adaptable**: Usa un valor fijo o un porcentaje del ancho de la vista, el que sea menor. */
-            padding: min(60px, 8vw) min(40px, 6vw); 
-            border-radius: 25px;
-            box-shadow: 0 0 30px rgb(42, 221, 237);
-            text-align: center;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); /* Para compatibilidad con Safari. */
-            max-width: 90vw; /* Asegura que no sea excesivamente ancho en pantallas grandes. */
-            width: fit-content; /* Ajusta el ancho basado en el contenido. */
-            min-width: 280px; /* **Ancho mínimo** para pantallas de móvil muy pequeñas. */
-            box-sizing: border-box; /* Incluye padding y borde en el tamaño total del elemento. */
-        }
+    .countdown-container {
+      position: relative;
+      background: rgba(10, 10, 10, 0.7);
+      border: 2px solid rgb(42, 221, 237);
+      padding: 60px 40px;
+      border-radius: 25px;
+      box-shadow: 0 0 30px rgb(42, 221, 237);
+      backdrop-filter: blur(10px);
+      width: 90%; /* Hace que el contenedor ocupe más ancho en pantallas pequeñas */
+      max-width: 800px; /* Limita el ancho máximo para pantallas grandes */
+      box-sizing: border-box; /* Incluye padding y borde en el ancho/alto total del elemento */
+    }
 
-        h1 {
-            /* **Tamaño de fuente responsivo** con clamp(): Mínimo (1.5em), preferido (5vw), máximo (2.8em). */
-            font-size: clamp(1.5em, 5vw, 2.8em);
-            margin-bottom: min(30px, 4vw); /* Margen inferior adaptable. */
-            letter-spacing: clamp(1px, 0.3vw, 3px); /* Espaciado de letras adaptable. */
-            animation: glow 2s ease-in-out infinite alternate;
-            word-break: break-word; /* Evita que las palabras largas se desborden. */
-            line-height: 1.2; /* Mejor espaciado si el texto se envuelve. */
-        }
+    h1 {
+      font-size: 2.2em;
+      margin-bottom: 30px;
+      letter-spacing: 3px;
+      animation: glow 2s ease-in-out infinite alternate;
+      word-wrap: break-word; /* Asegura que los títulos largos se ajusten en pantallas pequeñas */
+    }
 
-        .ciia-large {
-            font-size: 1.5em; /* Mantiene 1.5 veces el tamaño de la fuente de h1. */
-        }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px rgb(42, 221, 237); }
+      to { text-shadow: 0 0 30px rgb(42, 221, 237), 0 0 40px rgb(42, 221, 237); }
+    }
 
-        @keyframes glow {
-            from { text-shadow: 0 0 10px rgb(42, 221, 237); }
-            to { text-shadow: 0 0 30px rgb(42, 221, 237), 0 0 40px rgb(42, 221, 237); }
-        }
+    .time {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      font-size: 3.2em;
+      flex-wrap: wrap; /* Permite que las unidades salten a la siguiente línea */
+    }
 
-        .time {
-            display: flex;
-            justify-content: center;
-            /* **Espaciado adaptable** entre unidades: Usará 50px o 5vw, el que sea menor. */
-            gap: min(50px, 5vw); 
-            /* **Tamaño de fuente responsivo** para los números grandes. */
-            font-size: clamp(1.8em, 7vw, 3.2em); 
-            flex-wrap: wrap; /* **Permite que las unidades se envuelvan** a la siguiente línea en pantallas estrechas. */
-            margin-top: 20px; /* Espacio encima de los números. */
-        }
+    .unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Centra el contenido dentro de cada unidad */
+      min-width: 80px; /* Asegura un ancho mínimo para cada unidad */
+    }
 
-        .unit {
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Centra el contenido (número y etiqueta). */
-            flex-basis: auto; /* Permite que las unidades se encojan/agranden según sea necesario. */
-            margin: min(10px, 2vw); /* **Margen adaptable** alrededor de las unidades para espaciado. */
-            min-width: 60px; /* Asegura un ancho mínimo para cada unidad. */
-        }
+    .label {
+      font-size: 0.4em;
+      color: rgb(42, 221, 237);
+      margin-top: 5px;
+    }
 
-        .label {
-            font-size: 0.4em; /* Relativo al tamaño de fuente de .time. */
-            color: rgb(42, 221, 237);
-            margin-top: 5px;
-            text-transform: uppercase;
-        }
+    .ai-logo {
+      position: absolute;
+      width: 80px;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      padding: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgb(42, 221, 237);
+      z-index: 10; /* Asegura que el logo esté por encima de otros elementos */
+    }
 
-        .ai-logo {
-            position: absolute;
-            /* **Ancho adaptable**: Entre 60px y 80px, escalando con 10vw. */
-            width: clamp(60px, 10vw, 80px); 
-            /* **Posición superior adaptable**. */
-            top: clamp(-40px, -5vw, -20px); 
-            left: 50%;
-            transform: translateX(-50%);
-            background: #000;
-            padding: 10px;
-            border-radius: 50%;
-            box-shadow: 0 0 20px rgb(42, 221, 237);
-            z-index: 10; /* Asegura que el logo esté en la capa superior. */
-        }
+    .uni-logo {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      width: 140px;
+      animation: fadeLogo 4s ease-in-out infinite;
+      z-index: 10;
+    }
 
-        .uni-logo {
-            position: absolute;
-            bottom: min(15px, 2vw);
-            left: min(15px, 2vw);
-            /* **Ancho adaptable**: Entre 100px y 140px, escalando con 18vw. */
-            width: clamp(100px, 18vw, 140px); 
-            animation: fadeLogo 4s ease-in-out infinite;
-            z-index: 5; /* Control de capas. */
-        }
+    @keyframes fadeLogo {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
 
-        @keyframes fadeLogo {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
-        }
+    .ai-avatar {
+      position: absolute;
+      bottom: -20px;
+      right: -20px;
+      width: 120px;
+      opacity: 0.9;
+      filter: brightness(0) invert(1) drop-shadow(0 0 15px rgb(42, 221, 237));
+      animation: bob 4s ease-in-out infinite;
+      z-index: 10;
+    }
 
-        .ai-avatar {
-            position: absolute;
-            bottom: min(-20px, -3vw);
-            right: min(-20px, -3vw);
-            /* **Ancho adaptable**: Entre 80px y 120px, escalando con 15vw. */
-            width: clamp(80px, 15vw, 120px); 
-            opacity: 0.9;
-            filter: brightness(0) invert(1) drop-shadow(0 0 15px rgb(42, 221, 237));
-            animation: bob 4s ease-in-out infinite;
-            z-index: 5; /* Control de capas. */
-        }
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
 
-        @keyframes bob {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+    /* --- Media Queries para Responsividad --- */
 
-        /* **Media query para pantallas muy estrechas** (ej. algunos móviles). */
-        /* Aquí forzamos que las unidades de tiempo se coloquen en dos columnas si la pantalla es lo suficientemente pequeña. */
-        @media (max-width: 400px) {
-            .time {
-                flex-direction: row; 
-                flex-wrap: wrap;
-                justify-content: space-around; /* Distribuye las unidades uniformemente. */
-            }
-            .unit {
-                flex-basis: 45%; /* Cada unidad toma casi la mitad del ancho, permitiendo dos por fila. */
-                margin-bottom: 20px; /* Agrega espacio entre filas si se envuelven. */
-            }
-        }
+    /* Para pantallas más pequeñas de 768px (punto de quiebre común para tablets) */
+    @media (max-width: 768px) {
+      .countdown-container {
+        padding: 40px 20px; /* Reduce el padding */
+      }
 
-    </style>
+      h1 {
+        font-size: 1.8em; /* Ajusta el tamaño del título */
+        margin-bottom: 20px;
+      }
+
+      .time {
+        font-size: 2.5em; /* Ajusta el tamaño de la fuente del tiempo */
+        gap: 30px; /* Reduce el espacio entre unidades */
+      }
+
+      .ai-logo {
+        width: 60px; /* Logo más pequeño */
+        top: -30px;
+        padding: 8px;
+      }
+
+      .uni-logo {
+        width: 100px; /* Logo de universidad más pequeño */
+        bottom: 10px;
+        left: 10px;
+      }
+
+      .ai-avatar {
+        width: 90px; /* Avatar más pequeño */
+        bottom: -15px;
+        right: -15px;
+      }
+    }
+
+    /* Para pantallas más pequeñas de 480px (punto de quiebre común para smartphones) */
+    @media (max-width: 480px) {
+      .countdown-container {
+        padding: 30px 15px; /* Reduce aún más el padding */
+        border-radius: 15px; /* Esquinas ligeramente menos redondeadas */
+      }
+
+      h1 {
+        font-size: 1.5em; /* Título más pequeño para teléfonos */
+        letter-spacing: 1px; /* Espaciado entre letras más ajustado */
+        margin-bottom: 15px;
+      }
+
+      .time {
+        font-size: 1.8em; /* Fuente del tiempo significativamente más pequeña para teléfonos */
+        gap: 15px; /* Espacio más pequeño */
+        flex-direction: row; /* Mantenerlos en fila si es posible */
+        justify-content: space-around; /* Distribuir el espacio uniformemente */
+      }
+
+      .unit {
+        min-width: unset; /* Eliminar el ancho mínimo para unidades en pantallas muy pequeñas */
+        flex: 1; /* Permite que las unidades ocupen el mismo espacio */
+      }
+
+      .label {
+        font-size: 0.5em; /* Hace las etiquetas ligeramente más grandes en relación a los números para legibilidad */
+      }
+
+      .ai-logo {
+        width: 50px;
+        top: -25px;
+        padding: 6px;
+      }
+
+      .uni-logo {
+        width: 80px;
+        bottom: 8px;
+        left: 8px;
+      }
+
+      .ai-avatar {
+        width: 70px;
+        bottom: -10px;
+        right: -10px;
+      }
+    }
+
+    /* Para pantallas muy pequeñas o en orientación horizontal en teléfonos donde el espacio es limitado */
+    @media (max-width: 320px), (max-height: 400px) and (orientation: landscape) {
+      h1 {
+        font-size: 1.2em;
+      }
+      .time {
+        font-size: 1.5em;
+        gap: 10px;
+      }
+      .countdown-container {
+        padding: 20px 10px;
+      }
+      .ai-logo, .uni-logo, .ai-avatar {
+        display: none; /* Oculta las imágenes decorativas en pantallas extremadamente pequeñas para ahorrar espacio */
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="countdown-container">
-        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712104.png" alt="AI Logo" class="ai-logo">
-        <h1>Cuenta regresiva - <span class="ciia-large">CIIA 2025</span></h1>
-        <div class="time" id="countdown">
-            <div class="unit"><span id="days">--</span><div class="label">DÍAS</div></div>
-            <div class="unit"><span id="hours">--</span><div class="label">HORAS</div></div>
-            <div class="unit"><span id="minutes">--</span><div class="label">MINUTOS</div></div>
-            <div class="unit"><span id="seconds">--</span><div class="label">SEGUNDOS</div></div>
-        </div>
-
-        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712006.png" alt="AI Avatar" class="ai-avatar">
-
-        <img src="Isologo (1).png" alt="Logo UPDS Local" class="uni-logo">
+  <div class="countdown-container">
+    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712104.png" alt="AI Logo" class="ai-logo">
+    <h1>Cuenta regresiva - <span style="font-size: 1.5em;">CIIA 2025</span></h1>
+    <div class="time" id="countdown">
+      <div class="unit"><span id="days">--</span><div class="label">DÍAS</div></div>
+      <div class="unit"><span id="hours">--</span><div class="label">HORAS</div></div>
+      <div class="unit"><span id="minutes">--</span><div class="label">MINUTOS</div></div>
+      <div class="unit"><span id="seconds">--</span><div class="label">SEGUNDOS</div></div>
     </div>
 
-    <script>
-        function updateCountdown() {
-            // La fecha objetivo para el Congreso CIIA 2025 es el 31 de julio de 2025, a las 09:00:00 AM.
-            // Es importante que esta fecha se interprete en la zona horaria local del evento (Cochabamba, Bolivia, GMT-4).
-            // (Nota: la fecha y hora actual son viernes, 4 de julio de 2025 a las 11:45:42 AM -04).
-            const end = new Date("2025-07-31T09:00:00").getTime();
-            const now = Date.now();
-            const diff = end - now;
+    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712006.png" alt="AI Avatar" class="ai-avatar">
 
-            if (diff <= 0) {
-                // Si la fecha y hora del evento ya han pasado, muestra un mensaje final.
-                document.getElementById('countdown').innerHTML = '<h2>¡El futuro es ahora en UPDS!</h2>';
-                return; // Detiene la ejecución si el evento ya ha comenzado.
-            }
+    <img src="Isologo (1).png" alt="Logo UPDS Local" class="uni-logo">
+  </div>
 
-            // Calcula los días, horas, minutos y segundos restantes.
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24)); // Días
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); // Horas
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); // Minutos
-            const s = Math.floor((diff % (1000 * 60)) / 1000); // Segundos
+  <script>
+    function updateCountdown() {
+      // Establece la fecha y hora objetivo (31 de julio de 2025, 9:00 AM)
+      const end = new Date("2025-07-31T09:00:00").getTime();
+      const now = Date.now();
+      const diff = end - now;
 
-            // Actualiza el contenido de los elementos en la página.
-            document.getElementById('days').textContent = d;
-            // padStart(2, '0') asegura que los números de horas, minutos y segundos siempre tengan dos dígitos (ej. "05" en lugar de "5").
-            document.getElementById('hours').textContent = String(h).padStart(2, '0');
-            document.getElementById('minutes').textContent = String(m).padStart(2, '0');
-            document.getElementById('seconds').textContent = String(s).padStart(2, '0');
-        }
+      if (diff <= 0) {
+        // Si la cuenta regresiva ha terminado, muestra un mensaje
+        document.getElementById('countdown').innerHTML = '<h2>¡El futuro es ahora en UPDS!</h2>';
+        return;
+      }
 
-        // Configura un intervalo para que la función updateCountdown se ejecute cada 1000 milisegundos (1 segundo).
-        setInterval(updateCountdown, 1000);
-        // Llama a la función una vez al inicio para mostrar el contador inmediatamente al cargar la página.
-        updateCountdown();
-    </script>
+      // Calcula días, horas, minutos y segundos
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+      // Actualiza los elementos HTML con los valores calculados
+      document.getElementById('days').textContent = d;
+      document.getElementById('hours').textContent = String(h).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(m).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(s).padStart(2, '0');
+    }
+
+    // Actualiza la cuenta regresiva cada segundo
+    setInterval(updateCountdown, 1000);
+    // Llama a la función inmediatamente para evitar un retraso al cargar la página
+    updateCountdown();
+  </script>
 </body>
 </html>
