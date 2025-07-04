@@ -2,15 +2,14 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Cuenta regresiva – Congreso de Inteligencia Artificial</title>
+  <title>Cuenta regresiva – Congreso de IA UPDS</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
-
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
     body {
       margin: 0;
       padding: 0;
       height: 100vh;
-      background: radial-gradient(ellipse at center, #0f0f0f 0%, #000000 100%);
+      background: radial-gradient(ellipse at center, #05050a 0%, #000000 100%);
       font-family: 'Orbitron', sans-serif;
       color: #00fff7;
       display: flex;
@@ -20,87 +19,124 @@
     }
 
     .countdown-container {
-      background: rgba(0, 0, 0, 0.5);
+      position: relative;
+      background: rgba(10,10,10,0.7);
       border: 2px solid #00fff7;
-      padding: 50px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px #00fff7;
+      padding: 60px 40px;
+      border-radius: 25px;
+      box-shadow: 0 0 30px #00fff7;
       text-align: center;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
     }
 
     h1 {
-      font-size: 2em;
-      color: #00fff7;
+      font-size: 2.2em;
       margin-bottom: 30px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      animation: pulse 2s infinite;
+      letter-spacing: 3px;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #00fff7; }
+      to { text-shadow: 0 0 30px #00fff7, 0 0 40px #00fff7; }
     }
 
     .time {
       display: flex;
       justify-content: center;
-      gap: 40px;
-      font-size: 3em;
-      color: #ffffff;
+      gap: 50px;
+      font-size: 3.2em;
     }
 
     .unit {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      text-shadow: 0 0 10px #00fff7;
     }
 
     .label {
       font-size: 0.4em;
-      margin-top: 5px;
       color: #00fff7;
+      margin-top: 5px;
     }
 
-    @keyframes pulse {
-      0% { text-shadow: 0 0 10px #00fff7; }
-      50% { text-shadow: 0 0 20px #00fff7, 0 0 30px #00fff7; }
-      100% { text-shadow: 0 0 10px #00fff7; }
+    .ai-logo {
+      position: absolute;
+      width: 80px;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      padding: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 20px #00fff7;
+    }
+
+    .uni-logo {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      width: 140px;
+      animation: fadeLogo 4s ease-in-out infinite;
+    }
+
+    @keyframes fadeLogo {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    .ai-avatar {
+      position: absolute;
+      bottom: -20px;
+      right: -20px;
+      width: 120px;
+      opacity: 0.9;
+      filter: drop-shadow(0 0 15px #00fff7);
+      animation: bob 4s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
   </style>
 </head>
 <body>
   <div class="countdown-container">
-    <h1>Cuenta regresiva para el II Congreso Internacional de IA</h1>
+    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712104.png" alt="AI Logo" class="ai-logo">
+    <h1>Cuenta regresiva – Congreso IA UPDS</h1>
     <div class="time" id="countdown">
       <div class="unit"><span id="days">--</span><div class="label">DÍAS</div></div>
       <div class="unit"><span id="hours">--</span><div class="label">HORAS</div></div>
       <div class="unit"><span id="minutes">--</span><div class="label">MINUTOS</div></div>
       <div class="unit"><span id="seconds">--</span><div class="label">SEGUNDOS</div></div>
     </div>
+
+    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712006.png" alt="AI Avatar" class="ai-avatar">
+
+    <!-- Logo oficial UPDS desde archivo local -->
+    <img src="Isologo (1).png" alt="Logo UPDS Local" class="uni-logo">
   </div>
 
   <script>
-    const countdown = () => {
-      const endDate = new Date("2025-07-31T09:00:00");
-      const now = new Date();
-      const diff = endDate - now;
-
+    function updateCountdown() {
+      const end = new Date("2025-07-31T09:00:00").getTime();
+      const now = Date.now();
+      const diff = end - now;
       if (diff <= 0) {
-        document.getElementById("countdown").innerHTML = "<h2>¡El futuro es ahora!</h2>";
+        document.getElementById('countdown').innerHTML = '<h2>¡El futuro es ahora en UPDS!</h2>';
         return;
       }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-
-      document.getElementById("days").textContent = days;
-      document.getElementById("hours").textContent = hours.toString().padStart(2, '0');
-      document.getElementById("minutes").textContent = minutes.toString().padStart(2, '0');
-      document.getElementById("seconds").textContent = seconds.toString().padStart(2, '0');
-    };
-
-    setInterval(countdown, 1000);
-    countdown();
+      const d = Math.floor(diff/86400000);
+      const h = Math.floor((diff%86400000)/3600000);
+      const m = Math.floor((diff%3600000)/60000);
+      const s = Math.floor((diff%60000)/1000);
+      document.getElementById('days').textContent = d;
+      document.getElementById('hours').textContent = String(h).padStart(2,'0');
+      document.getElementById('minutes').textContent = String(m).padStart(2,'0');
+      document.getElementById('seconds').textContent = String(s).padStart(2,'0');
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
   </script>
 </body>
 </html>
