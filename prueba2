@@ -10,81 +10,74 @@
             margin: 0;
             padding: 0;
             height: 100vh;
-            /* For a truly transparent background outside the container, you would remove this: */
-            /* background: radial-gradient(ellipse at center, #05050a 0%, #000000 100%); */
-            /* Or simply set it to a solid transparent color like: */
-            background-color: transparent; /* Makes the body completely transparent */
-            /* If you want the dark fade but allow potential content behind to show through */
-            /* For this design, your original gradient effectively makes it "transparent into black space" */
-            
+            /* Mantiene el fondo degradado oscuro en todo el body, como lo deseaste. */
+            background: radial-gradient(ellipse at center, #05050a 0%, #000000 100%); 
             font-family: 'Orbitron', sans-serif;
             color: #00fff7;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Keeps scrollbars from appearing */
-            background-image: radial-gradient(ellipse at center, #05050a 0%, #000000 100%); /* Retaining your dark, blending background */
+            overflow: hidden; /* Evita barras de desplazamiento no deseadas. */
         }
 
         .countdown-container {
             position: relative;
             background: rgba(10, 10, 10, 0.7);
             border: 2px solid rgb(42, 221, 237);
-            padding: min(60px, 8vw) min(40px, 6vw); /* Adaptive padding */
+            /* **Padding adaptable**: Usa un valor fijo o un porcentaje del ancho de la vista, el que sea menor. */
+            padding: min(60px, 8vw) min(40px, 6vw); 
             border-radius: 25px;
             box-shadow: 0 0 30px rgb(42, 221, 237);
             text-align: center;
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); /* For Safari support */
-            max-width: 90vw; /* Ensures it doesn't get too wide on large screens */
-            width: fit-content; /* Adjusts width based on content */
-            min-width: 300px; /* Minimum width for very small screens */
-            box-sizing: border-box; /* Include padding in the element's total width and height */
+            -webkit-backdrop-filter: blur(10px); /* Para compatibilidad con Safari. */
+            max-width: 90vw; /* Asegura que no sea excesivamente ancho en pantallas grandes. */
+            width: fit-content; /* Ajusta el ancho basado en el contenido. */
+            min-width: 280px; /* **Ancho mínimo** para pantallas de móvil muy pequeñas. */
+            box-sizing: border-box; /* Incluye padding y borde en el tamaño total del elemento. */
         }
 
         h1 {
-            /* Using clamp for responsive font size: min size, preferred size (based on vw), max size */
+            /* **Tamaño de fuente responsivo** con clamp(): Mínimo (1.5em), preferido (5vw), máximo (2.8em). */
             font-size: clamp(1.5em, 5vw, 2.8em);
-            margin-bottom: min(30px, 4vw); /* Adaptive margin */
-            letter-spacing: clamp(1px, 0.3vw, 3px);
+            margin-bottom: min(30px, 4vw); /* Margen inferior adaptable. */
+            letter-spacing: clamp(1px, 0.3vw, 3px); /* Espaciado de letras adaptable. */
             animation: glow 2s ease-in-out infinite alternate;
-            word-break: break-word; /* Prevents long words from overflowing */
-            line-height: 1.2; /* Better spacing for wrapped text */
+            word-break: break-word; /* Evita que las palabras largas se desborden. */
+            line-height: 1.2; /* Mejor espaciado si el texto se envuelve. */
         }
 
         .ciia-large {
-            font-size: 1.5em; /* Stays relative to h1's font size */
+            font-size: 1.5em; /* Mantiene 1.5 veces el tamaño de la fuente de h1. */
         }
 
         @keyframes glow {
-            from {
-                text-shadow: 0 0 10px rgb(42, 221, 237);
-            }
-            to {
-                text-shadow: 0 0 30px rgb(42, 221, 237), 0 0 40px rgb(42, 221, 237);
-            }
+            from { text-shadow: 0 0 10px rgb(42, 221, 237); }
+            to { text-shadow: 0 0 30px rgb(42, 221, 237), 0 0 40px rgb(42, 221, 237); }
         }
 
         .time {
             display: flex;
             justify-content: center;
-            gap: min(50px, 5vw); /* Adaptive gap */
-            font-size: clamp(1.8em, 7vw, 3.2em); /* Adaptive font size for numbers */
-            flex-wrap: wrap; /* Allows units to wrap to the next line on small screens */
-            margin-top: 20px; /* Space above the numbers */
+            /* **Espaciado adaptable** entre unidades: Usará 50px o 5vw, el que sea menor. */
+            gap: min(50px, 5vw); 
+            /* **Tamaño de fuente responsivo** para los números grandes. */
+            font-size: clamp(1.8em, 7vw, 3.2em); 
+            flex-wrap: wrap; /* **Permite que las unidades se envuelvan** a la siguiente línea en pantallas estrechas. */
+            margin-top: 20px; /* Espacio encima de los números. */
         }
 
         .unit {
             display: flex;
             flex-direction: column;
-            align-items: center; /* Center align content within each unit */
-            flex-basis: auto; /* Allow units to shrink/grow as needed */
-            margin: min(10px, 2vw); /* Add some margin around units for wrapping */
-            min-width: 60px; /* Ensure a minimum width for each unit */
+            align-items: center; /* Centra el contenido (número y etiqueta). */
+            flex-basis: auto; /* Permite que las unidades se encojan/agranden según sea necesario. */
+            margin: min(10px, 2vw); /* **Margen adaptable** alrededor de las unidades para espaciado. */
+            min-width: 60px; /* Asegura un ancho mínimo para cada unidad. */
         }
 
         .label {
-            font-size: 0.4em; /* Relative to the .time's font size */
+            font-size: 0.4em; /* Relativo al tamaño de fuente de .time. */
             color: rgb(42, 221, 237);
             margin-top: 5px;
             text-transform: uppercase;
@@ -92,67 +85,62 @@
 
         .ai-logo {
             position: absolute;
-            width: clamp(60px, 10vw, 80px); /* Adaptive width */
-            top: clamp(-40px, -5vw, -20px); /* Adaptive top position */
+            /* **Ancho adaptable**: Entre 60px y 80px, escalando con 10vw. */
+            width: clamp(60px, 10vw, 80px); 
+            /* **Posición superior adaptable**. */
+            top: clamp(-40px, -5vw, -20px); 
             left: 50%;
             transform: translateX(-50%);
             background: #000;
             padding: 10px;
             border-radius: 50%;
             box-shadow: 0 0 20px rgb(42, 221, 237);
-            z-index: 10; /* Ensure it stays on top */
+            z-index: 10; /* Asegura que el logo esté en la capa superior. */
         }
 
         .uni-logo {
             position: absolute;
             bottom: min(15px, 2vw);
             left: min(15px, 2vw);
-            width: clamp(100px, 18vw, 140px); /* Adaptive width */
+            /* **Ancho adaptable**: Entre 100px y 140px, escalando con 18vw. */
+            width: clamp(100px, 18vw, 140px); 
             animation: fadeLogo 4s ease-in-out infinite;
-            z-index: 5; /* Control layering */
+            z-index: 5; /* Control de capas. */
         }
 
         @keyframes fadeLogo {
-            0%, 100% {
-                opacity: 0;
-            }
-            50% {
-                opacity: 1;
-            }
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
 
         .ai-avatar {
             position: absolute;
             bottom: min(-20px, -3vw);
             right: min(-20px, -3vw);
-            width: clamp(80px, 15vw, 120px); /* Adaptive width */
+            /* **Ancho adaptable**: Entre 80px y 120px, escalando con 15vw. */
+            width: clamp(80px, 15vw, 120px); 
             opacity: 0.9;
             filter: brightness(0) invert(1) drop-shadow(0 0 15px rgb(42, 221, 237));
             animation: bob 4s ease-in-out infinite;
-            z-index: 5; /* Control layering */
+            z-index: 5; /* Control de capas. */
         }
 
         @keyframes bob {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
-        /* No need for separate media queries when using clamp() and min() effectively for scaling */
-        /* However, for specific layout changes (e.g., units stacking differently), media queries are still useful. */
-        /* Example if you specifically wanted units to stack differently on tiny screens: */
+        /* **Media query para pantallas muy estrechas** (ej. algunos móviles). */
+        /* Aquí forzamos que las unidades de tiempo se coloquen en dos columnas si la pantalla es lo suficientemente pequeña. */
         @media (max-width: 400px) {
             .time {
-                flex-direction: row; /* Keep them in a row for very narrow screens */
+                flex-direction: row; 
                 flex-wrap: wrap;
-                justify-content: space-around; /* Distribute units evenly */
+                justify-content: space-around; /* Distribuye las unidades uniformemente. */
             }
             .unit {
-                flex-basis: 45%; /* Two units per row */
-                margin-bottom: 20px; /* Space between rows */
+                flex-basis: 45%; /* Cada unidad toma casi la mitad del ancho, permitiendo dos por fila. */
+                margin-bottom: 20px; /* Agrega espacio entre filas si se envuelven. */
             }
         }
 
@@ -176,31 +164,36 @@
 
     <script>
         function updateCountdown() {
-            // Target date in Cochabamba, Bolivia (-04:00 offset)
-            const eventDateString = "2025-07-31T09:00:00";
-            const end = new Date(eventDateString).getTime();
+            // La fecha objetivo para el Congreso CIIA 2025 es el 31 de julio de 2025, a las 09:00:00 AM.
+            // Es importante que esta fecha se interprete en la zona horaria local del evento (Cochabamba, Bolivia, GMT-4).
+            // (Nota: la fecha y hora actual son viernes, 4 de julio de 2025 a las 11:45:42 AM -04).
+            const end = new Date("2025-07-31T09:00:00").getTime();
             const now = Date.now();
             const diff = end - now;
 
             if (diff <= 0) {
+                // Si la fecha y hora del evento ya han pasado, muestra un mensaje final.
                 document.getElementById('countdown').innerHTML = '<h2>¡El futuro es ahora en UPDS!</h2>';
-                return;
+                return; // Detiene la ejecución si el evento ya ha comenzado.
             }
 
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            // Calcula los días, horas, minutos y segundos restantes.
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24)); // Días
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); // Horas
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); // Minutos
+            const s = Math.floor((diff % (1000 * 60)) / 1000); // Segundos
 
+            // Actualiza el contenido de los elementos en la página.
             document.getElementById('days').textContent = d;
+            // padStart(2, '0') asegura que los números de horas, minutos y segundos siempre tengan dos dígitos (ej. "05" en lugar de "5").
             document.getElementById('hours').textContent = String(h).padStart(2, '0');
             document.getElementById('minutes').textContent = String(m).padStart(2, '0');
             document.getElementById('seconds').textContent = String(s).padStart(2, '0');
         }
 
-        // Update every second
+        // Configura un intervalo para que la función updateCountdown se ejecute cada 1000 milisegundos (1 segundo).
         setInterval(updateCountdown, 1000);
-        // Initial call to display immediately
+        // Llama a la función una vez al inicio para mostrar el contador inmediatamente al cargar la página.
         updateCountdown();
     </script>
 </body>
