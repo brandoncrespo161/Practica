@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cuenta regresiva – Congreso de Inteligencia Artificial</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: radial-gradient(ellipse at center, #0f0f0f 0%, #000000 100%);
+      font-family: 'Orbitron', sans-serif;
+      color: #00fff7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .countdown-container {
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid #00fff7;
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #00fff7;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      font-size: 2em;
+      color: #00fff7;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: pulse 2s infinite;
+    }
+
+    .time {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      font-size: 3em;
+      color: #ffffff;
+    }
+
+    .unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-shadow: 0 0 10px #00fff7;
+    }
+
+    .label {
+      font-size: 0.4em;
+      margin-top: 5px;
+      color: #00fff7;
+    }
+
+    @keyframes pulse {
+      0% { text-shadow: 0 0 10px #00fff7; }
+      50% { text-shadow: 0 0 20px #00fff7, 0 0 30px #00fff7; }
+      100% { text-shadow: 0 0 10px #00fff7; }
+    }
+  </style>
+</head>
+<body>
+  <div class="countdown-container">
+    <h1>Cuenta regresiva para el II Congreso Internacional de IA</h1>
+    <div class="time" id="countdown">
+      <div class="unit"><span id="days">--</span><div class="label">DÍAS</div></div>
+      <div class="unit"><span id="hours">--</span><div class="label">HORAS</div></div>
+      <div class="unit"><span id="minutes">--</span><div class="label">MINUTOS</div></div>
+      <div class="unit"><span id="seconds">--</span><div class="label">SEGUNDOS</div></div>
+    </div>
+  </div>
+
+  <script>
+    const countdown = () => {
+      const endDate = new Date("2025-07-31T09:00:00");
+      const now = new Date();
+      const diff = endDate - now;
+
+      if (diff <= 0) {
+        document.getElementById("countdown").innerHTML = "<h2>¡El futuro es ahora!</h2>";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("days").textContent = days;
+      document.getElementById("hours").textContent = hours.toString().padStart(2, '0');
+      document.getElementById("minutes").textContent = minutes.toString().padStart(2, '0');
+      document.getElementById("seconds").textContent = seconds.toString().padStart(2, '0');
+    };
+
+    setInterval(countdown, 1000);
+    countdown();
+  </script>
+</body>
+</html>
+
