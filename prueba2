@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Cuenta regresiva – Congreso CIIA 2025</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            /* For a truly transparent background outside the container, you would remove this: */
+            /* background: radial-gradient(ellipse at center, #05050a 0%, #000000 100%); */
+            /* Or simply set it to a solid transparent color like: */
+            background-color: transparent; /* Makes the body completely transparent */
+            /* If you want the dark fade but allow potential content behind to show through */
+            /* For this design, your original gradient effectively makes it "transparent into black space" */
+            
+            font-family: 'Orbitron', sans-serif;
+            color: #00fff7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Keeps scrollbars from appearing */
+            background-image: radial-gradient(ellipse at center, #05050a 0%, #000000 100%); /* Retaining your dark, blending background */
+        }
+
+        .countdown-container {
+            position: relative;
+            background: rgba(10, 10, 10, 0.7);
+            border: 2px solid rgb(42, 221, 237);
+            padding: min(60px, 8vw) min(40px, 6vw); /* Adaptive padding */
+            border-radius: 25px;
+            box-shadow: 0 0 30px rgb(42, 221, 237);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* For Safari support */
+            max-width: 90vw; /* Ensures it doesn't get too wide on large screens */
+            width: fit-content; /* Adjusts width based on content */
+            min-width: 300px; /* Minimum width for very small screens */
+            box-sizing: border-box; /* Include padding in the element's total width and height */
+        }
+
+        h1 {
+            /* Using clamp for responsive font size: min size, preferred size (based on vw), max size */
+            font-size: clamp(1.5em, 5vw, 2.8em);
+            margin-bottom: min(30px, 4vw); /* Adaptive margin */
+            letter-spacing: clamp(1px, 0.3vw, 3px);
+            animation: glow 2s ease-in-out infinite alternate;
+            word-break: break-word; /* Prevents long words from overflowing */
+            line-height: 1.2; /* Better spacing for wrapped text */
+        }
+
+        .ciia-large {
+            font-size: 1.5em; /* Stays relative to h1's font size */
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px rgb(42, 221, 237);
+            }
+            to {
+                text-shadow: 0 0 30px rgb(42, 221, 237), 0 0 40px rgb(42, 221, 237);
+            }
+        }
+
+        .time {
+            display: flex;
+            justify-content: center;
+            gap: min(50px, 5vw); /* Adaptive gap */
+            font-size: clamp(1.8em, 7vw, 3.2em); /* Adaptive font size for numbers */
+            flex-wrap: wrap; /* Allows units to wrap to the next line on small screens */
+            margin-top: 20px; /* Space above the numbers */
+        }
+
+        .unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center align content within each unit */
+            flex-basis: auto; /* Allow units to shrink/grow as needed */
+            margin: min(10px, 2vw); /* Add some margin around units for wrapping */
+            min-width: 60px; /* Ensure a minimum width for each unit */
+        }
+
+        .label {
+            font-size: 0.4em; /* Relative to the .time's font size */
+            color: rgb(42, 221, 237);
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .ai-logo {
+            position: absolute;
+            width: clamp(60px, 10vw, 80px); /* Adaptive width */
+            top: clamp(-40px, -5vw, -20px); /* Adaptive top position */
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgb(42, 221, 237);
+            z-index: 10; /* Ensure it stays on top */
+        }
+
+        .uni-logo {
+            position: absolute;
+            bottom: min(15px, 2vw);
+            left: min(15px, 2vw);
+            width: clamp(100px, 18vw, 140px); /* Adaptive width */
+            animation: fadeLogo 4s ease-in-out infinite;
+            z-index: 5; /* Control layering */
+        }
+
+        @keyframes fadeLogo {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .ai-avatar {
+            position: absolute;
+            bottom: min(-20px, -3vw);
+            right: min(-20px, -3vw);
+            width: clamp(80px, 15vw, 120px); /* Adaptive width */
+            opacity: 0.9;
+            filter: brightness(0) invert(1) drop-shadow(0 0 15px rgb(42, 221, 237));
+            animation: bob 4s ease-in-out infinite;
+            z-index: 5; /* Control layering */
+        }
+
+        @keyframes bob {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* No need for separate media queries when using clamp() and min() effectively for scaling */
+        /* However, for specific layout changes (e.g., units stacking differently), media queries are still useful. */
+        /* Example if you specifically wanted units to stack differently on tiny screens: */
+        @media (max-width: 400px) {
+            .time {
+                flex-direction: row; /* Keep them in a row for very narrow screens */
+                flex-wrap: wrap;
+                justify-content: space-around; /* Distribute units evenly */
+            }
+            .unit {
+                flex-basis: 45%; /* Two units per row */
+                margin-bottom: 20px; /* Space between rows */
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="countdown-container">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712104.png" alt="AI Logo" class="ai-logo">
+        <h1>Cuenta regresiva - <span class="ciia-large">CIIA 2025</span></h1>
+        <div class="time" id="countdown">
+            <div class="unit"><span id="days">--</span><div class="label">DÍAS</div></div>
+            <div class="unit"><span id="hours">--</span><div class="label">HORAS</div></div>
+            <div class="unit"><span id="minutes">--</span><div class="label">MINUTOS</div></div>
+            <div class="unit"><span id="seconds">--</span><div class="label">SEGUNDOS</div></div>
+        </div>
+
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712006.png" alt="AI Avatar" class="ai-avatar">
+
+        <img src="Isologo (1).png" alt="Logo UPDS Local" class="uni-logo">
+    </div>
+
+    <script>
+        function updateCountdown() {
+            // Target date in Cochabamba, Bolivia (-04:00 offset)
+            const eventDateString = "2025-07-31T09:00:00";
+            const end = new Date(eventDateString).getTime();
+            const now = Date.now();
+            const diff = end - now;
+
+            if (diff <= 0) {
+                document.getElementById('countdown').innerHTML = '<h2>¡El futuro es ahora en UPDS!</h2>';
+                return;
+            }
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = d;
+            document.getElementById('hours').textContent = String(h).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(m).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(s).padStart(2, '0');
+        }
+
+        // Update every second
+        setInterval(updateCountdown, 1000);
+        // Initial call to display immediately
+        updateCountdown();
+    </script>
+</body>
+</html>
