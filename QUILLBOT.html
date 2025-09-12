@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minitutorial Interactivo: QuillBot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .main-gradient-bg {
+            background: linear-gradient(135deg, #4f46e5 0%, #a21caf 100%);
+        }
+        .card {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .section-title {
+            color: #1e293b;
+            font-weight: 700;
+        }
+        /* -- Animación de aparición -- */
+        .reveal-section {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* -- Tabs Interactivas -- */
+        .tab {
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            padding: 0.75rem 1.5rem; /* Aumenta el padding para más espacio */
+        }
+        .tab:hover {
+            background-color: #f1f5f9;
+        }
+        .tab.active {
+            color: #4f46e5;
+            border-bottom-color: #4f46e5;
+            font-weight: 600;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* -- Simulación de QuillBot -- */
+        .quillbot-demo-output .synonym {
+            color: #4f46e5;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            border-bottom: 2px dotted #a5b4fc;
+        }
+        .synonym-options {
+            display: none;
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 10;
+            width: max-content;
+        }
+        .synonym:hover .synonym-options {
+            display: block;
+        }
+        .synonym-options div {
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .synonym-options div:hover {
+            background-color: #eef2ff;
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        
+        <!-- Encabezado -->
+        <header class="text-center text-white p-12 rounded-2xl main-gradient-bg reveal-section">
+            <div class="inline-block p-4 bg-white/20 rounded-2xl mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9" /></svg>
+            </div>
+            <p class="font-semibold tracking-widest">MINITUTORIAL DE HERRAMIENTAS IA</p>
+            <h1 class="text-4xl md:text-6xl font-bold mt-2">QuillBot</h1>
+            <p class="text-xl mt-4 opacity-90">Tu asistente de escritura para una redacción académica impecable.</p>
+        </header>
+
+        <main class="mt-10 space-y-10">
+
+            <!-- Qué es QuillBot -->
+            <section class="card p-8 reveal-section">
+                <h2 class="text-3xl section-title">¿Qué es y para qué sirve?</h2>
+                <p class="text-slate-600 mt-4 text-lg">QuillBot es una plataforma de inteligencia artificial diseñada para perfeccionar tu escritura. Su función principal es la **paráfrasis**: reescribe frases, párrafos o documentos completos para mejorar la claridad, variar el vocabulario y ajustar el tono, manteniendo siempre el significado original. Es una herramienta esencial para evitar el plagio accidental y enriquecer tus textos académicos.</p>
+            </section>
+
+            <!-- Funciones Principales -->
+            <section class="card p-8 reveal-section">
+                <h2 class="text-3xl section-title mb-6">Explora sus Funciones Clave</h2>
+                <div class="flex justify-around border-b border-slate-200">
+                    <div class="tab active" data-tab="paraphraser">Parafraseador</div>
+                    <div class="tab" data-tab="grammar">Corrector</div>
+                    <div class="tab" data-tab="summarizer">Resumidor</div>
+                </div>
+                <div class="mt-6">
+                    <div class="tab-content active" id="paraphraser">
+                        <h3 class="font-bold text-xl text-slate-800">Paráfrasis Inteligente</h3>
+                        <p class="text-slate-600 mt-2">Reestructura tus oraciones para que suenen más fluidas, profesionales o creativas. Ofrece múltiples modos (Estándar, Formal, Creativo, etc.) para adaptar el texto a cualquier contexto académico.</p>
+                    </div>
+                    <div class="tab-content" id="grammar">
+                        <h3 class="font-bold text-xl text-slate-800">Corrector Gramatical</h3>
+                        <p class="text-slate-600 mt-2">Analiza tu texto en busca de errores gramaticales, de puntuación y de ortografía. Proporciona sugerencias con un solo clic para asegurar que tu trabajo esté pulcro y profesional.</p>
+                    </div>
+                    <div class="tab-content" id="summarizer">
+                        <h3 class="font-bold text-xl text-slate-800">Generador de Resúmenes</h3>
+                        <p class="text-slate-600 mt-2">Extrae las ideas y puntos clave de un texto largo, como un artículo de investigación, y genera un resumen conciso. Ideal para comprender rápidamente el núcleo de un documento.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Tutorial Interactivo -->
+            <section class="card p-8 reveal-section">
+                <h2 class="text-3xl section-title mb-6">Tutorial Interactivo: Domina la Paráfrasis</h2>
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200 space-y-6">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">1. Introduce tu Texto</h3>
+                        <p class="text-slate-600 text-sm mt-1 mb-2">Pega aquí el fragmento que deseas mejorar. Para mejores resultados, usa oraciones completas.</p>
+                        <p class="text-slate-800 bg-white p-4 rounded-md shadow-inner">La investigación muestra una correlación significativa entre el uso de la tecnología en el aula y el aumento de la participación de los estudiantes.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">2. Ajusta el Nivel de Sinónimos</h3>
+                        <p class="text-slate-600 text-sm mt-1 mb-3">Controla la intensidad de la reescritura. Menos cambios para mantener el tono original, más cambios para una transformación completa del vocabulario.</p>
+                        <div class="w-full bg-slate-200 rounded-full h-2.5">
+                            <div class="bg-indigo-500 h-2.5 rounded-full" style="width: 50%;"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-500 mt-1">
+                            <span>Menos Cambios</span>
+                            <span>Equilibrado</span>
+                            <span>Más Cambios</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">3. Analiza y Personaliza el Resultado</h3>
+                        <p class="text-slate-600 text-sm mt-1 mb-2">QuillBot reescribe tu texto. Ahora es tu turno de perfeccionarlo. Pasa el cursor sobre cualquier palabra azul para ver y elegir alternativas.</p>
+                        <p class="mt-2 text-slate-800 bg-white p-4 rounded-md shadow-inner quillbot-demo-output">
+                            El estudio <span class="synonym">indica<div class="synonym-options"><div>revela</div><div>señala</div><div>demuestra</div></div></span> una <span class="synonym">conexión<div class="synonym-options"><div>relación</div><div>asociación</div><div>vinculación</div></div></span> importante entre la <span class="synonym">implementación<div class="synonym-options"><div>utilización</div><div>aplicación</div><div>adopción</div></div></span> de la tecnología en clase y un <span class="synonym">incremento<div class="synonym-options"><div>aumento</div><div>crecimiento</div><div>mayor nivel</div></div></span> en la <span class="synonym">intervención<div class="synonym-options"><div>implicación</div><div>participación</div><div>involucramiento</div></div></span> de los alumnos.
+                        </p>
+                    </div>
+                    <div class="text-center pt-2">
+                         <button class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-700 active:scale-95 transition-all">
+                            Volver a Parafrasear
+                        </button>
+                        <p class="text-xs text-slate-500 mt-2">¿No te convence el resultado? ¡Haz clic para obtener una nueva versión!</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Caso de Uso -->
+            <section class="card p-8 reveal-section">
+                <h2 class="text-3xl section-title mb-6">💡 Caso de Uso Educativo</h2>
+                <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-6 flex items-start space-x-4">
+                    <div class="text-3xl">👨‍🎓</div>
+                    <div>
+                        <h3 class="font-bold text-xl text-indigo-800">Mejorando el Marco Teórico de una Tesis</h3>
+                        <p class="text-slate-600 mt-2">Un estudiante de posgrado necesita citar las ideas de varios autores en su marco teórico sin cometer plagio. Utiliza QuillBot para parafrasear las definiciones clave, asegurándose de que la redacción sea original pero fiel al concepto del autor. Además, usa el corrector gramatical para pulir la sección final y garantizar una presentación académica de alta calidad.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="text-center py-6 reveal-section">
+                <h3 class="text-lg font-semibold text-slate-800 mb-2">Checklist de Evaluación</h3>
+                <div class="text-sm text-slate-500">
+                    <p>✓ Claridad Didáctica ✓ Precisión Técnica ✓ Relevancia ✓ Presentación Creativa</p>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animación de aparición al hacer scroll
+            const sections = document.querySelectorAll('.reveal-section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            sections.forEach(section => observer.observe(section));
+
+            // Lógica de las pestañas interactivas
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const target = tab.getAttribute('data-tab');
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === target) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
