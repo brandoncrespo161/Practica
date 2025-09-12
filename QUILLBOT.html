@@ -67,6 +67,9 @@
             display: block;
         }
         /* -- Simulación de QuillBot -- */
+        .quillbot-demo-output {
+             transition: opacity 0.2s ease-in-out;
+        }
         .quillbot-demo-output .synonym {
             color: #4f46e5;
             font-weight: 600;
@@ -107,7 +110,7 @@
         <!-- Encabezado -->
         <header class="text-center text-white p-12 rounded-2xl main-gradient-bg reveal-section">
             <div class="inline-block p-4 bg-white/20 rounded-2xl mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9" /></svg>
+                <svg xmlns="http://www.w.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9" /></svg>
             </div>
             <p class="font-semibold tracking-widest">MINITUTORIAL DE HERRAMIENTAS IA</p>
             <h1 class="text-4xl md:text-6xl font-bold mt-2">QuillBot</h1>
@@ -170,12 +173,12 @@
                     <div>
                         <h3 class="font-bold text-slate-800 text-lg">3. Analiza y Personaliza el Resultado</h3>
                         <p class="text-slate-600 text-sm mt-1 mb-2">QuillBot reescribe tu texto. Ahora es tu turno de perfeccionarlo. Pasa el cursor sobre cualquier palabra azul para ver y elegir alternativas.</p>
-                        <p class="mt-2 text-slate-800 bg-white p-4 rounded-md shadow-inner quillbot-demo-output">
+                        <p id="paraphrase-output" class="mt-2 text-slate-800 bg-white p-4 rounded-md shadow-inner quillbot-demo-output">
                             El estudio <span class="synonym">indica<div class="synonym-options"><div>revela</div><div>señala</div><div>demuestra</div></div></span> una <span class="synonym">conexión<div class="synonym-options"><div>relación</div><div>asociación</div><div>vinculación</div></div></span> importante entre la <span class="synonym">implementación<div class="synonym-options"><div>utilización</div><div>aplicación</div><div>adopción</div></div></span> de la tecnología en clase y un <span class="synonym">incremento<div class="synonym-options"><div>aumento</div><div>crecimiento</div><div>mayor nivel</div></div></span> en la <span class="synonym">intervención<div class="synonym-options"><div>implicación</div><div>participación</div><div>involucramiento</div></div></span> de los alumnos.
                         </p>
                     </div>
                     <div class="text-center pt-2">
-                         <button class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-700 active:scale-95 transition-all">
+                         <button id="rephrase-button" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-700 active:scale-95 transition-all">
                             Volver a Parafrasear
                         </button>
                         <p class="text-xs text-slate-500 mt-2">¿No te convence el resultado? ¡Haz clic para obtener una nueva versión!</p>
@@ -235,7 +238,30 @@
                     });
                 });
             });
+
+            // Lógica del botón "Volver a Parafrasear"
+            const rephraseButton = document.getElementById('rephrase-button');
+            const paraphraseOutput = document.getElementById('paraphrase-output');
+
+            const paraphrases = [
+                `El estudio <span class="synonym">indica<div class="synonym-options"><div>revela</div><div>señala</div><div>demuestra</div></div></span> una <span class="synonym">conexión<div class="synonym-options"><div>relación</div><div>asociación</div><div>vinculación</div></div></span> importante entre la <span class="synonym">implementación<div class="synonym-options"><div>utilización</div><div>aplicación</div><div>adopción</div></div></span> de la tecnología en clase y un <span class="synonym">incremento<div class="synonym-options"><div>aumento</div><div>crecimiento</div><div>mayor nivel</div></div></span> en la <span class="synonym">intervención<div class="synonym-options"><div>implicación</div><div>participación</div><div>involucramiento</div></div></span> de los alumnos.`,
+                `Los <span class="synonym">hallazgos<div class="synonym-options"><div>resultados</div><div>descubrimientos</div></div></span> revelan una <span class="synonym">asociación<div class="synonym-options"><div>vinculación</div><div>correlación</div></div></span> sustancial entre la <span class="synonym">utilización<div class="synonym-options"><div>implementación</div><div>aplicación</div></div></span> de herramientas tecnológicas y un <span class="synonym">mayor<div class="synonym-options"><div>superior</div><div>elevado</div></div></span> nivel de <span class="synonym">involucramiento<div class="synonym-options"><div>participación</div><div>implicación</div></div></span> estudiantil.`,
+                `Se <span class="synonym">demuestra<div class="synonym-options"><div>evidencia</div><div>constata</div></div></span> una <span class="synonym">vinculación<div class="synonym-options"><div>conexión</div><div>relación</div></div></span> notable entre la <span class="synonym">adopción<div class="synonym-options"><div>implementación</div><div>uso</div></div></span> de la tecnología educativa y el <span class="synonym">crecimiento<div class="synonym-options"><div>aumento</div><div>desarrollo</div></div></span> en la <span class="synonym">implicación<div class="synonym-options"><div>participación</div><div>intervención</div></div></span> del alumnado.`
+            ];
+
+            let currentIndex = 0;
+
+            rephraseButton.addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % paraphrases.length;
+                paraphraseOutput.style.opacity = 0;
+                
+                setTimeout(() => {
+                    paraphraseOutput.innerHTML = paraphrases[currentIndex];
+                    paraphraseOutput.style.opacity = 1;
+                }, 200);
+            });
         });
     </script>
 </body>
 </html>
+
