@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minitutorial Interactivo: Perplexity AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .tutorial-card {
+            background-color: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e5e7eb;
+        }
+        .main-title { color: #111827; }
+        .section-title {
+            color: #1f2937;
+            border-bottom: 3px solid #60a5fa;
+        }
+        .highlight-box {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            border-radius: 8px;
+        }
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .accordion-header {
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .accordion-item:not(.active) .accordion-header:hover {
+            background-color: #f9fafb;
+        }
+        .accordion-item.active .accordion-header {
+             background-color: #eff6ff;
+        }
+        .accordion-icon {
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+        /* -- Lógica del Acordeón con CSS (Corregida) -- */
+        .accordion-content {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, opacity 0.4s ease-out;
+        }
+        .accordion-item.active .accordion-content {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+    <div class="max-w-3xl w-full mx-auto">
+        <div class="tutorial-card p-8 sm:p-10 lg:p-12">
+            <!-- Encabezado con Imagen -->
+            <header class="text-center mb-10 fade-in-section">
+                <div class="flex justify-center mb-6">
+                    <svg class="w-24 h-24 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 17.5C9 19.9853 11.0147 22 13.5 22C15.9853 22 18 19.9853 18 17.5C18 15.0147 15.9853 13 13.5 13C11.0147 13 9 15.0147 9 17.5Z" stroke="currentColor" stroke-width="1.5"/><path d="M13.5 13C14.0927 13 14.6543 12.836 15.1279 12.5489" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12.9121 2.01855C14.8391 2.22855 16.3881 3.84855 16.4881 5.78855" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.75 6.0498C21.16 7.3398 22 9.0798 22 10.9998C22 14.8798 18.88 17.9998 15 17.9998" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11C2 6.02944 6.02944 2 11 2C11.9234 2 12.8133 2.14446 13.647 2.40971" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <p class="text-base font-semibold text-blue-600 tracking-wider">MINITUTORIAL DE HERRAMIENTAS IA</p>
+                <h1 class="text-4xl md:text-5xl font-bold main-title mt-2">Perplexity AI</h1>
+                <p class="text-lg text-gray-600 mt-4">Tu copiloto para la investigación académica</p>
+            </header>
+
+            <div class="space-y-10">
+                <div class="fade-in-section">
+                    <h2 class="text-2xl font-semibold section-title pb-2 mb-4">¿Qué es y qué hace Perplexity AI?</h2>
+                    <p class="text-gray-700 text-base">Perplexity AI es un motor de respuestas que utiliza IA para entregar contestaciones directas y estructuradas a preguntas complejas. A diferencia de un buscador tradicional, sintetiza información de múltiples fuentes y las cita, permitiéndote verificar cada dato. Es ideal para construir marcos teóricos y agilizar la búsqueda de bibliografía.</p>
+                </div>
+
+                <!-- Acordeón Interactivo y Explicativo Mejorado -->
+                <div class="fade-in-section">
+                    <h2 class="text-2xl font-semibold section-title pb-2 mb-4">Paso a Paso Interactivo</h2>
+                    <div class="space-y-3" id="accordion-container">
+                        <!-- Paso 1 -->
+                        <div class="accordion-item border rounded-lg">
+                            <div class="accordion-header p-4 flex justify-between items-center"><span class="font-bold text-lg text-gray-800">1. Formula una Pregunta Precisa</span><svg class="w-6 h-6 text-gray-500 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div>
+                            <div class="accordion-content">
+                                <div class="p-4 border-t">
+                                    <p class="text-gray-600 mb-4">La calidad de la respuesta depende de la calidad de tu pregunta. Sé lo más detallado posible.</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                        <div class="bg-red-50 border border-red-200 p-3 rounded-lg">
+                                            <p class="font-bold text-red-700">Pregunta Vaga:</p>
+                                            <p class="text-red-600 mt-1">"Inteligencia Artificial"</p>
+                                        </div>
+                                        <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                            <p class="font-bold text-green-700">Pregunta Específica:</p>
+                                            <p class="text-green-600 mt-1">"¿Cuáles son las implicaciones éticas del uso de modelos de lenguaje en la educación superior?"</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Paso 2 -->
+                        <div class="accordion-item border rounded-lg">
+                             <div class="accordion-header p-4 flex justify-between items-center"><span class="font-bold text-lg text-gray-800">2. Analiza y Verifica las Fuentes</span><svg class="w-6 h-6 text-gray-500 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div>
+                            <div class="accordion-content">
+                                <div class="p-4 border-t">
+                                    <p class="text-gray-600 mb-4">La IA te da un resumen, pero tu trabajo como investigador es validar. ¡No te saltes este paso!</p>
+                                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                        <li><strong>Haz clic en las citas:</strong> Cada número [1], [2] es un enlace. Revísalos.</li>
+                                        <li><strong>Evalúa la fuente:</strong> ¿Es un paper académico, un blog de un experto, o la documentación oficial?</li>
+                                        <li><strong>Contrasta la información:</strong> Compara lo que dice la IA con lo que dice la fuente original.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Paso 3 -->
+                        <div class="accordion-item border rounded-lg">
+                             <div class="accordion-header p-4 flex justify-between items-center"><span class="font-bold text-lg text-gray-800">3. Refina tu Búsqueda con "Focus"</span><svg class="w-6 h-6 text-gray-500 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div>
+                            <div class="accordion-content">
+                                <div class="p-4 border-t">
+                                    <p class="text-gray-600 mb-4">Usa los filtros para decirle a la IA exactamente dónde buscar. Esto aumenta drásticamente la relevancia de los resultados.</p>
+                                    <div class="space-y-3">
+                                        <p><span class="font-bold text-blue-700 bg-blue-100 py-1 px-2 rounded-md">Academic:</span> Para encontrar artículos de investigación y papers científicos.</p>
+                                        <p><span class="font-bold text-green-700 bg-green-100 py-1 px-2 rounded-md">Wolfram|Alpha:</span> Para datos computacionales, cálculos matemáticos y científicos.</p>
+                                        <p><span class="font-bold text-red-700 bg-red-100 py-1 px-2 rounded-md">YouTube:</span> Para encontrar explicaciones en formato de video y tutoriales.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         <!-- Paso 4 -->
+                        <div class="accordion-item border rounded-lg">
+                             <div class="accordion-header p-4 flex justify-between items-center"><span class="font-bold text-lg text-gray-800">4. Itera con Preguntas de Seguimiento</span><svg class="w-6 h-6 text-gray-500 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div>
+                            <div class="accordion-content">
+                                <div class="p-4 border-t">
+                                    <p class="text-gray-600 mb-4">No te quedes con la primera respuesta. Perplexity es conversacional. Usa el cuadro de texto "Ask a follow-up" para profundizar.</p>
+                                    <div class="bg-gray-50 p-3 rounded-lg border">
+                                        <p class="text-sm text-gray-800"><strong>Tú:</strong> "Explica el algoritmo Quicksort."</p>
+                                        <p class="text-sm text-gray-500 my-2"><strong>Perplexity:</strong> [Responde explicando Quicksort]</p>
+                                        <p class="text-sm text-gray-800"><strong>Tú (seguimiento):</strong> "Ahora compáralo con Mergesort en el peor de los casos."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fade-in-section">
+                    <h2 class="text-2xl font-semibold section-title pb-2 mb-4">Caso de Uso Educativo 💡</h2>
+                    <div class="highlight-box p-6">
+                        <p class="font-semibold text-lg text-blue-800 mb-2">Para Estudiantes de Programación Básica:</p>
+                        <p class="text-gray-800">Un estudiante atascado con "recursividad" puede preguntar: <span class="font-mono bg-white p-1 rounded-md">"Explica la recursividad con una analogía y un ejemplo en Python"</span>. La IA le dará una explicación conceptual (como muñecas rusas) y un ejemplo práctico (una función factorial), citando tutoriales para que pueda profundizar con confianza.</p>
+                    </div>
+                </div>
+
+                <footer class="text-center pt-6 border-t border-gray-200 fade-in-section">
+                     <h3 class="text-lg font-semibold text-gray-800 mb-2">Checklist de Evaluación</h3>
+                    <div class="text-sm text-gray-600">
+                        <p>✓ <span class="font-bold">Claridad Didáctica</span> ✓ <span class="font-bold">Precisión Técnica</span> ✓ <span class="font-bold">Relevancia</span> ✓ <span class="font-bold">Presentación Creativa</span></p>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.fade-in-section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            sections.forEach(section => observer.observe(section));
+
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+
+                header.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+
+                    // Cierra todos los demás items
+                    accordionItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                            otherItem.querySelector('.accordion-content').style.maxHeight = null;
+                        }
+                    });
+
+                    // Abre o cierra el item actual
+                    if (isActive) {
+                        item.classList.remove('active');
+                        content.style.maxHeight = null;
+                    } else {
+                        item.classList.add('active');
+                        // Se calcula la altura real del contenido para la animación
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
