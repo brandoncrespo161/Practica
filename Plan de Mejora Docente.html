@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Mejora Docente Interactivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Gris oscuro */
+            color: #F9FAFB; /* Casi blanco */
+            overflow: hidden;
+        }
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        @media (min-width: 768px) {
+            .slide { padding: 2rem; }
+        }
+        .slide.active {
+            transform: translateX(0);
+            opacity: 1;
+            z-index: 10;
+        }
+        .slide.exit {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+        .card {
+            background-color: #1F2937; /* Gris un poco más claro */
+            border: 1px solid #4B5563;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: #38BDF8; /* Azul claro */
+        }
+        .nav-btn {
+            position: fixed;
+            bottom: 1rem;
+            background-color: #38BDF8;
+            color: #111827;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #38BDF8;
+        }
+        #prevBtn { left: 1rem; }
+        #nextBtn { right: 1rem; }
+        
+        /* Animaciones */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        .fade-in-delay-1 { animation: fadeIn 0.8s 0.2s ease-out forwards; opacity: 0; }
+        .fade-in-delay-2 { animation: fadeIn 0.8s 0.4s ease-out forwards; opacity: 0; }
+        .fade-in-delay-3 { animation: fadeIn 0.8s 0.6s ease-out forwards; opacity: 0; }
+        
+        @keyframes pulse-attention {
+            50% { opacity: .8; transform: scale(1.02); }
+        }
+        .animate-pulse-attention {
+            animation: pulse-attention 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .interactive-card .back {
+            transform: rotateY(180deg);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .interactive-card.flipped .front {
+            transform: rotateY(180deg);
+        }
+        .interactive-card.flipped .back {
+            transform: rotateY(0deg);
+        }
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: #38BDF8;
+            transition: width 0.3s ease;
+            z-index: 30;
+        }
+        
+        /* Estilos para el simulador de código */
+        .code-font { font-family: 'Fira Code', monospace; }
+        .line-highlight { background-color: #38bdf833; border-left: 4px solid #38bdf8; margin-left: -4px;}
+        .bug-highlight { background-color: #f8717166; border-left: 4px solid #f87171; margin-left: -4px;}
+        #bug-explanation {
+            transition: all 0.3s ease-out;
+            transform: scale(0.9);
+            opacity: 0;
+        }
+        #bug-explanation.visible {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        /* Estilos para el mini-juego */
+        .game-console {
+            background: #000;
+            border: 4px solid #4B5563;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .game-screen {
+            background: #111827;
+            color: #93C5FD;
+            font-family: 'Fira Code', monospace;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 2px solid #374151;
+        }
+        .game-actions button {
+            transition: all 0.2s ease;
+        }
+        .game-actions button:hover {
+            background-color: #60A5FA;
+            color: #111827;
+        }
+    </style>
+</head>
+<body>
+    <div id="progressBar" class="progress-bar"></div>
+
+    <!-- Slide 1: Título -->
+    <div id="slide1" class="slide active">
+        <div class="text-center">
+            <h1 class="text-5xl md:text-8xl font-black tracking-tighter fade-in" style="background: linear-gradient(to right, #38BDF8, #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Plan de Mejora Docente</h1>
+            <p class="mt-4 text-lg md:text-2xl text-gray-300 fade-in-delay-1">Basado en Evidencias y Asistido por IA</p>
+            <p class="mt-8 text-md md:text-lg text-gray-400 fade-in-delay-2">Una propuesta interactiva para la asignatura de <strong class="text-sky-300">Programación Básica</strong>.</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: El Problema -->
+    <div id="slide2" class="slide">
+        <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center fade-in">El Desafío Pedagógico</h2>
+        <div class="grid md:grid-cols-2 gap-8 w-full max-w-4xl">
+            <div class="p-6 md:p-8 rounded-2xl text-center border border-gray-700 fade-in-delay-1">
+                <div class="text-5xl md:text-6xl mb-4">🧱</div>
+                <h3 class="text-xl md:text-2xl font-bold text-sky-300">Conocimiento Frágil</h3>
+                <p class="mt-2 text-sm md:text-base text-gray-400">Los participantes memorizan la sintaxis, pero no pueden aplicarla para resolver problemas reales. El conocimiento es inerte.</p>
+            </div>
+            <div class="p-6 md:p-8 rounded-2xl text-center border border-gray-700 fade-in-delay-2">
+                <div class="text-5xl md:text-6xl mb-4">🤯</div>
+                <h3 class="text-xl md:text-2xl font-bold text-violet-400">Frustración en la Depuración</h3>
+                <p class="mt-2 text-sm md:text-base text-gray-400">El "debugging" es visto como un castigo, generando ansiedad y desmotivación en lugar de un análisis lógico.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Pregunta de Investigación -->
+    <div id="slide3" class="slide">
+        <div class="text-center max-w-4xl">
+            <div class="text-6xl md:text-7xl mb-6 fade-in">🔎</div>
+            <p class="text-xl md:text-2xl text-gray-400 mb-4 fade-in-delay-1">Nuestra Pregunta Guía:</p>
+            <h2 class="text-2xl md:text-4xl font-bold leading-tight fade-in-delay-2">¿Cómo podemos usar el Aprendizaje Basado en Proyectos y la Visualización de Código para mejorar la transferencia de conocimiento y la resiliencia ante errores?</h2>
+        </div>
+    </div>
+
+    <!-- Slide 4: Búsqueda de Evidencia con IA -->
+    <div id="slide4" class="slide">
+        <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center fade-in">Buscando Pistas con IA</h2>
+        <div class="grid md:grid-cols-2 gap-8 w-full max-w-5xl">
+            <!-- Elicit Card -->
+            <div class="card p-6 md:p-8 rounded-2xl fade-in-delay-1" onclick="revealEvidence('elicit')">
+                <h3 class="text-2xl md:text-3xl font-bold flex items-center"><img src="https://placehold.co/40x40/1F2937/A78BFA?text=E" class="rounded-full mr-4">Elicit</h3>
+                <p class="mt-2 text-gray-400">Haz clic para descubrir los hallazgos clave.</p>
+                <div id="elicit-evidence" class="mt-4 space-y-4 hidden">
+                    <div class="p-4 bg-gray-800 rounded-lg">
+                        <strong class="text-sky-300">Hallazgo 1:</strong> El Aprendizaje Basado en Proyectos (PBL) contextualiza y da propósito a los conceptos abstractos.
+                    </div>
+                    <div class="p-4 bg-gray-800 rounded-lg">
+                        <strong class="text-sky-300">Hallazgo 2:</strong> La Visualización de Código ayuda a construir modelos mentales precisos y desmitifica la depuración.
+                    </div>
+                </div>
+            </div>
+            <!-- Google Scholar Card -->
+            <div class="card p-6 md:p-8 rounded-2xl fade-in-delay-2" onclick="revealEvidence('scholar')">
+                <h3 class="text-2xl md:text-3xl font-bold flex items-center"><img src="https://placehold.co/40x40/1F2937/38BDF8?text=G" class="rounded-full mr-4">Google Scholar</h3>
+                <p class="mt-2 text-gray-400">Haz clic para ver la validación.</p>
+                <div id="scholar-evidence" class="mt-4 hidden">
+                     <div class="p-4 bg-gray-800 rounded-lg">
+                        <strong class="text-violet-400">Validación:</strong> Artículos clave con <span id="citation-counter" class="font-bold text-2xl">0</span>+ citaciones confirman la robustez de estas estrategias.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: La Estrategia -->
+    <div id="slide5" class="slide">
+        <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center fade-in">Una Estrategia Sinergica</h2>
+        <div class="flex items-center justify-center space-x-0 w-full max-w-4xl">
+            <div class="p-6 md:p-8 rounded-l-2xl text-center bg-sky-500/20 w-1/2 fade-in-delay-1">
+                <h3 class="text-xl md:text-2xl font-bold">Aprendizaje Basado en Proyectos</h3>
+                <p class="mt-2">El QUÉ y el PORQUÉ</p>
+            </div>
+            <div class="text-5xl md:text-6xl z-10 fade-in-delay-2 text-violet-400 mx-[-20px]">+</div>
+            <div class="p-6 md:p-8 rounded-r-2xl text-center bg-violet-500/20 w-1/2 fade-in-delay-3">
+                <h3 class="text-xl md:text-2xl font-bold">Visualización de Código</h3>
+                <p class="mt-2">El CÓMO</p>
+            </div>
+        </div>
+        <div class="mt-12 text-center fade-in-delay-3">
+             <div class="text-6xl md:text-7xl mb-4">💡</div>
+             <p class="text-xl md:text-2xl">Juntos, transforman la frustración en creación.</p>
+        </div>
+    </div>
+
+    <!-- Slide 6: La Intervención (CORREGIDO Y RESPONSIVE) -->
+    <div id="slide6" class="slide">
+        <div class="text-center w-full max-w-6xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-2 fade-in">La Intervención</h2>
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8 fade-in-delay-1" style="background: linear-gradient(to right, #38BDF8, #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">"CodeQuest: Crea tu Aventura Interactiva"</h3>
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div class="game-console fade-in-delay-2">
+                    <div id="game-screen" class="game-screen mb-4"></div>
+                    <div id="game-actions" class="flex flex-wrap gap-4 mt-auto">
+                        <!-- Los botones del juego se generarán aquí -->
+                    </div>
+                </div>
+                <div id="game-explanation" class="p-6 bg-gray-800 rounded-lg fade-in-delay-3 text-left">
+                    <!-- Las explicaciones del juego aparecerán aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 7: El Arma Secreta (CORREGIDO Y RESPONSIVE) -->
+    <div id="slide7" class="slide">
+        <h2 class="text-4xl md:text-5xl font-bold mb-8 text-center fade-in">El Arma Secreta: ¡Simulador de Debugging!</h2>
+        <div class="grid lg:grid-cols-2 gap-8 w-full max-w-6xl items-start">
+            <div class="fade-in-delay-1">
+                <h3 class="text-xl md:text-2xl font-bold text-center mb-4">El Código Misterioso (con un bug)</h3>
+                <pre class="code-font bg-gray-800 p-4 rounded-lg text-sm text-left overflow-x-auto"><code id="code-listing" class="whitespace-pre">num = 1
+while num <= 10:
+    es_primo = True
+    divisor = 2
+    while divisor < num:
+        if num % divisor == 0:
+            es_primo = False
+        divisor += 1
+    if es_primo:
+        print(f"{num} es primo")
+    num += 1
+</code></pre>
+            </div>
+            <div class="fade-in-delay-2">
+                 <div class="bg-sky-900/50 border border-sky-500 p-4 rounded-lg mb-4 text-center">
+                    <p class="font-bold">¡Es tu turno de ser el detective!</p>
+                    <p class="text-sm">Usa los botones para ejecutar el código y ver qué imprime la consola.</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg space-y-4">
+                    <div>
+                        <h4 class="font-bold">Variables en Memoria</h4>
+                        <div class="grid grid-cols-3 gap-2 text-center code-font mt-2">
+                            <div class="bg-gray-900 p-2 rounded">num: <span id="var-num" class="font-bold text-sky-300">?</span></div>
+                            <div class="bg-gray-900 p-2 rounded">divisor: <span id="var-divisor" class="font-bold text-sky-300">?</span></div>
+                            <div class="bg-gray-900 p-2 rounded">es_primo: <span id="var-es_primo" class="font-bold text-sky-300">?</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold">Salida de la Consola (Print)</h4>
+                        <div id="sim-output" class="code-font bg-gray-900 p-2 rounded h-24 overflow-y-auto mt-2 text-green-400"></div>
+                    </div>
+                    <div id="bug-explanation" class="p-3 bg-red-900 border border-red-500 rounded-lg text-center">
+                        <p class="font-bold">¡AQUÍ ESTÁ EL ERROR!</p>
+                        <p class="text-sm">La variable `es_primo` nunca se reinicia a `True`. Una vez que se vuelve `False` (para el número 4), la consola deja de imprimir. ¡El bug es visible!</p>
+                    </div>
+                </div>
+                <div class="mt-4 flex gap-2">
+                    <button id="step-sim-btn" class="flex-grow bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                        ▶️ Iniciar Simulación
+                    </button>
+                    <button id="reset-sim-btn" class="bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-4 rounded-lg transition-colors text-sm">
+                        Resetear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Slide 8: El Rol de la IA -->
+    <div id="slide8" class="slide">
+        <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center fade-in">El Rol Estratégico de la IA</h2>
+        <div class="w-full max-w-4xl grid md:grid-cols-2 gap-8" style="perspective: 1000px;">
+            <div class="interactive-card w-full h-64 rounded-2xl cursor-pointer fade-in-delay-1" onclick="this.classList.toggle('flipped')">
+                <div class="front absolute w-full h-full bg-gray-800 p-6 rounded-2xl flex flex-col justify-center items-center text-center transition-transform duration-500 ease-in-out">
+                    <div class="text-5xl mb-4">🤖</div>
+                    <h3 class="text-xl md:text-2xl font-bold text-sky-300">IA como Tutor Socrático</h3>
+                    <p class="text-gray-400">(Haz clic para ver más)</p>
+                </div>
+                <div class="back absolute w-full h-full bg-sky-900 p-6 rounded-2xl flex flex-col justify-center items-center text-center transition-transform duration-500 ease-in-out">
+                    <p class="text-sm">"No me des la solución. Hazme 3 preguntas para que yo descubra mi error lógico."</p>
+                    <p class="mt-4 font-bold">Fomenta la autorreflexión.</p>
+                </div>
+            </div>
+            <div class="interactive-card w-full h-64 rounded-2xl cursor-pointer fade-in-delay-2" onclick="this.classList.toggle('flipped')">
+                 <div class="front absolute w-full h-full bg-gray-800 p-6 rounded-2xl flex flex-col justify-center items-center text-center transition-transform duration-500 ease-in-out">
+                    <div class="text-5xl mb-4">✍️</div>
+                    <h3 class="text-xl md:text-2xl font-bold text-violet-400">IA para Retroalimentación</h3>
+                     <p class="text-gray-400">(Haz clic para ver más)</p>
+                </div>
+                <div class="back absolute w-full h-full bg-violet-900 p-6 rounded-2xl flex flex-col justify-center items-center text-center transition-transform duration-500 ease-in-out">
+                     <p class="text-sm">"Genera un comentario de ánimo y una pregunta de extensión para este código."</p>
+                     <p class="mt-4 font-bold">Personaliza y escala el feedback.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 9: Reflexión Crítica -->
+    <div id="slide9" class="slide">
+        <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center fade-in">Reflexión Crítica</h2>
+        <div class="grid md:grid-cols-3 gap-8 w-full max-w-6xl">
+            <div class="p-6 rounded-2xl bg-gray-800 fade-in-delay-1">
+                <h3 class="text-lg font-bold text-yellow-400 flex items-center">⚠️ Limitaciones y Barreras</h3>
+                <p class="mt-2 text-sm text-gray-400">Riesgo de sobre-dependencia de la IA. Requiere una fuerte cultura de integridad académica y supervisión activa.</p>
+            </div>
+            <div class="p-6 rounded-2xl bg-gray-800 fade-in-delay-2">
+                <h3 class="text-lg font-bold text-green-400 flex items-center">⚖️ Ética y Equidad</h3>
+                <p class="mt-2 text-sm text-gray-400">Uso de herramientas gratuitas para garantizar el acceso. Enseñanza crítica sobre los sesgos de la IA.</p>
+            </div>
+            <div class="p-6 rounded-2xl bg-gray-800 fade-in-delay-3">
+                <h3 class="text-lg font-bold text-pink-400 flex items-center">👩‍🏫 Valoración del Docente</h3>
+                <p class="mt-2 text-sm text-gray-400">La IA es un "asistente de productividad", no un sustituto. Libera tiempo para enfocarse en lo humano: motivar, inspirar y guiar.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Conclusión -->
+    <div id="slide10" class="slide">
+        <div class="text-center">
+            <h2 class="text-5xl md:text-6xl font-black tracking-tighter fade-in">De la Frustración<br>a la <span style="background: linear-gradient(to right, #38BDF8, #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Creación</span></h2>
+            <p class="mt-6 text-lg md:text-xl text-gray-300 max-w-3xl fade-in-delay-1">
+                Combinando evidencia científica (PBL + Visualización) y la asistencia crítica de la IA, podemos crear un ambiente de aprendizaje donde los nuevos programadores se sientan empoderados para resolver problemas y construir con confianza.
+            </p>
+        </div>
+    </div>
+
+
+    <!-- Navegación -->
+    <button id="prevBtn" class="nav-btn hidden" onclick="navigate(-1)">Anterior</button>
+    <button id="nextBtn" class="nav-btn" onclick="navigate(1)">Siguiente</button>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 10;
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        function updateSlide(newIndex) {
+            const oldSlide = document.getElementById(`slide${currentSlide}`);
+            const newSlide = document.getElementById(`slide${newIndex}`);
+
+            oldSlide.classList.add('exit');
+            oldSlide.classList.remove('active');
+            
+            newSlide.classList.remove('exit');
+            newSlide.classList.add('active');
+
+            currentSlide = newIndex;
+            updateNavButtons();
+            updateProgressBar();
+            
+            if (newIndex === 6) {
+                initGame();
+            }
+            if (newIndex === 7) {
+                resetSimulation();
+                const stepBtn = document.getElementById('step-sim-btn');
+                stepBtn.classList.add('animate-pulse-attention');
+            } else {
+                 const stepBtn = document.getElementById('step-sim-btn');
+                 stepBtn.classList.remove('animate-pulse-attention');
+            }
+        }
+        
+        function navigate(direction) {
+            const newIndex = currentSlide + direction;
+            if (newIndex > 0 && newIndex <= totalSlides) {
+                updateSlide(newIndex);
+            }
+        }
+        
+        function updateNavButtons() {
+            prevBtn.classList.toggle('hidden', currentSlide === 1);
+            nextBtn.textContent = currentSlide === totalSlides ? 'Finalizar' : 'Siguiente';
+        }
+
+        function updateProgressBar() {
+            const progress = (currentSlide / totalSlides) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+        
+        // --- Interacciones específicas de slides ---
+        
+        // Slide 4: Evidencia
+        let evidenceRevealed = { elicit: false, scholar: false };
+        function revealEvidence(type) {
+            if (type === 'elicit' && !evidenceRevealed.elicit) {
+                document.getElementById('elicit-evidence').classList.remove('hidden');
+                evidenceRevealed.elicit = true;
+            } else if (type === 'scholar' && !evidenceRevealed.scholar) {
+                document.getElementById('scholar-evidence').classList.remove('hidden');
+                evidenceRevealed.scholar = true;
+                
+                const counter = document.getElementById('citation-counter');
+                let count = 0;
+                const target = 3500;
+                const interval = setInterval(() => {
+                    count += 50;
+                    if (count > target) {
+                        count = target;
+                        clearInterval(interval);
+                    }
+                    counter.textContent = count.toLocaleString();
+                }, 10);
+            }
+        }
+
+        // --- Lógica del Mini-Juego (Slide 6) ---
+        const gameScreen = document.getElementById('game-screen');
+        const gameActions = document.getElementById('game-actions');
+        const gameExplanation = document.getElementById('game-explanation');
+        
+        let gameState = {};
+
+        function initGame() {
+            gameScreen.innerHTML = '';
+            gameState = {
+                module: 1,
+                playerName: "Aventurero",
+                hasKey: false,
+                attemptsLeft: 3
+            };
+            addGameText(`¡Bienvenido a CodeQuest!`);
+            addGameText(`Tu misión: encontrar el Tesoro de Python.`);
+            updateGameDisplay();
+        }
+
+        function addGameText(text) {
+            gameScreen.innerHTML += `<p>> ${text}</p>`;
+            gameScreen.scrollTop = gameScreen.scrollHeight;
+        }
+        
+        function setExplanation(title, concept, description) {
+            gameExplanation.innerHTML = `
+                <h4 class="text-xl md:text-2xl font-bold text-yellow-300 mb-2">${title}</h4>
+                <p class="mb-4 text-sm md:text-base"><strong class="text-sky-300">Concepto clave:</strong> ${concept}</p>
+                <p class="text-sm md:text-base text-gray-400">${description}</p>
+            `;
+        }
+
+        function updateGameDisplay() {
+            gameActions.innerHTML = ''; // Limpiar acciones
+            switch(gameState.module) {
+                case 1: // Variables
+                    setExplanation(
+                        "Módulo 1: El Mundo del Juego",
+                        "Variables y print()",
+                        "Usamos una <strong>variable</strong> para guardar tu nombre ('Aventurero') y la función <strong>print()</strong> para mostrarte los diálogos. Las variables son como cajas para guardar información."
+                    );
+                    addGameText(`Estás en un castillo oscuro. Tu nombre es <strong class="text-green-400">${gameState.playerName}</strong>.`);
+                    addGameText("Ves dos puertas delante de ti.");
+                    createActionButton("Ir por la puerta Roja", () => handleChoice('roja'));
+                    createActionButton("Ir por la puerta Azul", () => handleChoice('azul'));
+                    break;
+                case 2: // Conditionals
+                    setExplanation(
+                        "Módulo 2: Las Decisiones del Héroe",
+                        "Condicionales (if/else)",
+                        "Tu elección activa una estructura <strong>if/else</strong>. El programa comprueba 'si' elegiste la puerta azul para darte la llave, 'si no', te envía a otro lugar. Así se crean las consecuencias."
+                    );
+                    if (gameState.lastChoice === 'roja') {
+                        addGameText("La puerta roja te lleva a una sala con un cofre cerrado.");
+                        createActionButton("Volver", () => { gameState.module = 1; updateGameDisplay(); });
+                    } else {
+                        addGameText("La puerta azul te lleva a una biblioteca. Sobre una mesa, ves una <strong class='text-green-400'>llave de plata</strong>.");
+                        createActionButton("Tomar la llave", () => { 
+                            gameState.hasKey = true;
+                            addGameText("¡Has conseguido la llave!");
+                            createActionButton("Volver al inicio", () => { gameState.module = 1; updateGameDisplay(); });
+                        });
+                    }
+                    break;
+                case 3: // Loops
+                    setExplanation(
+                        "Módulo 3: El Laberinto Interminable",
+                        "Bucles (while)",
+                        "¡Ahora estás en un <strong>bucle</strong>! 'Mientras' te queden intentos (while attemptsLeft > 0), el juego te permitirá seguir adivinando. Los bucles repiten acciones hasta que una condición cambia."
+                    );
+                    if (!gameState.hasKey) {
+                        addGameText("No puedes abrir el cofre sin la llave. ¡Búscala!");
+                        createActionButton("Volver", () => { gameState.module = 1; updateGameDisplay(); });
+                    } else {
+                        addGameText(`Intentas abrir el cofre. Te quedan <strong class="text-green-400">${gameState.attemptsLeft}</strong> intentos.`);
+                        addGameText("Adivina la clave (un número del 1 al 5).");
+                        for(let i = 1; i <= 5; i++) {
+                            createActionButton(`Probar con ${i}`, () => handleGuess(i));
+                        }
+                    }
+                    break;
+                case 4: // Win
+                    setExplanation(
+                        "Módulo 4: Hechizos y Acciones",
+                        "Funciones",
+                        "Todo este juego está organizado en bloques de código reutilizables llamados <strong>funciones</strong>, como 'updateGameDisplay()'. Las funciones evitan repetir código y hacen que los programas sean más limpios."
+                    );
+                    addGameText("¡Felicidades! Has abierto el cofre y encontrado el Tesoro de Python.");
+                    addGameText("<strong class='text-green-400'>¡JUEGO TERMINADO!</strong>");
+                    createActionButton("Jugar de Nuevo", initGame);
+                    break;
+                case 5: // Lose
+                    addGameText("Te has quedado sin intentos. El cofre permanece cerrado.");
+                    addGameText("<strong class='text-red-400'>¡JUEGO TERMINADO!</strong>");
+                    createActionButton("Jugar de Nuevo", initGame);
+                    break;
+            }
+        }
+
+        function createActionButton(text, onClick) {
+            const button = document.createElement('button');
+            button.className = "bg-blue-800 text-blue-100 p-3 rounded-lg font-bold flex-grow";
+            button.textContent = text;
+            button.onclick = () => { 
+                gameActions.innerHTML = ''; // Desactivar botones después del clic
+                onClick();
+            };
+            gameActions.appendChild(button);
+        }
+
+        function handleChoice(choice) {
+            gameState.lastChoice = choice;
+            if (choice === 'roja') {
+                gameState.module = 3; // Va al cofre
+            } else {
+                gameState.module = 2; // Va a la llave
+            }
+            updateGameDisplay();
+        }
+
+        function handleGuess(guess) {
+            const correctGuess = 4;
+            gameState.attemptsLeft--;
+            if (guess === correctGuess) {
+                gameState.module = 4; // Win
+            } else if (gameState.attemptsLeft > 0) {
+                addGameText("Incorrecto. Inténtalo de nuevo.");
+                gameState.module = 3; // Try again
+            } else {
+                gameState.module = 5; // Lose
+            }
+            updateGameDisplay();
+        }
+
+        // --- Lógica del Simulador (Slide 7) ---
+        const codeListing = document.getElementById('code-listing');
+        const codeLines = codeListing.innerText.split('\n').map((text, i) => ({ text, el: null, id: `line-${i}` }));
+        
+        codeListing.innerHTML = codeLines.map(line => `<span id="${line.id}">${line.text}</span>`).join('\n');
+        codeLines.forEach(line => line.el = document.getElementById(line.id));
+
+        const varNum = document.getElementById('var-num');
+        const varDivisor = document.getElementById('var-divisor');
+        const varEsPrimo = document.getElementById('var-es_primo');
+        const simOutput = document.getElementById('sim-output');
+        const bugExplanation = document.getElementById('bug-explanation');
+        const stepBtn = document.getElementById('step-sim-btn');
+        const resetBtn = document.getElementById('reset-sim-btn');
+
+        const simulationSteps = [
+            { line: 0, num: 1, divisor: '?', es_primo: '?' }, { line: 1, num: 1, divisor: '?', es_primo: '?' },
+            { line: 2, num: 2, divisor: '?', es_primo: 'True' }, { line: 3, num: 2, divisor: '2', es_primo: 'True' },
+            { line: 4, num: 2, divisor: '2', es_primo: 'True' }, { line: 9, num: 2, divisor: '2', es_primo: 'True' },
+            { line: 10, num: 2, divisor: '2', es_primo: 'True', output: "2 es primo" }, { line: 11, num: 2, divisor: '2', es_primo: 'True' },
+            { line: 1, num: 3, divisor: '2', es_primo: 'True' }, { line: 2, num: 3, divisor: '2', es_primo: 'True' },
+            { line: 3, num: 3, divisor: '2', es_primo: 'True' }, { line: 4, num: 3, divisor: '2', es_primo: 'True' },
+            { line: 9, num: 3, divisor: '3', es_primo: 'True' },  { line: 10, num: 3, divisor: '3', es_primo: 'True', output: "3 es primo" },
+            { line: 11, num: 3, divisor: '3', es_primo: 'True' }, { line: 1, num: 4, divisor: '3', es_primo: 'True' },
+            { line: 2, num: 4, divisor: '3', es_primo: 'True' }, { line: 3, num: 4, divisor: '2', es_primo: 'True' },
+            { line: 4, num: 4, divisor: '2', es_primo: 'True' }, { line: 5, num: 4, divisor: '2', es_primo: 'True' },
+            { line: 6, num: 4, divisor: '2', es_primo: 'False' }, { line: 7, num: 4, divisor: '2', es_primo: 'False' },
+            { line: 4, num: 4, divisor: '3', es_primo: 'False' }, { line: 9, num: 4, divisor: '4', es_primo: 'False' },
+            { line: 11, num: 4, divisor: '4', es_primo: 'False' },
+            { line: 1, num: 5, divisor: '4', es_primo: 'False', bug: true }, // BUG REVELADO
+            { line: 2, num: 5, divisor: '4', es_primo: 'False', bug: true }, // 'es_primo' no se resetea
+            { line: 3, num: 5, divisor: '2', es_primo: 'False', bug: true },
+            { line: 9, num: 5, divisor: '5', es_primo: 'False', bug: true}, // if es_primo (sigue False, no imprime)
+        ];
+
+        let currentStep = -1;
+
+        function resetSimulation() {
+            currentStep = -1;
+            stepBtn.textContent = '▶️ Iniciar Simulación';
+            stepBtn.disabled = false;
+            stepBtn.classList.add('animate-pulse-attention');
+            simOutput.innerHTML = '';
+            updateSimulationUI();
+        }
+
+        function stepSimulation() {
+            stepBtn.classList.remove('animate-pulse-attention');
+            if (currentStep === -1) stepBtn.textContent = 'Siguiente Paso ⏭️';
+            currentStep++;
+            if (currentStep >= simulationSteps.length) {
+                stepBtn.textContent = 'Simulación Terminada';
+                stepBtn.disabled = true;
+                return;
+            }
+            updateSimulationUI();
+        }
+        
+        function updateSimulationUI() {
+            codeLines.forEach(line => line.el.classList.remove('line-highlight', 'bug-highlight'));
+            bugExplanation.classList.remove('visible');
+            
+            if (currentStep < 0) {
+                 varNum.textContent = '?';
+                 varDivisor.textContent = '?';
+                 varEsPrimo.textContent = '?';
+                 return;
+            }
+
+            const step = simulationSteps[currentStep];
+
+            if (step.bug) {
+                codeLines[step.line].el.classList.add('bug-highlight');
+                bugExplanation.classList.add('visible');
+            } else {
+                codeLines[step.line].el.classList.add('line-highlight');
+            }
+            
+            varNum.textContent = step.num;
+            varDivisor.textContent = step.divisor;
+            varEsPrimo.textContent = step.es_primo;
+
+            if (step.output) {
+                simOutput.innerHTML += `<p>> ${step.output}</p>`;
+                simOutput.scrollTop = simOutput.scrollHeight;
+            }
+        }
+
+        stepBtn.addEventListener('click', stepSimulation);
+        resetBtn.addEventListener('click', resetSimulation);
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNavButtons();
+            updateProgressBar();
+            initGame();
+            resetSimulation();
+        });
+
+    </script>
+</body>
+</html>
+
+
