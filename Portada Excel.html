@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel - Conceptos Clave</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to right top, #f0fdf4, #eef2ff);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 12px rgba(22, 163, 74, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+        }
+
+        .hotspot {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            background-color: rgba(22, 163, 74, 0.9);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border: 2px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: pulse 2.5s infinite cubic-bezier(0.66, 0, 0, 1);
+        }
+
+        .hotspot:hover {
+            transform: scale(1.2);
+            animation: none;
+            background-color: rgba(21, 128, 61, 1);
+        }
+
+        .tooltip {
+            visibility: hidden; opacity: 0;
+            position: absolute;
+            background-color: #262626;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 10px 15px;
+            z-index: 10;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+            width: 230px;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateY(10px);
+        }
+
+        .hotspot:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tooltip::after {
+            content: ""; position: absolute;
+            border-width: 6px; border-style: solid;
+        }
+        .tooltip-top { bottom: 135%; left: 50%; transform: translateX(-50%); }
+        .tooltip-top::after { top: 100%; left: 50%; margin-left: -6px; border-color: #262626 transparent transparent transparent; }
+        
+        .tooltip-bottom { top: 135%; left: 50%; transform: translateX(-50%); }
+        .tooltip-bottom::after { bottom: 100%; left: 50%; margin-left: -6px; border-color: transparent transparent #262626 transparent; }
+        
+        /* Animation for the chart bars */
+        @keyframes growChart {
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+        .chart-bar {
+            transform-origin: bottom;
+            animation: growChart 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        .chart-bar-1 { animation-delay: 0.1s; }
+        .chart-bar-2 { animation-delay: 0.2s; }
+        .chart-bar-3 { animation-delay: 0.3s; }
+        .chart-bar-4 { animation-delay: 0.4s; }
+
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white rounded-xl shadow-2xl p-4 sm:p-6 md:p-8 w-full max-w-3xl border border-gray-200">
+        <div class="flex justify-center items-center gap-3 mb-2">
+            <svg class="h-8 w-8 md:h-10 md:w-10 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h17.25m-17.25 0h17.25M9 9.75l3 3m0 0l3-3m-3 3v-6m-1.5-1.5h6" />
+            </svg>
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-center text-gray-800">El Poder de Excel</h1>
+        </div>
+        <p class="text-center text-gray-600 mb-8 text-sm sm:text-base">Explora los conceptos clave que hacen de Excel una herramienta indispensable.</p>
+        
+        <!-- Abstract representation container -->
+        <div class="relative w-full aspect-video max-w-2xl mx-auto">
+            <!-- SVG Abstract Chart -->
+            <svg width="100%" height="100%" viewBox="0 0 400 225" class="absolute inset-0">
+                <!-- Axes -->
+                <line x1="20" y1="200" x2="380" y2="200" stroke="#cbd5e1" stroke-width="2"/>
+                <line x1="20" y1="20" x2="20" y2="200" stroke="#cbd5e1" stroke-width="2"/>
+                
+                <!-- Animated Bars -->
+                <g>
+                    <rect class="chart-bar chart-bar-1" x="50" y="120" width="40" height="80" fill="#a7f3d0"/>
+                    <rect class="chart-bar chart-bar-2" x="120" y="60" width="40" height="140" fill="#6ee7b7"/>
+                    <rect class="chart-bar chart-bar-3" x="190" y="100" width="40" height="100" fill="#34d399"/>
+                    <rect class="chart-bar chart-bar-4" x="260" y="40" width="40" height="160" fill="#10b981"/>
+                </g>
+
+                <!-- Line graph overlay -->
+                <polyline points="70,110 140,75 210,90 280,50" fill="none" stroke="#3b82f6" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            
+            <!-- Hotspots on concepts -->
+            <div class="hotspot" style="top: 60%; left: 18%;">+
+                <div class="tooltip tooltip-top"><h3 class="font-bold mb-1">Organización de Datos</h3><p>Excel permite estructurar grandes cantidades de información de forma clara y ordenada, sentando las bases para cualquier análisis.</p></div>
+            </div>
+
+            <div class="hotspot" style="top: 20%; left: 68%;">+
+                <div class="tooltip tooltip-bottom"><h3 class="font-bold mb-1">Cálculo y Fórmulas</h3><p>El verdadero poder de Excel reside en su capacidad para realizar cálculos complejos de forma automática, desde sumas simples hasta proyecciones financieras.</p></div>
+            </div>
+
+            <div class="hotspot" style="top: 40%; left: 45%;">+
+                <div class="tooltip tooltip-top"><h3 class="font-bold mb-1">Visualización de Resultados</h3><p>Convierte números aburridos en gráficos y tablas impactantes que facilitan la comprensión y comunicación de tus hallazgos.</p></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
