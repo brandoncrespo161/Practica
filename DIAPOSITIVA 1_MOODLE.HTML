@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación Día 1: EVA Moodle</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Fuente Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Iconos (Ionicons) -->
+    <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6; /* Un gris muy claro */
+        }
+
+        /* Contenedor principal de la presentación */
+        #presentation-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Contenedor de la diapositiva */
+        #slide-window {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Estilo base de cada diapositiva */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 4rem;
+            text-align: center;
+            opacity: 0;
+            /* Transiciones suaves */
+            transition: opacity 0.5s ease-in-out;
+            visibility: hidden;
+        }
+
+        /* Diapositiva activa */
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        /* Controles de navegación */
+        #nav-controls {
+            width: 100%;
+            background-color: #ffffff;
+            border-top: 1px solid #e0e0e0;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .nav-button {
+            background-color: #2563EB; /* Azul principal */
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background-color: #1D4ED8; /* Azul más oscuro */
+        }
+
+        .nav-button:disabled {
+            background-color: #9CA3AF; /* Gris */
+            cursor: not-allowed;
+        }
+
+        #slide-counter {
+            font-size: 0.875rem;
+            color: #4B5563;
+            font-weight: 500;
+        }
+
+        /* Estilos de Pestañas Interactivas */
+        .tab-button {
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            color: #4B5563;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .tab-button.active {
+            color: #2563EB;
+            border-bottom-color: #2563EB;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Mockup de Moodle */
+        .moodle-mockup {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            text-align: left;
+            overflow: hidden;
+        }
+        .moodle-header {
+            background-color: #f8f9fa;
+            padding: 0.75rem 1.25rem;
+            border-bottom: 1px solid #ddd;
+        }
+        .moodle-path {
+            font-family: monospace;
+            background-color: #e9ecef;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .moodle-body {
+            padding: 1.5rem;
+        }
+        
+        /* Simulación de Activar Edición */
+        .editing-icon {
+            display: none; /* Oculto por defecto */
+            color: #2563EB;
+            margin-left: 0.5rem;
+            animation: fadeIn 0.5s;
+        }
+        
+        .editing-active .editing-icon {
+            display: inline-block; /* Visible cuando la edición está activa */
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <main id="presentation-container">
+
+        <!-- Ventana de Diapositivas -->
+        <section id="slide-window">
+
+            <!-- Diapositiva 1: Título -->
+            <section class="slide active">
+                <div class="text-center">
+                    <h2 class="text-base font-semibold uppercase tracking-wider text-blue-600">Curso: Moodle para Profesores</h2>
+                    <h1 class="mt-4 text-5xl font-extrabold text-gray-900 sm:text-6xl lg:text-7xl">
+                        Entornos Virtuales de Aprendizaje
+                    </h1>
+                    <p class="mt-6 text-2xl font-semibold text-gray-700">
+                        DÍA 1: Fundamentos y Administración
+                    </p>
+                </div>
+            </section>
+
+            <!-- Diapositiva 2: Plan del Día -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">Plan del Día 1</h1>
+                <div class="text-left text-lg max-w-3xl space-y-4">
+                    <div class="flex items-start space-x-3">
+                        <span class="flex-shrink-0 text-blue-600 text-3xl"><ion-icon name="flag-outline"></ion-icon></span>
+                        <p><strong class="text-gray-900">Objetivo:</strong> Entender los conceptos clave (EVA, LMS) y la diferencia entre los roles de Administrador y Profesor.</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <span class="flex-shrink-0 text-blue-600 text-3xl"><ion-icon name="list-outline"></ion-icon></span>
+                        <p><strong class="text-gray-900">Agenda:</strong> Teoría (EVA, Plataformas) y Práctica (Admin y Profesor en `milaulas.com`).</p>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <span class="flex-shrink-0 text-blue-600 text-3xl"><ion-icon name="school-outline"></ion-icon></span>
+                        <p><strong class="text-gray-900">Evaluación:</strong> Cuestionario 1 (40%) en Google Forms sobre el contenido de hoy (Asincrónico).</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Diapositiva 3: Evaluación -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">Sistema de Evaluación (Automático)</h1>
+                <p class="text-xl text-gray-600 mb-10">Usaremos Google Forms para calificación automática.</p>
+                <div class="flex flex-col md:flex-row gap-8">
+                    <!-- Card 1 -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-blue-500 w-80">
+                        <h2 class="text-2xl font-bold text-blue-800">Actividad 1 (40%)</h2>
+                        <p class="text-gray-700 mt-2">Cuestionario sobre Fundamentos y Recursos (Día 1).</p>
+                        <p class="mt-4 text-sm font-semibold text-gray-500 uppercase">Asincrónico</p>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-gray-500 w-80">
+                        <h2 class="text-2xl font-bold text-gray-800">Actividad 2 (60%)</h2>
+                        <p class="text-gray-700 mt-2">Cuestionario sobre Actividades y Evaluación (Día 2-3).</p>
+                        <p class="mt-4 text-sm font-semibold text-gray-500 uppercase">Sincrónico</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Diapositiva 4: ¿Qué es un EVA? -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">Tema 1: ¿Qué es un EVA?</h1>
+                <p class="text-xl text-gray-600 mb-10">Entorno Virtual de Aprendizaje</p>
+                <div class="flex flex-col md:flex-row gap-8">
+                    <!-- Error Común -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-red-500 w-96">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-4xl text-red-500"><ion-icon name="close-circle-outline"></ion-icon></span>
+                            <h2 class="text-2xl font-bold text-red-800">Error Común</h2>
+                        </div>
+                        <p class="text-gray-700 mt-3 text-lg">Un "repositorio" para colgar PDFs y videos.</p>
+                    </div>
+                    <!-- Concepto Correcto -->
+                    <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-green-500 w-96">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-4xl text-green-500"><ion-icon name="checkmark-circle-outline"></ion-icon></span>
+                            <h2 class="text-2xl font-bold text-green-800">Concepto Correcto</h2>
+                        </div>
+                        <p class="text-gray-700 mt-3 text-lg">Un <strong class="text-gray-900">espacio digital de interacción</strong>, gestión, comunicación y evaluación.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Diapositiva 5: Modelos (Interactiva) -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Pedagogía sobre Tecnología</h1>
+                <p class="text-xl text-gray-600 mb-10">Moodle es la herramienta, tú diseñas la experiencia.</p>
+                <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8">
+                    <!-- Pestañas -->
+                    <div class="flex border-b border-gray-300" id="tabs-models">
+                        <button class="tab-button active" data-tab="asincronico">Asincrónico</button>
+                        <button class="tab-button" data-tab="sincronico">Sincrónico</button>
+                        <button class="tab-button" data-tab="blearning">B-Learning</button>
+                    </div>
+                    <!-- Contenido de Pestañas -->
+                    <div class="mt-6 text-left text-lg">
+                        <div id="asincronico" class="tab-content active">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-2">Asincrónico</h3>
+                            <p class="text-gray-700">El estudiante trabaja a su propio ritmo. Es flexible. <br><strong>Ejemplos:</strong> Foros de discusión, tareas con fecha límite de una semana, ver videos pregrabados.</p>
+                        </div>
+                        <div id="sincronico" class="tab-content">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-2">Sincrónico</h3>
+                            <p class="text-gray-700">Ocurre en tiempo real, todos al mismo tiempo. <br><strong>Ejemplos:</strong> Esta videoconferencia, un chat en vivo, un examen con hora fija.</p>
+                        </div>
+                        <div id="blearning" class="tab-content">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-2">B-Learning (Híbrido)</h3>
+                            <p class="text-gray-700">La combinación de actividades presenciales en el aula con actividades virtuales en la plataforma. <br><strong>Ejemplo:</strong> Clase en el colegio el lunes, tarea en Moodle para el miércoles.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Diapositiva 6: Plataformas -->
+            <section class="slide">
+                 <h1 class="text-4xl font-bold text-gray-900 mb-8">Tema 2: Plataformas (LMS)</h1>
+                 <div class="w-full max-w-4xl bg-white rounded-xl shadow-lg p-8">
+                    <table class="w-full text-left text-lg">
+                        <thead>
+                            <tr class="border-b-2 border-gray-300">
+                                <th class="p-4 text-xl font-bold text-gray-900">Plataforma</th>
+                                <th class="p-4 text-xl font-bold text-gray-900">Fortaleza Principal</th>
+                                <th class="p-4 text-xl font-bold text-gray-900">Enfoque</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-200">
+                                <td class="p-4 font-semibold text-blue-700">Google Classroom</td>
+                                <td class="p-4 text-gray-700">Simplicidad, integración con G-Suite.</td>
+                                <td class="p-4 text-gray-700">Gestor de Tareas.</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="p-4 font-semibold text-blue-700">Microsoft Teams</td>
+                                <td class="p-4 text-gray-700">Colaboración en vivo, videoconferencia.</td>
+                                <td class="p-4 text-gray-700">Hub de Colaboración.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-extrabold text-blue-900">Moodle</td>
+                                <td class="p-4 text-gray-700">Potencia, flexibilidad, personalización.</td>
+                                <td class="p-4 text-gray-700">Gestor de Aprendizaje Completo.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                 </div>
+            </section>
+
+            <!-- Diapositiva 7: ¿Por qué Moodle? -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">¿Por qué Moodle?</h1>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl">
+                    <div class="bg-white p-6 rounded-xl shadow-lg text-center transform transition duration-300 hover:scale-105">
+                        <span class="text-6xl text-blue-600"><ion-icon name="logo-freebsd-devil"></ion-icon></span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-4">Gratuito</h3>
+                        <p class="text-gray-600 mt-1">Código abierto y sin costos de licencia.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg text-center transform transition duration-300 hover:scale-105">
+                        <span class="text-6xl text-blue-600"><ion-icon name="options-outline"></ion-icon></span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-4">Flexible</h3>
+                        <p class="text-gray-600 mt-1">Se adapta a cualquier modelo pedagógico.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg text-center transform transition duration-300 hover:scale-105">
+                        <span class="text-6xl text-blue-600"><ion-icon name="library-outline"></ion-icon></span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-4">Completo</h3>
+                        <p class="text-gray-600 mt-1">Decenas de actividades y herramientas.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg text-center transform transition duration-300 hover:scale-105">
+                        <span class="text-6xl text-blue-600"><ion-icon name="color-palette-outline"></ion-icon></span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-4">Personalizable</h3>
+                        <p class="text-gray-600 mt-1">Total control sobre la apariencia y funciones.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Diapositiva 8: Transición a Práctica -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">¡Vamos a la Práctica!</h1>
+                <p class="text-2xl text-gray-600 mb-10">Usaremos <code class="bg-gray-200 text-blue-800 font-bold p-2 rounded-lg">milaulas.com</code> para crear un sitio Moodle real desde cero.</p>
+                <span class="text-9xl text-gray-400"><ion-icon name="cloud-upload-outline"></ion-icon></span>
+                <p class="text-xl font-semibold text-gray-700 mt-4">Iniciaremos como <strong class="text-blue-800">Administradores</strong>.</p>
+            </section>
+
+            <!-- Diapositiva 9: Concepto Clave: Roles -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">Concepto Clave: Los Roles en Moodle</h1>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-red-500">
+                        <span class="text-5xl text-red-600"><ion-icon name="server-outline"></ion-icon></span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-4">1. Administrador</h3>
+                        <p class="text-gray-700 mt-2 text-left">Controla <strong class="text-gray-900">todo el sitio</strong>. Cambia la apariencia, crea usuarios y crea cursos.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-500">
+                        <span class="text-5xl text-blue-600"><ion-icon name="school-outline"></ion-icon></span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-4">2. Profesor</h3>
+                        <p class="text-gray-700 mt-2 text-left">Controla <strong class="text-gray-900">su propio curso</strong>. Añade contenido, crea actividades y califica.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-gray-500">
+                        <span class="text-5xl text-gray-600"><ion-icon name="person-outline"></ion-icon></span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-4">3. Estudiante</h3>
+                        <p class="text-gray-700 mt-2 text-left">Participa en el curso. <strong class="text-gray-900">Consume</strong> contenido y <strong class="text-gray-900">realiza</strong> actividades.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Diapositiva 10: Demo: Apariencia -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">Demo Admin: Configurar Bienvenida</h1>
+                <p class="text-xl text-gray-600 mb-6">El Admin personaliza la página principal del sitio.</p>
+                <div class="moodle-mockup w-full max-w-2xl">
+                    <div class="moodle-header">
+                        <h3 class="text-xl font-semibold text-gray-800">Ruta del Administrador</h3>
+                    </div>
+                    <div class="moodle-body space-y-4">
+                        <p class="moodle-path text-lg">
+                            <span class="text-red-700 font-semibold">Administración del sitio</span> 
+                            <span class="text-gray-500">&gt;</span> 
+                            <span class="font-semibold">Apariencia</span>
+                        </p>
+                        <ul class="list-disc list-inside text-lg text-gray-700 space-y-2 pl-4">
+                            <li><strong class="text-gray-900">Logos:</strong> Sube el logo de tu colegio.</li>
+                            <li><strong class="text-gray-900">Página principal:</strong> Edita qué ven los usuarios al entrar (antes del login).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Diapositiva 11: Demo: Usuarios Manual -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">Demo Admin: Crear Usuarios (Manual)</h1>
+                <p class="text-xl text-gray-600 mb-6">Útil para 1 o 2 usuarios nuevos.</p>
+                <div class="moodle-mockup w-full max-w-3xl">
+                    <div class="moodle-header">
+                        <h3 class="text-xl font-semibold text-gray-800">Ruta del Administrador</h3>
+                    </div>
+                    <div class="moodle-body space-y-4">
+                        <p class="moodle-path text-lg">
+                            <span class="text-red-700 font-semibold">Administración del sitio</span> 
+                            <span class="text-gray-500">&gt;</span> 
+                            <span class="font-semibold">Usuarios</span>
+                            <span class="text-gray-500">&gt;</span> 
+                            <span class="font-semibold">Cuentas</span>
+                            <span class="text-gray-500">&gt;</span> 
+                            <strong class="text-blue-700">Agregar un usuario</strong>
+                        </p>
+                        <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <label class="text-sm font-medium text-gray-700">Nombre de usuario</label>
+                            <input type="text" class="w-full p-2 border border-gray-300 rounded mt-1" placeholder="Ej: juan.perez">
+                            <label class="text-sm font-medium text-gray-700 mt-2 block">Nombre</label>
+                            <input type="text" class="w-full p-2 border border-gray-300 rounded mt-1" placeholder="Juan">
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Diapositiva 12: Demo: Usuarios Masiva -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">Demo Admin: Crear Usuarios (Masiva)</h1>
+                <p class="text-xl text-gray-600 mb-6">La forma correcta para 200 (o 2000) usuarios.</p>
+                <div class="moodle-mockup w-full max-w-3xl">
+                    <div class="moodle-header">
+                        <h3 class="text-xl font-semibold text-gray-800">Ruta del Administrador</h3>
+                    </div>
+                    <div class="moodle-body space-y-4">
+                        <p class="moodle-path text-lg">
+                            <span class="text-red-700 font-semibold">Administración del sitio</span> 
+                            <span class="text-gray-500">&gt;</span> 
+                            <span class="font-semibold">Usuarios</span>
+                            <span class="text-gray-500">&gt;</span> 
+                            <span class="font-semibold">Cuentas</span>
+                            <span class="text-gray-500">&gt;</span> 
+                            <strong class="text-blue-700">Subir usuarios</strong>
+                        </p>
+                        <p class="text-lg text-gray-700">Se sube un archivo Excel (CSV) con las columnas:</p>
+                        <code class="w-full text-left block bg-gray-800 text-white p-4 rounded-lg text-base">
+                            username,firstname,lastname,email<br>
+                            juan.perez,Juan,Perez,juan.perez@email.com<br>
+                            maria.lopez,Maria,Lopez,maria.lopez@email.com
+                        </code>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Diapositiva 13: Demo: Crear Curso -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">Demo Admin: Crear el "Aula" (Curso)</h1>
+                <p class="text-xl text-gray-600 mb-6">La tarea final del Admin: crear el "Sandbox" para el profesor.</p>
+                <div class="moodle-mockup w-full max-w-3xl">
+                    <div class="moodle-header">
+                        <h3 class="text-xl font-semibold text-gray-800">Ruta del Administrador</h3>
+                    </div>
+                    <div class="moodle-body space-y-4">
+                        <p class="moodle-path text-lg">
+                            <span class="text-red-700 font-semibold">Administración del sitio</span> 
+                            <span class="text-gray-500">&gt;</span> 
+                            <span class="font-semibold">Cursos</span>
+                            <span class="text-gray-500">&gt;</span> 
+                            <strong class="text-blue-700">Crear un nuevo curso</strong>
+                        </p>
+                         <ul class="list-disc list-inside text-lg text-gray-700 space-y-2 pl-4">
+                            <li><strong class="text-gray-900">Nombre completo:</strong> "Curso Demo: Moodle 101"</li>
+                            <li><strong class="text-gray-900">Nombre corto:</strong> "Demo-M101"</li>
+                            <li><strong class="text-gray-900">Formato del curso:</strong> "Formato de Temas"</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Diapositiva 14: Descanso -->
+            <section class="slide">
+                <h1 class="text-5xl font-bold text-gray-900 mb-8">¡Descanso!</h1>
+                <span class="text-9xl text-blue-600"><ion-icon name="cafe-outline"></ion-icon></span>
+                <p class="text-3xl text-gray-700 mt-8">Volvemos en <strong class="text-blue-800">10 minutos</strong> (21:00).</p>
+            </section>
+
+            <!-- Diapositiva 15: Transición a Profesor -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">Práctica (Parte 2): Vista Profesor</h1>
+                <p class="text-2xl text-gray-600 mb-10">¡Nos quitamos el sombrero de Admin y nos ponemos el de Profesor!</p>
+                <div class="flex items-center space-x-12">
+                    <div class="text-center">
+                        <span class="text-8xl text-red-500 opacity-30 line-through"><ion-icon name="server-outline"></ion-icon></span>
+                        <p class="text-2xl font-semibold text-red-800 opacity-30 line-through">Administrador</p>
+                    </div>
+                    <span class="text-6xl text-gray-400"><ion-icon name="arrow-forward-outline"></ion-icon></span>
+                    <div class="text-center">
+                        <span class="text-8xl text-blue-600"><ion-icon name="school-outline"></ion-icon></span>
+                        <p class="text-2xl font-semibold text-blue-800">Profesor</p>
+                    </div>
+                </div>
+                <p class="text-xl text-gray-700 mt-10">Entramos al curso que acabamos de crear: <strong class="text-gray-900">"Curso Demo: Moodle 101"</strong>.</p>
+            </section>
+
+            <!-- Diapositiva 16: Demo: Activar Edición (Interactiva) -->
+            <section class="slide" id="slide-activate-editing">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">El Botón Más Importante de Moodle</h1>
+                <p class="text-xl text-gray-600 mb-10">Todo el poder del profesor está aquí. Haz clic para simular.</p>
+                
+                <!-- Maqueta de Moodle -->
+                <div class="moodle-mockup w-full max-w-4xl">
+                    <div class="moodle-header flex justify-between items-center">
+                        <h3 class="text-xl font-semibold text-gray-800">Vista del Profesor</h3>
+                        <button id="activate-editing-btn" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-blue-700 transition">
+                            Activar Edición
+                        </button>
+                    </div>
+                    <div class="moodle-body space-y-6 p-8">
+                        <!-- Sección 1 -->
+                        <div class="p-4 border border-gray-200 rounded-lg bg-gray-50 flex justify-between items-center">
+                            <h4 class="text-xl font-semibold text-gray-800">
+                                Bienvenida e Introducción
+                                <span class="editing-icon"><ion-icon name="pencil-outline"></ion-icon></span>
+                            </h4>
+                            <span class="editing-icon text-2xl cursor-move"><ion-icon name="move-outline"></ion-icon></span>
+                        </div>
+                        <!-- Sección 2 -->
+                        <div class="p-4 border border-gray-200 rounded-lg bg-gray-50 flex justify-between items-center">
+                            <h4 class="text-xl font-semibold text-gray-800">
+                                Tema 1
+                                <span class="editing-icon"><ion-icon name="pencil-outline"></ion-icon></span>
+                            </h4>
+                            <span class="editing-icon text-2xl cursor-move"><ion-icon name="move-outline"></ion-icon></span>
+                        </div>
+                        <!-- Sección 3 -->
+                        <div class="p-4 border border-gray-200 rounded-lg bg-gray-50 flex justify-between items-center">
+                            <h4 class="text-xl font-semibold text-gray-800">
+                                Tema 2
+                                <span class="editing-icon"><ion-icon name="pencil-outline"></ion-icon></span>
+                            </h4>
+                            <span class="editing-icon text-2xl cursor-move"><ion-icon name="move-outline"></ion-icon></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Diapositiva 17: Demo: Caja de Herramientas -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">La "Caja de Herramientas" del Profesor</h1>
+                <p class="text-xl text-gray-600 mb-6">Al hacer clic en "+ Añadir una actividad o un recurso"...</p>
+                <div class="moodle-mockup w-full max-w-4xl">
+                    <div class="moodle-header">
+                        <h3 class="text-xl font-semibold text-gray-800">Añadir una actividad o un recurso</h3>
+                    </div>
+                    <div class="moodle-body grid grid-cols-2 gap-8">
+                        <!-- Recursos -->
+                        <div>
+                            <h4 class="text-2xl font-semibold text-blue-800 mb-4 border-b-2 border-blue-200 pb-2">Recursos</h4>
+                            <p class="text-lg text-gray-700 mb-1">(Lo que el estudiante "mira")</p>
+                            <ul class="list-disc list-inside text-lg text-gray-700 space-y-2 pl-4">
+                                <li><strong class="text-gray-900">Archivo</strong> (Subir un PDF, PPT)</li>
+                                <li><strong class="text-gray-900">Página</strong> (Crear contenido web)</li>
+                                <li><strong class="text-gray-900">URL</strong> (Enlazar a un video o web)</li>
+                                <li><strong class="text-gray-900">Etiqueta</strong> (Organizar)</li>
+                            </ul>
+                        </div>
+                        <!-- Actividades -->
+                        <div>
+                            <h4 class="text-2xl font-semibold text-green-800 mb-4 border-b-2 border-green-200 pb-2">Actividades</h4>
+                            <p class="text-lg text-gray-700 mb-1">(Lo que el estudiante "hace")</p>
+                            <ul class="list-disc list-inside text-lg text-gray-700 space-y-2 pl-4">
+                                <li><strong class="text-gray-900">Tarea</strong> (Para recibir trabajos)</li>
+                                <li><strong class="text-gray-900">Foro</strong> (Para discutir)</li>
+                                <li><strong class="text-gray-900">Cuestionario</strong> (Examen automático)</li>
+                                <li><strong class="text-gray-900">Glosario, Wiki...</strong> (¡y más!)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Diapositiva 18: Resumen y Tarea -->
+            <section class="slide">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">Resumen del Día 1 y Actividad</h1>
+                <div class="flex flex-col md:flex-row gap-8 max-w-5xl">
+                    <!-- Resumen -->
+                    <div class="flex-1 text-left bg-white p-8 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">Lo que cubrimos hoy:</h3>
+                        <ul class="list-disc list-inside text-lg text-gray-700 space-y-2">
+                            <li>Qué es un EVA (un espacio interactivo).</li>
+                            <li>La diferencia entre rol <strong class="text-red-700">Admin</strong> y <strong class="text-blue-700">Profesor</strong>.</li>
+                            <li>Cómo el Admin gestiona la <strong class="text-gray-900">Apariencia</strong> y los <strong class="text-gray-900">Usuarios</strong> (manual y masivo).</li>
+                            <li>Cómo el Profesor <strong class="text-blue-700">Activa Edición</strong> para construir.</li>
+                            <li>La diferencia entre <strong class="text-gray-900">Recursos</strong> y <strong class="text-gray-900">Actividades</strong>.</li>
+                        </ul>
+                    </div>
+                    <!-- Tarea -->
+                    <div class="flex-1 text-left bg-blue-800 text-white p-8 rounded-xl shadow-lg">
+                         <h3 class="text-3xl font-bold mb-4">¡Tu Turno! Actividad 1 (40%)</h3>
+                         <span class="text-7xl opacity-80"><ion-icon name="document-text-outline"></ion-icon></span>
+                         <p class="text-xl mt-4">Cuestionario de 10 preguntas en <strong class="font-bold">Google Forms</strong> sobre lo que vimos hoy.</p>
+                         <p class="text-lg mt-4">Fecha límite: <strong class="font-bold">Miércoles 19, 20:00.</strong></p>
+                         <p class="text-lg mt-4 font-semibold">Revisen el chat para ver el enlace.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Diapositiva 19: Cierre -->
+            <section class="slide">
+                <h1 class="text-5xl font-extrabold text-gray-900 mb-8">
+                    Preguntas y Respuestas
+                </h1>
+                <div class="text-center bg-white p-10 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-semibold text-gray-800">Próxima Clase: Día 2</h3>
+                    <p class="text-xl text-blue-700 font-bold mt-2">"Manos a la Obra: Creación de Contenido y Actividades"</p>
+                    <p class="text-lg text-gray-600 mt-4">Aprenderemos a crear <strong class="text-gray-900">Páginas</strong>, subir <strong class="text-gray-900">Archivos</strong>, configurar <strong class="text-gray-900">Tareas</strong> y <strong class="text-gray-900">Foros</strong>.</p>
+                </div>
+                
+                <h2 class="mt-12 text-4xl font-bold text-gray-900">¡Muchas Gracias!</h2>
+            </section>
+
+
+        </section>
+
+        <!-- Controles de Navegación -->
+        <nav id="nav-controls">
+            <button id="prev-btn" class="nav-button">
+                <ion-icon name="arrow-back-outline" class="mr-1"></ion-icon>
+                Anterior
+            </button>
+            <span id="slide-counter">Diapositiva 1 de 19</span>
+            <button id="next-btn" class="nav-button">
+                Siguiente
+                <ion-icon name="arrow-forward-outline" class="ml-1"></ion-icon>
+            </button>
+        </nav>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Lógica Principal de Diapositivas ---
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.slide');
+            const slideCount = slides.length;
+            
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const slideCounter = document.getElementById('slide-counter');
+
+            // Función para mostrar la diapositiva por índice
+            function showSlide(index) {
+                // Ocultar la diapositiva actual
+                slides[currentSlide].classList.remove('active');
+                
+                // Mostrar la nueva diapositiva
+                slides[index].classList.add('active');
+                
+                // Actualizar el índice
+                currentSlide = index;
+                
+                // Actualizar el contador
+                slideCounter.textContent = `Diapositiva ${currentSlide + 1} de ${slideCount}`;
+                
+                // Habilitar/deshabilitar botones de navegación
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === slideCount - 1;
+            }
+
+            // Event Listeners para navegación
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < slideCount - 1) {
+                    showSlide(currentSlide + 1);
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) {
+                    showSlide(currentSlide - 1);
+                }
+            });
+
+            // Inicializar la primera diapositiva
+            showSlide(0);
+
+            // --- Lógica Interactiva Específica ---
+
+            // Diapositiva 5: Pestañas de Modelos
+            const tabsContainer = document.getElementById('tabs-models');
+            if (tabsContainer) {
+                const tabButtons = tabsContainer.querySelectorAll('.tab-button');
+                const tabContents = tabsContainer.nextElementSibling.querySelectorAll('.tab-content');
+                
+                tabsContainer.addEventListener('click', (e) => {
+                    const clickedTab = e.target.closest('.tab-button');
+                    if (!clickedTab) return;
+                    
+                    const tabId = clickedTab.dataset.tab;
+                    
+                    // Actualizar botones
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    clickedTab.classList.add('active');
+                    
+                    // Actualizar contenido
+                    tabContents.forEach(content => {
+                        if (content.id === tabId) {
+                            content.classList.add('active');
+                        } else {
+                            content.classList.remove('active');
+                        }
+                    });
+                });
+            }
+
+            // Diapositiva 16: Simulación de "Activar Edición"
+            const activateBtn = document.getElementById('activate-editing-btn');
+            const slideEditing = document.getElementById('slide-activate-editing');
+            
+            if (activateBtn && slideEditing) {
+                let isEditing = false;
+                
+                activateBtn.addEventListener('click', () => {
+                    isEditing = !isEditing;
+                    
+                    if (isEditing) {
+                        slideEditing.classList.add('editing-active');
+                        activateBtn.textContent = 'Desactivar Edición';
+                        activateBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        activateBtn.classList.add('bg-red-600', 'hover:bg-red-700');
+                    } else {
+                        slideEditing.classList.remove('editing-active');
+                        activateBtn.textContent = 'Activar Edición';
+                        activateBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
+                        activateBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    }
+                });
+            }
+
+        });
+    </script>
+
+</body>
+</html>
