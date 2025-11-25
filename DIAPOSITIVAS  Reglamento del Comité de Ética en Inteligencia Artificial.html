@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reglamento CEIA - UPDS Cochabamba</title>
+    <!-- Fuentes Corporativas y Modernas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #1f3189;
+            --secondary: #18419b;
+            --accent: #249cdd;
+            --white: #ffffff;
+            --light-bg: #f4f7fa;
+            --text-dark: #333333;
+            --text-gray: #666666;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #2c3e50; /* Fondo oscuro fuera de la diapositiva para contraste */
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Evitar scrollbars durante el escalado */
+        }
+
+        /* Contenedor Principal de la Presentación */
+        .slide-deck {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--white);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            border-radius: 0; /* Bordes rectos para pantalla completa */
+            overflow: hidden;
+            flex-shrink: 0; /* Evitar que flexbox lo aplaste */
+            transform-origin: center center; /* Punto de pivote para el escalado */
+            transition: transform 0.2s ease-out; /* Suavizar redimensionamiento */
+        }
+
+        /* Estructura de cada Diapositiva */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+            transform: translateY(20px); /* Leve movimiento de entrada */
+            padding: 50px 80px;
+            display: flex;
+            flex-direction: column;
+            background: var(--white);
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            z-index: 10;
+        }
+
+        /* Header Común - AJUSTADO PARA LOGO MÁS GRANDE */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px; /* Reducido un poco para dar espacio */
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--accent);
+            min-height: 110px; /* Altura mínima para asegurar que el logo quepa bien */
+        }
+
+        .header-title h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .header-title span {
+            display: block;
+            font-size: 16px;
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        /* LOGOTIPO AJUSTADO */
+        .header-logo img {
+            height: 95px; /* Aumentado de 50px a 95px para mayor visibilidad */
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Contenido General */
+        .content-wrapper {
+            flex-grow: 1;
+            display: flex;
+            gap: 40px;
+            height: 100%;
+        }
+
+        /* Navegación */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .btn-nav {
+            background: var(--white);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav:hover {
+            background: var(--primary);
+            color: var(--white);
+            box-shadow: 0 5px 15px rgba(31, 49, 137, 0.3);
+        }
+
+        .slide-counter {
+            position: absolute;
+            bottom: 40px;
+            left: 80px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: #cbd5e1;
+            font-size: 18px;
+            z-index: 100;
+        }
+
+        /* --- NUEVA PORTADA (REDISEÑADA) --- */
+        .slide-cover {
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr; /* Layout asimétrico */
+            background: var(--white);
+        }
+
+        .cover-left {
+            background: linear-gradient(150deg, var(--primary) 0%, var(--secondary) 100%);
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Forma geométrica decorativa */
+        .cover-left::after {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+        
+        .cover-left::before {
+            content: '';
+            position: absolute;
+            bottom: -10%;
+            left: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(36, 156, 221, 0.2);
+            border-radius: 50%;
+        }
+
+        .cover-logo-main img {
+            width: 300px;
+            height: auto;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        .cover-right {
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+        
+        /* Barra lateral de acento */
+        .cover-right::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            bottom: 20%;
+            width: 4px;
+            background: var(--accent);
+        }
+
+        .cover-pre-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .cover-title-main {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 52px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.1;
+            margin-bottom: 30px;
+        }
+
+        .cover-subtitle-main {
+            font-size: 24px;
+            color: var(--text-gray);
+            font-weight: 400;
+            margin-bottom: 60px;
+            max-width: 90%;
+        }
+
+        .cover-meta {
+            display: flex;
+            gap: 40px;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+        }
+
+        .meta-item strong {
+            display: block;
+            color: var(--primary);
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .meta-item span {
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+
+
+        /* Tarjetas Interactivas (Flip Cards / Hover Cards) */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .info-card {
+            background: var(--light-bg);
+            border-radius: 16px;
+            padding: 30px;
+            border-top: 5px solid var(--accent);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(31, 49, 137, 0.1);
+            background: var(--white);
+        }
+
+        .card-icon {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .card-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-gray);
+        }
+
+        /* Lista de Principios */
+        .principles-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .main-statement {
+            font-size: 28px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            color: var(--secondary);
+            border-left: 6px solid var(--accent);
+            padding-left: 30px;
+        }
+
+        .principles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .principle-item {
+            background: var(--white);
+            border: 1px solid #e2e8f0;
+            padding: 20px 25px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .p-icon {
+            background: rgba(36, 156, 221, 0.1);
+            color: var(--accent);
+            min-width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* Estructura Organigrama */
+        .org-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+        }
+
+        .org-node {
+            background: var(--white);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 2;
+        }
+
+        .org-node.main {
+            background: var(--primary);
+            color: var(--white);
+            font-size: 20px;
+            padding: 20px 50px;
+            margin-bottom: 40px;
+        }
+
+        .org-row {
+            display: flex;
+            gap: 40px;
+            position: relative;
+        }
+        
+        /* Líneas conectoras simples CSS */
+        .org-row::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            width: 2px;
+            height: 20px;
+            background: var(--primary);
+            transform: translateX(-50%);
+        }
+        
+        .org-row::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .org-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .org-group::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            width: 2px;
+            height: 20px;
+            background: var(--primary);
+        }
+
+        .role-badge {
+            font-size: 14px;
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        /* Roles Cards */
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .role-card {
+            background: var(--white);
+            border-left: 6px solid var(--primary);
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .role-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .role-title {
+            font-weight: 700;
+            color: var(--secondary);
+            font-size: 18px;
+        }
+
+        /* Diagrama de Flujo (Competencias) */
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .process-step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .step-circle {
+            width: 80px;
+            height: 80px;
+            background: var(--white);
+            border: 3px solid var(--accent);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .process-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            right: -50%;
+            width: 100%;
+            height: 3px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .step-content h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .step-content p {
+            font-size: 14px;
+        }
+
+        /* Analogía Final */
+        .analogy-container {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            background: radial-gradient(circle at center, #f0f9ff 0%, #ffffff 70%);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px dashed var(--accent);
+        }
+
+        .analogy-icon {
+            font-size: 120px;
+            color: var(--primary);
+            margin-right: 60px;
+            flex-shrink: 0;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Check list for Evaluation */
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .check-item i {
+            color: #10b981; /* Green for check */
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        /* Utilidades */
+        .highlight { color: var(--accent); font-weight: 700; }
+        .text-sm { font-size: 14px; }
+        .mt-20 { margin-top: 20px; }
+        .bg-primary { background-color: var(--primary); color: white; }
+
+    </style>
+</head>
+<body>
+
+    <div class="slide-deck" id="slideDeck">
+        
+        <!-- Diapositiva 1: Portada REDISEÑADA -->
+        <div class="slide slide-cover active" id="slide-1">
+            
+            <div class="cover-left">
+                <div class="cover-logo-main">
+                    <!-- Logo Principal (combinado o uno principal) -->
+                    <img src="https://i.imgur.com/K98aGUI.png" alt="Logo UPDS">
+                </div>
+            </div>
+
+            <div class="cover-right">
+                <div class="cover-pre-title">Universidad Privada Domingo Savio</div>
+                <h1 class="cover-title-main">REGLAMENTO DEL COMITÉ DE ÉTICA EN I.A.</h1>
+                <p class="cover-subtitle-main">Marco normativo para la supervisión, evaluación y uso responsable de la Inteligencia Artificial en la sede Cochabamba.</p>
+                
+                
+                    <div class="meta-item">
+                        <!-- Segundo logo más pequeño como firma -->
+                        <img src="https://i.imgur.com/ZJmHaDS.png" alt="Logo UPDS 2" style="height: 40px;">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Diapositiva 2: 1.1 Objeto, Naturaleza y Fundamento -->
+        <div class="slide" id="slide-2">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>MARCO ESTRATÉGICO</span>
+                    <h2>Mandato y Fundamento</h2>
+                </div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+            </div>
+            <div class="content-wrapper">
+                <div class="card-grid">
+                    <div class="info-card">
+                        <div class="card-icon"><i class="fa-solid fa-bullseye"></i></div>
+                        <h3 class="card-title">Objeto Principal</h3>
+                        <p class="card-text">Establecer la organización y funcionamiento del Comité de Ética en IA (CEIA), encargado de normar la IA en la UPDS Cochabamba.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                        <h3 class="card-title">Mandato</h3>
+                        <p class="card-text">Supervisar y promover el uso <strong>ético, transparente y responsable</strong> de la IA en actividades académicas, investigativas y administrativas.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon"><i class="fa-solid fa-building-columns"></i></div>
+                        <h3 class="card-title">Naturaleza</h3>
+                        <p class="card-text">Órgano colegiado regional, consultivo, evaluador y supervisor, adscrito directamente al <strong>Rectorado Regional</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diapositiva 3: 1.2 Finalidad y Principios -->
+        <div class="slide" id="slide-3">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>MARCO ESTRATÉGICO</span>
+                    <h2>Finalidad y Principios</h2>
+                </div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+            </div>
+            <div class="content-wrapper">
+                <div class="principles-layout">
+                    <div class="main-statement">
+                        "Garantizar que la tecnología sirva a los valores humanos, protegiendo la integridad y transparencia institucional."
+                    </div>
+                    <div class="principles-list">
+                        <div class="principle-item">
+                            <div class="p-icon"><i class="fa-solid fa-user-graduate"></i></div>
+                            <div>
+                                <h4 style="color: var(--primary); margin-bottom: 5px;">Integridad Académica</h4>
+                                <p class="text-sm">Asegurar la originalidad y honestidad intelectual frente a la generación automática de contenido.</p>
+                            </div>
+                        </div>
+                        <div class="principle-item">
+                            <div class="p-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                            <div>
+                                <h4 style="color: var(--primary); margin-bottom: 5px;">Protección de Datos</h4>
+                                <p class="text-sm">Preservación estricta de la información tratada por sistemas de IA conforme a normativa.</p>
+                            </div>
+                        </div>
+                        <div class="principle-item">
+                            <div class="p-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                            <div>
+                                <h4 style="color: var(--primary); margin-bottom: 5px;">Responsabilidad Institucional</h4>
+                                <p class="text-sm">Impulso del uso consciente y prudente por parte de toda la comunidad universitaria.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diapositiva 4: 2.1 Composición -->
+        <div class="slide" id="slide-4">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>ESTRUCTURA ORGANIZATIVA</span>
+                    <h2>Composición del Comité</h2>
+                </div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+            </div>
+            <div class="content-wrapper">
+                <div class="org-container">
+                    <div class="org-node main">
+                        <i class="fa-solid fa-gavel"></i> Presidencia: Rector Regional
+                    </div>
+                    
+                    <div class="org-row">
+                        <div class="org-group">
+                            <span class="role-badge">Academia</span>
+                            <div class="org-node">2 Autoridades Académicas</div>
+                            <small style="margin-top: 5px; color: #666;">Decanos / Jefes</small>
+                        </div>
+                        
+                        <div class="org-group">
+                            <span class="role-badge">Investigación</span>
+                            <div class="org-node">1 Docente Investigador</div>
+                        </div>
+
+                        <div class="org-group">
+                            <span class="role-badge">Técnico</span>
+                            <div class="org-node">1 Experto Ad Hoc</div>
+                            <small style="margin-top: 5px; color: #666;">Opcional</small>
+                        </div>
+                    </div>
+
+                    <div class="org-row" style="margin-top: 40px;">
+                        <div class="org-group">
+                            <span class="role-badge">Comunidad</span>
+                            <div class="org-node" style="border-color: var(--accent); color: var(--accent);">1 Representante Estudiantil</div>
+                        </div>
+                        <div class="org-group">
+                            <span class="role-badge">Soporte</span>
+                            <div class="org-node" style="border-color: var(--accent); color: var(--accent);">1 Secretario Técnico</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px; font-size: 14px; background: #eef2f6; padding: 10px 20px; border-radius: 20px;">
+                        <i class="fa-solid fa-clock"></i> Mandato: 1 Año (Renovable 1 vez) | Ad Honorem
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diapositiva 5: 2.2 Roles Estratégicos -->
+        <div class="slide" id="slide-5">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>ESTRUCTURA ORGANIZATIVA</span>
+                    <h2>Roles y Responsabilidades</h2>
+                </div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+            </div>
+            <div class="content-wrapper">
+                <div class="role-grid">
+                    <div class="role-card">
+                        <div class="role-header">
+                            <div class="p-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                            <div class="role-title">Autoridades Académicas</div>
+                        </div>
+                        <p class="text-sm">Integran recomendaciones del CEIA en la planificación y garantizan que la IA contribuya a los indicadores estratégicos de la Sede.</p>
+                    </div>
+
+                    <div class="role-card">
+                        <div class="role-header">
+                            <div class="p-icon"><i class="fa-solid fa-microscope"></i></div>
+                            <div class="role-title">Docente Investigador</div>
+                        </div>
+                        <p class="text-sm">Diseña estrategias pedagógicas con IA, metodologías activas y apoya la producción científica especializada.</p>
+                    </div>
+
+                    <div class="role-card">
+                        <div class="role-header">
+                            <div class="p-icon"><i class="fa-solid fa-users"></i></div>
+                            <div class="role-title">Representante Estudiantil</div>
+                        </div>
+                        <p class="text-sm">Aporta la percepción estudiantil para que la IA fortalezca realmente el perfil profesional.</p>
+                    </div>
+
+                    <div class="role-card">
+                        <div class="role-header">
+                            <div class="p-icon"><i class="fa-solid fa-robot"></i></div>
+                            <div class="role-title">Experto Ad Hoc</div>
+                        </div>
+                        <p class="text-sm">Aporta criterio técnico avanzado para evaluar proyectos y orientar sobre tendencias globales.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diapositiva 6: 3.1 Competencias y Procesos -->
+        <div class="slide" id="slide-6">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>GESTIÓN Y MEJORA</span>
+                    <h2>Competencias y Supervisión</h2>
+                </div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+            </div>
+            <div class="content-wrapper" style="flex-direction: column;">
+                
+                <div style="background: var(--primary); color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; display: flex; align-items: center; gap: 20px;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; color: var(--accent);"></i>
+                    <div>
+                        <h4 style="margin: 0;">Declaración Obligatoria</h4>
+                        <p style="margin: 0; font-size: 14px; opacity: 0.9;">Todo proyecto con uso de IA debe ser declarado mediante formulario institucional antes de su ejecución.</p>
+                    </div>
+                </div>
+
+                <div class="process-flow">
+                    <div class="process-step">
+                        <div class="step-circle"><i class="fa-solid fa-file-signature"></i></div>
+                        <div class="step-content">
+                            <h4>Normativa</h4>
+                            <p>Emitir directrices y guías ético-técnicas.</p>
+                        </div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-circle"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                        <div class="step-content">
+                            <h4>Evaluación</h4>
+                            <p>Analizar proyectos y procesos declarados.</p>
+                        </div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-circle"><i class="fa-solid fa-eye"></i></div>
+                        <div class="step-content">
+                            <h4>Supervisión</h4>
+                            <p>Auditorías aleatorias y control de cumplimiento.</p>
+                        </div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-circle"><i class="fa-solid fa-gavel"></i></div>
+                        <div class="step-content">
+                            <h4>Dictamen</h4>
+                            <p>Investigar denuncias sobre uso indebido.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diapositiva 7: 3.2 Evaluación y Transparencia -->
+        <div class="slide" id="slide-7">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>GESTIÓN Y MEJORA</span>
+                    <h2>Evaluación y Formación</h2>
+                </div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+            </div>
+            <div class="content-wrapper">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%;">
+                    
+                    <div>
+                        <h3 style="color: var(--secondary); margin-bottom: 20px;">Criterios de Evaluación</h3>
+                        <div class="checklist-grid" style="grid-template-columns: 1fr; gap: 15px;">
+                            <div class="check-item"><i class="fa-solid fa-check-circle"></i> Protección de datos y privacidad</div>
+                            <div class="check-item"><i class="fa-solid fa-check-circle"></i> Prevención de sesgos y discriminación</div>
+                            <div class="check-item"><i class="fa-solid fa-check-circle"></i> Respeto a propiedad intelectual</div>
+                            <div class="check-item"><i class="fa-solid fa-check-circle"></i> Cumplimiento Código Ética</div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--light-bg); padding: 30px; border-radius: 16px;">
+                        <h3 style="color: var(--secondary); margin-bottom: 20px;">Plan de Formación y Transparencia</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 20px; display: flex; gap: 15px;">
+                                <i class="fa-solid fa-chalkboard" style="color: var(--accent); margin-top: 5px;"></i>
+                                <div>
+                                    <strong>Alfabetización Digital</strong>
+                                    <p class="text-sm">Talleres mensuales para docentes y estudiantes.</p>
+                                </div>
+                            </li>
+                            <li style="margin-bottom: 20px; display: flex; gap: 15px;">
+                                <i class="fa-solid fa-file-contract" style="color: var(--accent); margin-top: 5px;"></i>
+                                <div>
+                                    <strong>Informe Anual</strong>
+                                    <p class="text-sm">Publicación ejecutiva de resultados al cierre de gestión.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Diapositiva 8: Analogía de Cierre -->
+        <div class="slide" id="slide-8">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>CONCLUSIÓN</span>
+                    <h2>El Rol del CEIA</h2>
+                </div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+            </div>
+            <div class="content-wrapper">
+                <div class="analogy-container">
+                    <div class="analogy-icon">
+                        <i class="fa-solid fa-plane-departure"></i>
+                    </div>
+                    <div>
+                        <h3 style="font-size: 28px; color: var(--primary); margin-bottom: 20px;">Control de Tráfico Aéreo</h3>
+                        <p style="font-size: 20px; line-height: 1.6; color: #444;">
+                            El CEIA no busca <em>detener</em> los vuelos (la innovación), sino establecer las reglas y protocolos para garantizar que todos los proyectos vuelen de manera <strong>segura, ética y responsable</strong>, asegurando que lleguen a su destino: la excelencia académica.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controles de Navegación -->
+        <div class="slide-counter" id="counter">1 / 8</div>
+        <div class="controls">
+            <button class="btn-nav" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn-nav" onclick="nextSlide()"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+    </div>
+
+    <!-- Script de Funcionalidad -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 8;
+        const deck = document.getElementById('slideDeck');
+        const BASE_WIDTH = 1280;
+        const BASE_HEIGHT = 720;
+
+        // --- SISTEMA DE ESCALADO AUTOMÁTICO (RESPONSIVE) ---
+        function resizeDeck() {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            // Calculamos el factor de escala manteniendo el aspect ratio 16:9
+            const scaleX = windowWidth / BASE_WIDTH;
+            const scaleY = windowHeight / BASE_HEIGHT;
+            
+            // Usamos el menor de los dos para asegurar que todo quepa en pantalla
+            // Multiplicamos por 0.95 para dejar un pequeño margen y que no toque los bordes
+            const scale = Math.min(scaleX, scaleY) * 0.95;
+            
+            deck.style.transform = `scale(${scale})`;
+        }
+
+        // Eventos para el redimensionamiento
+        window.addEventListener('resize', resizeDeck);
+        window.addEventListener('load', resizeDeck);
+
+        // --- NAVEGACIÓN DE DIAPOSITIVAS ---
+
+        function updateSlide() {
+            // Remove active class from all slides
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            
+            // Add active class to current slide
+            const slide = document.getElementById(`slide-${currentSlide}`);
+            if(slide) slide.classList.add('active');
+
+            // Update counter
+            document.getElementById('counter').innerText = `${currentSlide} / ${totalSlides}`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        // Navegación con teclado
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "ArrowRight") {
+                nextSlide();
+            } else if (event.key === "ArrowLeft") {
+                prevSlide();
+            }
+        });
+        
+        // Iniciar ajuste de tamaño al cargar
+        resizeDeck();
+    </script>
+</body>
+</html>
