@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reglamento CEIA - UPDS Cochabamba</title>
-    <!-- Fuentes Corporativas y Modernas -->
+    <!-- Fuentes Corporativas -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
@@ -13,47 +13,42 @@
     
     <style>
         :root {
-            --primary: #1f3189;
-            --secondary: #18419b;
-            --accent: #249cdd;
+            --primary: #1f3189;    /* Azul Oscuro UPDS */
+            --secondary: #18419b;  /* Azul Medio */
+            --accent: #249cdd;     /* Celeste UPDS */
             --white: #ffffff;
             --light-bg: #f4f7fa;
             --text-dark: #333333;
-            --text-gray: #666666;
+            --text-gray: #555555;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Open Sans', sans-serif;
-            background-color: #2c3e50; /* Fondo oscuro fuera de la diapositiva para contraste */
+            background-color: #2c3e50;
             height: 100vh;
             width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Evitar scrollbars durante el escalado */
+            overflow: hidden;
         }
 
-        /* Contenedor Principal de la Presentación */
+        /* --- CONTENEDOR PRINCIPAL ESCALABLE --- */
         .slide-deck {
             width: 1280px;
             height: 720px;
             background-color: var(--white);
             position: relative;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            border-radius: 0; /* Bordes rectos para pantalla completa */
             overflow: hidden;
-            flex-shrink: 0; /* Evitar que flexbox lo aplaste */
-            transform-origin: center center; /* Punto de pivote para el escalado */
-            transition: transform 0.2s ease-out; /* Suavizar redimensionamiento */
+            flex-shrink: 0;
+            transform-origin: center center;
+            transition: transform 0.2s ease-out;
         }
 
-        /* Estructura de cada Diapositiva */
+        /* --- DIAPOSITIVAS --- */
         .slide {
             position: absolute;
             top: 0;
@@ -63,8 +58,8 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
-            transform: translateY(20px); /* Leve movimiento de entrada */
-            padding: 50px 80px;
+            transform: translateY(20px);
+            padding: 40px 80px;
             display: flex;
             flex-direction: column;
             background: var(--white);
@@ -78,340 +73,150 @@
             z-index: 10;
         }
 
-        /* Header Común - AJUSTADO PARA LOGO MÁS GRANDE */
+        /* --- HEADER (LOGO GRANDE 90px) --- */
         .slide-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px; /* Reducido un poco para dar espacio */
-            padding-bottom: 15px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
             border-bottom: 3px solid var(--accent);
-            min-height: 110px; /* Altura mínima para asegurar que el logo quepa bien */
+            min-height: 100px;
         }
 
         .header-title h2 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 700;
             color: var(--primary);
             text-transform: uppercase;
             letter-spacing: -0.5px;
+            line-height: 1.1;
         }
 
         .header-title span {
             display: block;
-            font-size: 16px;
+            font-size: 14px;
             color: var(--accent);
             font-weight: 600;
             letter-spacing: 2px;
             margin-bottom: 5px;
         }
 
-        /* LOGOTIPO AJUSTADO */
         .header-logo img {
-            height: 95px; /* Aumentado de 50px a 95px para mayor visibilidad */
+            height: 90px; /* Logo grande mantenido */
             width: auto;
             object-fit: contain;
+            margin-top: -5px;
         }
 
-        /* Contenido General */
+        /* --- LAYOUTS --- */
         .content-wrapper {
             flex-grow: 1;
             display: flex;
-            gap: 40px;
+            gap: 30px;
             height: 100%;
-        }
-
-        /* Navegación */
-        .controls {
-            position: absolute;
-            bottom: 30px;
-            right: 40px;
-            display: flex;
-            gap: 15px;
-            z-index: 100;
-        }
-
-        .btn-nav {
-            background: var(--white);
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-nav:hover {
-            background: var(--primary);
-            color: var(--white);
-            box-shadow: 0 5px 15px rgba(31, 49, 137, 0.3);
-        }
-
-        .slide-counter {
-            position: absolute;
-            bottom: 40px;
-            left: 80px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            color: #cbd5e1;
-            font-size: 18px;
-            z-index: 100;
-        }
-
-        /* --- NUEVA PORTADA (REDISEÑADA) --- */
-        .slide-cover {
-            padding: 0;
-            display: grid;
-            grid-template-columns: 1fr 1.2fr; /* Layout asimétrico */
-            background: var(--white);
-        }
-
-        .cover-left {
-            background: linear-gradient(150deg, var(--primary) 0%, var(--secondary) 100%);
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
             overflow: hidden;
         }
-        
-        /* Forma geométrica decorativa */
-        .cover-left::after {
-            content: '';
-            position: absolute;
-            top: -20%;
-            right: -20%;
-            width: 500px;
-            height: 500px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
-        }
-        
-        .cover-left::before {
-            content: '';
-            position: absolute;
-            bottom: -10%;
-            left: -10%;
-            width: 300px;
-            height: 300px;
-            background: rgba(36, 156, 221, 0.2);
-            border-radius: 50%;
-        }
 
-        .cover-logo-main img {
-            width: 300px;
-            height: auto;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
-            background: white;
-            padding: 20px;
-            border-radius: 20px;
-        }
-
-        .cover-right {
-            padding: 80px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-        }
-        
-        /* Barra lateral de acento */
-        .cover-right::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 20%;
-            bottom: 20%;
-            width: 4px;
-            background: var(--accent);
-        }
-
-        .cover-pre-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-        }
-
-        .cover-title-main {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 52px;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1.1;
-            margin-bottom: 30px;
-        }
-
-        .cover-subtitle-main {
-            font-size: 24px;
-            color: var(--text-gray);
-            font-weight: 400;
-            margin-bottom: 60px;
-            max-width: 90%;
-        }
-
-        .cover-meta {
-            display: flex;
-            gap: 40px;
-            border-top: 1px solid #eee;
-            padding-top: 30px;
-        }
-
-        .meta-item strong {
-            display: block;
-            color: var(--primary);
-            font-size: 14px;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-        .meta-item span {
-            font-size: 16px;
-            color: var(--text-dark);
-        }
-
-
-        /* Tarjetas Interactivas (Flip Cards / Hover Cards) */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
+            gap: 25px;
             width: 100%;
-            height: 100%;
         }
 
         .info-card {
             background: var(--light-bg);
-            border-radius: 16px;
-            padding: 30px;
-            border-top: 5px solid var(--accent);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .info-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(31, 49, 137, 0.1);
-            background: var(--white);
-        }
-
-        .card-icon {
-            font-size: 40px;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-
-        .card-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .card-text {
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--text-gray);
-        }
-
-        /* Lista de Principios */
-        .principles-layout {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 50px;
-            align-items: center;
-        }
-
-        .main-statement {
-            font-size: 28px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 300;
-            color: var(--secondary);
-            border-left: 6px solid var(--accent);
-            padding-left: 30px;
-        }
-
-        .principles-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .principle-item {
-            background: var(--white);
-            border: 1px solid #e2e8f0;
-            padding: 20px 25px;
             border-radius: 12px;
+            padding: 25px;
+            border-top: 4px solid var(--accent);
             display: flex;
-            align-items: flex-start;
-            gap: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            flex-direction: column;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        .p-icon {
-            background: rgba(36, 156, 221, 0.1);
-            color: var(--accent);
-            min-width: 50px;
-            height: 50px;
+        .info-card h3 {
+            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            margin: 15px 0 10px;
+        }
+
+        .info-card p, .info-card li { font-size: 14px; color: var(--text-gray); line-height: 1.5; }
+        .card-icon { font-size: 32px; color: var(--accent); }
+        ul.compact-list { padding-left: 20px; margin: 0; }
+        ul.compact-list li { margin-bottom: 6px; }
+
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            height: 100%;
+        }
+
+        .section-box {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
             border-radius: 10px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-title {
+            color: var(--secondary);
+            font-weight: 700;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 20px;
+            gap: 10px;
         }
 
-        /* Estructura Organigrama */
+        /* --- ORGANIGRAMA JERÁRQUICO (Style Restaurado) --- */
         .org-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
             height: 100%;
-            justify-content: center;
+            padding-top: 10px;
         }
 
         .org-node {
             background: var(--white);
             border: 2px solid var(--primary);
             color: var(--primary);
-            padding: 15px 30px;
+            padding: 12px 25px;
             border-radius: 50px;
             font-weight: 700;
             text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             position: relative;
             z-index: 2;
+            min-width: 200px;
+            font-size: 14px;
         }
 
         .org-node.main {
             background: var(--primary);
             color: var(--white);
-            font-size: 20px;
-            padding: 20px 50px;
-            margin-bottom: 40px;
+            font-size: 18px;
+            padding: 15px 40px;
+            margin-bottom: 30px;
         }
 
         .org-row {
             display: flex;
             gap: 40px;
             position: relative;
+            margin-bottom: 30px;
         }
         
-        /* Líneas conectoras simples CSS */
+        /* Conectores */
         .org-row::before {
             content: '';
             position: absolute;
@@ -422,13 +227,11 @@
             background: var(--primary);
             transform: translateX(-50%);
         }
-        
         .org-row::after {
             content: '';
             position: absolute;
             top: -20px;
-            left: 10%;
-            right: 10%;
+            left: 15%; right: 15%;
             height: 2px;
             background: var(--primary);
         }
@@ -439,7 +242,6 @@
             align-items: center;
             position: relative;
         }
-        
         .org-group::before {
             content: '';
             position: absolute;
@@ -450,285 +252,205 @@
         }
 
         .role-badge {
-            font-size: 14px;
+            font-size: 11px;
             background: var(--accent);
             color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
+            padding: 2px 8px;
+            border-radius: 8px;
             margin-bottom: 5px;
             display: inline-block;
+            text-transform: uppercase;
         }
 
-        /* Roles Cards */
-        .role-grid {
+        /* Panel de Requisitos (Slide 4 footer) */
+        .req-panel {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-        }
-
-        .role-card {
-            background: var(--white);
-            border-left: 6px solid var(--primary);
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .role-header {
-            display: flex;
-            align-items: center;
+            grid-template-columns: repeat(4, 1fr);
             gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .role-title {
-            font-weight: 700;
-            color: var(--secondary);
-            font-size: 18px;
-        }
-
-        /* Diagrama de Flujo (Competencias) */
-        .process-flow {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             width: 100%;
-            margin-top: 40px;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: auto; /* Empuja al fondo */
+            border-top: 1px solid #ddd;
         }
+        .req-item { font-size: 11px; color: #555; }
+        .req-item strong { display: block; color: var(--primary); margin-bottom: 3px; font-size: 12px; }
 
-        .process-step {
-            text-align: center;
-            flex: 1;
+        /* --- PORTADA LIMPIA --- */
+        .slide-cover { padding: 0; display: grid; grid-template-columns: 1fr 1.3fr; }
+        .cover-left {
+            background: linear-gradient(150deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: relative;
-            padding: 0 10px;
+        }
+        .cover-right { padding: 80px; display: flex; flex-direction: column; justify-content: center; }
+        .cover-title-main {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.1;
+            margin-bottom: 20px;
+            font-family: 'Montserrat', sans-serif;
         }
 
-        .step-circle {
-            width: 80px;
-            height: 80px;
+        /* Controles */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+        .btn-nav {
             background: var(--white);
-            border: 3px solid var(--accent);
+            border: 2px solid var(--primary);
             color: var(--primary);
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 30px;
-            position: relative;
-            z-index: 2;
+            transition: 0.3s;
         }
-
-        .process-step:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            top: 40px;
-            right: -50%;
-            width: 100%;
-            height: 3px;
-            background: #e2e8f0;
-            z-index: 1;
-        }
-
-        .step-content h4 {
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        
-        .step-content p {
-            font-size: 14px;
-        }
-
-        /* Analogía Final */
-        .analogy-container {
-            display: flex;
-            align-items: center;
-            height: 100%;
-            background: radial-gradient(circle at center, #f0f9ff 0%, #ffffff 70%);
-            border-radius: 20px;
-            padding: 40px;
-            border: 1px dashed var(--accent);
-        }
-
-        .analogy-icon {
-            font-size: 120px;
-            color: var(--primary);
-            margin-right: 60px;
-            flex-shrink: 0;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-
-        /* Check list for Evaluation */
-        .checklist-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-        }
-
-        .check-item {
-            display: flex;
-            align-items: center;
-            background: var(--white);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .check-item i {
-            color: #10b981; /* Green for check */
-            font-size: 24px;
-            margin-right: 15px;
-        }
-
-        /* Utilidades */
-        .highlight { color: var(--accent); font-weight: 700; }
-        .text-sm { font-size: 14px; }
-        .mt-20 { margin-top: 20px; }
-        .bg-primary { background-color: var(--primary); color: white; }
+        .btn-nav:hover { background: var(--primary); color: white; }
+        .slide-counter { position: absolute; bottom: 30px; left: 80px; color: #ccc; font-weight: 700; font-family: 'Montserrat', sans-serif; }
 
     </style>
 </head>
 <body>
 
     <div class="slide-deck" id="slideDeck">
-        
-        <!-- Diapositiva 1: Portada REDISEÑADA -->
+
+        <!-- DIAPOSITIVA 1: PORTADA LIMPIA -->
         <div class="slide slide-cover active" id="slide-1">
-            
             <div class="cover-left">
-                <div class="cover-logo-main">
-                    <!-- Logo Principal (combinado o uno principal) -->
-                    <img src="https://i.imgur.com/K98aGUI.png" alt="Logo UPDS">
-                </div>
+                <img src="https://i.imgur.com/K98aGUI.png" alt="Logo UPDS" style="width: 320px; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
             </div>
-
             <div class="cover-right">
-                <div class="cover-pre-title">Universidad Privada Domingo Savio</div>
+                <span style="color: var(--accent); letter-spacing: 2px; font-weight: 700; text-transform: uppercase;">Universidad Privada Domingo Savio</span>
                 <h1 class="cover-title-main">REGLAMENTO DEL COMITÉ DE ÉTICA EN I.A.</h1>
-                <p class="cover-subtitle-main">Marco normativo para la supervisión, evaluación y uso responsable de la Inteligencia Artificial en la sede Cochabamba.</p>
-                
-                
-                    <div class="meta-item">
-                        <!-- Segundo logo más pequeño como firma -->
-                        <img src="https://i.imgur.com/ZJmHaDS.png" alt="Logo UPDS 2" style="height: 40px;">
-                    </div>
+                <p style="font-size: 20px; color: #555; max-width: 80%;">Supervisión, evaluación y uso responsable de la Inteligencia Artificial en la Sede Cochabamba.</p>
+                <div style="margin-top: 40px; display: flex; align-items: center; gap: 20px;">
+                    <img src="https://i.imgur.com/ZJmHaDS.png" alt="Logo 2" style="height: 60px; opacity: 0.8;">
                 </div>
             </div>
-
         </div>
 
-        <!-- Diapositiva 2: 1.1 Objeto, Naturaleza y Fundamento -->
+        <!-- DIAPOSITIVA 2: 1.1 OBJETO Y FUNDAMENTO -->
         <div class="slide" id="slide-2">
             <div class="slide-header">
                 <div class="header-title">
                     <span>MARCO ESTRATÉGICO</span>
-                    <h2>Mandato y Fundamento</h2>
+                    <h2>Objeto y Fundamento</h2>
                 </div>
-                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Grande"></div>
             </div>
             <div class="content-wrapper">
                 <div class="card-grid">
                     <div class="info-card">
-                        <div class="card-icon"><i class="fa-solid fa-bullseye"></i></div>
-                        <h3 class="card-title">Objeto Principal</h3>
-                        <p class="card-text">Establecer la organización y funcionamiento del Comité de Ética en IA (CEIA), encargado de normar la IA en la UPDS Cochabamba.</p>
+                        <div class="card-icon"><i class="fa-solid fa-book-open"></i></div>
+                        <h3>Objeto Principal</h3>
+                        <p>Establecer la organización y funcionamiento del Comité de Ética en IA (CEIA) de la UPDS Sede Cochabamba.</p>
                     </div>
                     <div class="info-card">
-                        <div class="card-icon"><i class="fa-solid fa-scale-balanced"></i></div>
-                        <h3 class="card-title">Mandato</h3>
-                        <p class="card-text">Supervisar y promover el uso <strong>ético, transparente y responsable</strong> de la IA en actividades académicas, investigativas y administrativas.</p>
+                        <div class="card-icon"><i class="fa-solid fa-gavel"></i></div>
+                        <h3>Fundamento Normativo</h3>
+                        <ul class="compact-list" style="font-size: 13px;">
+                            <li>Estatuto Orgánico UPDS.</li>
+                            <li>Reglamento General (RGUP).</li>
+                            <li>Código de Ética para IA UPDS.</li>
+                            <li>Reglamentos Institucionales.</li>
+                        </ul>
                     </div>
                     <div class="info-card">
-                        <div class="card-icon"><i class="fa-solid fa-building-columns"></i></div>
-                        <h3 class="card-title">Naturaleza</h3>
-                        <p class="card-text">Órgano colegiado regional, consultivo, evaluador y supervisor, adscrito directamente al <strong>Rectorado Regional</strong>.</p>
+                        <div class="card-icon"><i class="fa-solid fa-sitemap"></i></div>
+                        <h3>Naturaleza</h3>
+                        <p>Órgano colegiado regional, consultivo, evaluador y supervisor, adscrito al <strong>Rectorado Regional</strong>.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Diapositiva 3: 1.2 Finalidad y Principios -->
+        <!-- DIAPOSITIVA 3: 1.2 FINALIDAD Y OBJETIVOS -->
         <div class="slide" id="slide-3">
             <div class="slide-header">
                 <div class="header-title">
                     <span>MARCO ESTRATÉGICO</span>
-                    <h2>Finalidad y Principios</h2>
+                    <h2>Finalidad y Objetivos</h2>
                 </div>
-                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Grande"></div>
             </div>
             <div class="content-wrapper">
-                <div class="principles-layout">
-                    <div class="main-statement">
-                        "Garantizar que la tecnología sirva a los valores humanos, protegiendo la integridad y transparencia institucional."
+                <div class="split-layout">
+                    <!-- Finalidad y Principios -->
+                    <div class="section-box" style="background: var(--light-bg); border:none;">
+                        <div class="section-title"><i class="fa-solid fa-compass"></i> Principios Rectores</div>
+                        <p style="font-size: 14px; margin-bottom: 10px;"><strong>Finalidad:</strong> Garantizar uso ético y legal de la IA.</p>
+                        <ul class="compact-list" style="font-size: 13px; color: #444;">
+                            <li><strong>Integridad Académica:</strong> Originalidad y honestidad.</li>
+                            <li><strong>Protección de Datos:</strong> Confidencialidad normativa.</li>
+                            <li><strong>Responsabilidad:</strong> Uso consciente.</li>
+                            <li><strong>Legalidad:</strong> Eje transversal.</li>
+                        </ul>
                     </div>
-                    <div class="principles-list">
-                        <div class="principle-item">
-                            <div class="p-icon"><i class="fa-solid fa-user-graduate"></i></div>
-                            <div>
-                                <h4 style="color: var(--primary); margin-bottom: 5px;">Integridad Académica</h4>
-                                <p class="text-sm">Asegurar la originalidad y honestidad intelectual frente a la generación automática de contenido.</p>
-                            </div>
-                        </div>
-                        <div class="principle-item">
-                            <div class="p-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                            <div>
-                                <h4 style="color: var(--primary); margin-bottom: 5px;">Protección de Datos</h4>
-                                <p class="text-sm">Preservación estricta de la información tratada por sistemas de IA conforme a normativa.</p>
-                            </div>
-                        </div>
-                        <div class="principle-item">
-                            <div class="p-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
-                            <div>
-                                <h4 style="color: var(--primary); margin-bottom: 5px;">Responsabilidad Institucional</h4>
-                                <p class="text-sm">Impulso del uso consciente y prudente por parte de toda la comunidad universitaria.</p>
-                            </div>
-                        </div>
+                    
+                    <!-- Objetivos -->
+                    <div class="section-box">
+                        <div class="section-title"><i class="fa-solid fa-bullseye"></i> Objetivos del Comité</div>
+                        <ul class="compact-list" style="font-size: 13px;">
+                            <li><i class="fa-solid fa-check" style="color: var(--accent);"></i> Incorporación responsable de IA (académica/admin).</li>
+                            <li><i class="fa-solid fa-check" style="color: var(--accent);"></i> Fortalecimiento del perfil profesional.</li>
+                            <li><i class="fa-solid fa-check" style="color: var(--accent);"></i> Promoción de investigación científica en IA.</li>
+                            <li><i class="fa-solid fa-check" style="color: var(--accent);"></i> Alfabetización digital continua.</li>
+                            <li><i class="fa-solid fa-check" style="color: var(--accent);"></i> Identificación de riesgos éticos.</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Diapositiva 4: 2.1 Composición -->
+        <!-- DIAPOSITIVA 4: 2.1 ESTRUCTURA JERÁRQUICA (Estilo Restaurado) -->
         <div class="slide" id="slide-4">
             <div class="slide-header">
                 <div class="header-title">
-                    <span>ESTRUCTURA ORGANIZATIVA</span>
-                    <h2>Composición del Comité</h2>
+                    <span>ESTRUCTURA Y GOBERNANZA</span>
+                    <h2>Composición y Elegibilidad</h2>
                 </div>
-                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Grande"></div>
             </div>
-            <div class="content-wrapper">
+            <div class="content-wrapper" style="flex-direction: column;">
+                
+                <!-- Esquema Jerárquico -->
                 <div class="org-container">
+                    <!-- Nivel 1 -->
                     <div class="org-node main">
-                        <i class="fa-solid fa-gavel"></i> Presidencia: Rector Regional
+                        <i class="fa-solid fa-user-tie"></i> Presidencia: Rector Regional
                     </div>
                     
+                    <!-- Nivel 2 -->
                     <div class="org-row">
                         <div class="org-group">
                             <span class="role-badge">Academia</span>
                             <div class="org-node">2 Autoridades Académicas</div>
-                            <small style="margin-top: 5px; color: #666;">Decanos / Jefes</small>
                         </div>
-                        
                         <div class="org-group">
                             <span class="role-badge">Investigación</span>
                             <div class="org-node">1 Docente Investigador</div>
                         </div>
-
                         <div class="org-group">
                             <span class="role-badge">Técnico</span>
                             <div class="org-node">1 Experto Ad Hoc</div>
-                            <small style="margin-top: 5px; color: #666;">Opcional</small>
                         </div>
                     </div>
 
-                    <div class="org-row" style="margin-top: 40px;">
+                    <!-- Nivel 3 -->
+                    <div class="org-row" style="margin-bottom: 0;">
                         <div class="org-group">
                             <span class="role-badge">Comunidad</span>
                             <div class="org-node" style="border-color: var(--accent); color: var(--accent);">1 Representante Estudiantil</div>
@@ -738,183 +460,185 @@
                             <div class="org-node" style="border-color: var(--accent); color: var(--accent);">1 Secretario Técnico</div>
                         </div>
                     </div>
+                </div>
 
-                    <div style="margin-top: 30px; font-size: 14px; background: #eef2f6; padding: 10px 20px; border-radius: 20px;">
-                        <i class="fa-solid fa-clock"></i> Mandato: 1 Año (Renovable 1 vez) | Ad Honorem
+                <!-- Panel de Requisitos e Info (Bottom) -->
+                <div class="req-panel">
+                    <div class="req-item">
+                        <strong><i class="fa-solid fa-check-circle"></i> Autoridades</strong>
+                        Exp. en gestión académica o docencia.
+                    </div>
+                    <div class="req-item">
+                        <strong><i class="fa-solid fa-check-circle"></i> Docente Inv.</strong>
+                        1 publicación/curso o proyecto IA.
+                    </div>
+                    <div class="req-item">
+                        <strong><i class="fa-solid fa-check-circle"></i> Estudiante</strong>
+                        Sin sanciones/reprobaciones.
+                    </div>
+                    <div class="req-item" style="border-left: 2px solid #ddd; padding-left: 10px;">
+                        <strong><i class="fa-solid fa-users"></i> Funcionamiento</strong>
+                        Quórum: Mitad + 1 | Ad Honorem | 1 Año.
                     </div>
                 </div>
+
             </div>
         </div>
 
-        <!-- Diapositiva 5: 2.2 Roles Estratégicos -->
+        <!-- DIAPOSITIVA 5: 2.2 ROLES ESTRATÉGICOS -->
         <div class="slide" id="slide-5">
             <div class="slide-header">
                 <div class="header-title">
                     <span>ESTRUCTURA ORGANIZATIVA</span>
                     <h2>Roles y Responsabilidades</h2>
                 </div>
-                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Grande"></div>
             </div>
             <div class="content-wrapper">
-                <div class="role-grid">
-                    <div class="role-card">
-                        <div class="role-header">
-                            <div class="p-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
-                            <div class="role-title">Autoridades Académicas</div>
+                <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="info-card">
+                        <div style="display:flex; gap:15px; align-items:center;">
+                            <i class="fa-solid fa-chalkboard-user card-icon"></i>
+                            <h3>Autoridades Académicas</h3>
                         </div>
-                        <p class="text-sm">Integran recomendaciones del CEIA en la planificación y garantizan que la IA contribuya a los indicadores estratégicos de la Sede.</p>
+                        <p>Integran recomendaciones CEIA en planificación y aseguran cumplimiento de indicadores estratégicos.</p>
                     </div>
-
-                    <div class="role-card">
-                        <div class="role-header">
-                            <div class="p-icon"><i class="fa-solid fa-microscope"></i></div>
-                            <div class="role-title">Docente Investigador</div>
+                    <div class="info-card">
+                        <div style="display:flex; gap:15px; align-items:center;">
+                            <i class="fa-solid fa-flask card-icon"></i>
+                            <h3>Docente Investigador</h3>
                         </div>
-                        <p class="text-sm">Diseña estrategias pedagógicas con IA, metodologías activas y apoya la producción científica especializada.</p>
+                        <p>Diseña estrategias pedagógicas con IA, metodologías activas y apoya la Revista de IA de la UPDS.</p>
                     </div>
-
-                    <div class="role-card">
-                        <div class="role-header">
-                            <div class="p-icon"><i class="fa-solid fa-users"></i></div>
-                            <div class="role-title">Representante Estudiantil</div>
+                    <div class="info-card">
+                        <div style="display:flex; gap:15px; align-items:center;">
+                            <i class="fa-solid fa-users card-icon"></i>
+                            <h3>Representante Estudiantil</h3>
                         </div>
-                        <p class="text-sm">Aporta la percepción estudiantil para que la IA fortalezca realmente el perfil profesional.</p>
+                        <p>Identifica oportunidades de mejora para que la IA fortalezca el perfil profesional.</p>
                     </div>
-
-                    <div class="role-card">
-                        <div class="role-header">
-                            <div class="p-icon"><i class="fa-solid fa-robot"></i></div>
-                            <div class="role-title">Experto Ad Hoc</div>
+                    <div class="info-card">
+                        <div style="display:flex; gap:15px; align-items:center;">
+                            <i class="fa-solid fa-microchip card-icon"></i>
+                            <h3>Experto Ad Hoc</h3>
                         </div>
-                        <p class="text-sm">Aporta criterio técnico avanzado para evaluar proyectos y orientar sobre tendencias globales.</p>
+                        <p>Aporta criterios técnicos avanzados para evaluar proyectos y tendencias globales.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Diapositiva 6: 3.1 Competencias y Procesos -->
+        <!-- DIAPOSITIVA 6: 3.1 COMPETENCIAS -->
         <div class="slide" id="slide-6">
             <div class="slide-header">
                 <div class="header-title">
-                    <span>GESTIÓN Y MEJORA</span>
+                    <span>GESTIÓN ÉTICA</span>
                     <h2>Competencias y Supervisión</h2>
                 </div>
-                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Grande"></div>
             </div>
             <div class="content-wrapper" style="flex-direction: column;">
                 
-                <div style="background: var(--primary); color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; display: flex; align-items: center; gap: 20px;">
-                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; color: var(--accent);"></i>
+                <div style="background: var(--primary); color: white; padding: 15px 30px; border-radius: 50px; display: flex; align-items: center; gap: 20px; margin-bottom: 30px;">
+                    <i class="fa-solid fa-circle-exclamation" style="font-size: 24px; color: var(--accent);"></i>
                     <div>
-                        <h4 style="margin: 0;">Declaración Obligatoria</h4>
-                        <p style="margin: 0; font-size: 14px; opacity: 0.9;">Todo proyecto con uso de IA debe ser declarado mediante formulario institucional antes de su ejecución.</p>
+                        <strong style="font-size: 16px; display: block;">Declaración Obligatoria</strong>
+                        <span style="font-size: 13px;">Todo proyecto con IA debe ser declarado mediante formulario institucional antes de su ejecución.</span>
                     </div>
                 </div>
 
-                <div class="process-flow">
-                    <div class="process-step">
-                        <div class="step-circle"><i class="fa-solid fa-file-signature"></i></div>
-                        <div class="step-content">
-                            <h4>Normativa</h4>
-                            <p>Emitir directrices y guías ético-técnicas.</p>
-                        </div>
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; width: 100%;">
+                    <!-- Comp 1 -->
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-bottom: 3px solid var(--accent); text-align: center;">
+                        <i class="fa-solid fa-magnifying-glass-chart" style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <p style="font-size: 13px;"><strong>Evaluar</strong><br>Proyectos y procesos.</p>
                     </div>
-                    <div class="process-step">
-                        <div class="step-circle"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
-                        <div class="step-content">
-                            <h4>Evaluación</h4>
-                            <p>Analizar proyectos y procesos declarados.</p>
-                        </div>
+                    <!-- Comp 2 -->
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-bottom: 3px solid var(--accent); text-align: center;">
+                        <i class="fa-solid fa-file-contract" style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <p style="font-size: 13px;"><strong>Emitir</strong><br>Directrices y guías.</p>
                     </div>
-                    <div class="process-step">
-                        <div class="step-circle"><i class="fa-solid fa-eye"></i></div>
-                        <div class="step-content">
-                            <h4>Supervisión</h4>
-                            <p>Auditorías aleatorias y control de cumplimiento.</p>
-                        </div>
+                    <!-- Comp 3 -->
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-bottom: 3px solid var(--accent); text-align: center;">
+                        <i class="fa-solid fa-eye" style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <p style="font-size: 13px;"><strong>Supervisar</strong><br>Código de Ética.</p>
                     </div>
-                    <div class="process-step">
-                        <div class="step-circle"><i class="fa-solid fa-gavel"></i></div>
-                        <div class="step-content">
-                            <h4>Dictamen</h4>
-                            <p>Investigar denuncias sobre uso indebido.</p>
-                        </div>
+                    <!-- Comp 4 -->
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-bottom: 3px solid var(--accent); text-align: center;">
+                        <i class="fa-solid fa-chalkboard-user" style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <p style="font-size: 13px;"><strong>Coordinar</strong><br>Capacitación.</p>
+                    </div>
+                    <!-- Comp 5 -->
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-bottom: 3px solid var(--accent); text-align: center;">
+                        <i class="fa-solid fa-gavel" style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <p style="font-size: 13px;"><strong>Dictaminar</strong><br>Denuncias.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Diapositiva 7: 3.2 Evaluación y Transparencia -->
+        <!-- DIAPOSITIVA 7: 3.2 EVALUACIÓN -->
         <div class="slide" id="slide-7">
             <div class="slide-header">
                 <div class="header-title">
                     <span>GESTIÓN Y MEJORA</span>
                     <h2>Evaluación y Formación</h2>
                 </div>
-                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Grande"></div>
             </div>
             <div class="content-wrapper">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%;">
-                    
-                    <div>
-                        <h3 style="color: var(--secondary); margin-bottom: 20px;">Criterios de Evaluación</h3>
-                        <div class="checklist-grid" style="grid-template-columns: 1fr; gap: 15px;">
-                            <div class="check-item"><i class="fa-solid fa-check-circle"></i> Protección de datos y privacidad</div>
-                            <div class="check-item"><i class="fa-solid fa-check-circle"></i> Prevención de sesgos y discriminación</div>
-                            <div class="check-item"><i class="fa-solid fa-check-circle"></i> Respeto a propiedad intelectual</div>
-                            <div class="check-item"><i class="fa-solid fa-check-circle"></i> Cumplimiento Código Ética</div>
-                        </div>
-                    </div>
-
-                    <div style="background: var(--light-bg); padding: 30px; border-radius: 16px;">
-                        <h3 style="color: var(--secondary); margin-bottom: 20px;">Plan de Formación y Transparencia</h3>
-                        <ul style="list-style: none; padding: 0;">
-                            <li style="margin-bottom: 20px; display: flex; gap: 15px;">
-                                <i class="fa-solid fa-chalkboard" style="color: var(--accent); margin-top: 5px;"></i>
-                                <div>
-                                    <strong>Alfabetización Digital</strong>
-                                    <p class="text-sm">Talleres mensuales para docentes y estudiantes.</p>
-                                </div>
-                            </li>
-                            <li style="margin-bottom: 20px; display: flex; gap: 15px;">
-                                <i class="fa-solid fa-file-contract" style="color: var(--accent); margin-top: 5px;"></i>
-                                <div>
-                                    <strong>Informe Anual</strong>
-                                    <p class="text-sm">Publicación ejecutiva de resultados al cierre de gestión.</p>
-                                </div>
-                            </li>
+                <div class="split-layout">
+                    <!-- Criterios -->
+                    <div class="section-box">
+                        <div class="section-title"><i class="fa-solid fa-list-check"></i> Criterios de Evaluación</div>
+                        <ul class="compact-list" style="margin-top: 10px;">
+                            <li style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-check" style="color:#2ecc71;"></i> Protección de datos y confidencialidad.</li>
+                            <li style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-check" style="color:#2ecc71;"></i> Prevención de sesgos y discriminación.</li>
+                            <li style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-check" style="color:#2ecc71;"></i> Respeto a propiedad intelectual.</li>
+                            <li style="display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-check" style="color:#2ecc71;"></i> Cumplimiento Código Ética IA.</li>
                         </ul>
                     </div>
 
+                    <!-- Formación -->
+                    <div class="section-box" style="background: var(--light-bg); border:none;">
+                        <div class="section-title"><i class="fa-solid fa-graduation-cap"></i> Plan de Formación</div>
+                        <p style="font-size: 14px;"><strong>Objetivo:</strong> Alfabetización digital continua.</p>
+                        <ul class="compact-list" style="margin-top: 10px; font-size: 13px;">
+                            <li>Plan de trabajo Anual/Semestral.</li>
+                            <li>Talleres y guías prácticas.</li>
+                        </ul>
+                        <div style="margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 10px;">
+                            <strong style="color: var(--primary); font-size: 14px;">Transparencia:</strong>
+                            <p style="font-size: 13px;">Publicación de <strong>Informe Ejecutivo Anual</strong>.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Diapositiva 8: Analogía de Cierre -->
+        <!-- DIAPOSITIVA 8: ANALOGÍA -->
         <div class="slide" id="slide-8">
             <div class="slide-header">
                 <div class="header-title">
                     <span>CONCLUSIÓN</span>
                     <h2>El Rol del CEIA</h2>
                 </div>
-                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Small"></div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo Grande"></div>
             </div>
             <div class="content-wrapper">
-                <div class="analogy-container">
-                    <div class="analogy-icon">
-                        <i class="fa-solid fa-plane-departure"></i>
-                    </div>
+                <div style="display: flex; align-items: center; width: 100%; background: radial-gradient(circle, #f0f9ff 0%, #ffffff 80%); border-radius: 20px; padding: 40px; border: 2px dashed var(--accent);">
+                    <i class="fa-solid fa-plane-departure" style="font-size: 120px; color: var(--primary); margin-right: 50px;"></i>
                     <div>
-                        <h3 style="font-size: 28px; color: var(--primary); margin-bottom: 20px;">Control de Tráfico Aéreo</h3>
-                        <p style="font-size: 20px; line-height: 1.6; color: #444;">
-                            El CEIA no busca <em>detener</em> los vuelos (la innovación), sino establecer las reglas y protocolos para garantizar que todos los proyectos vuelen de manera <strong>segura, ética y responsable</strong>, asegurando que lleguen a su destino: la excelencia académica.
+                        <h3 style="font-size: 28px; color: var(--primary); margin-bottom: 15px;">Control de Tráfico Aéreo</h3>
+                        <p style="font-size: 18px; line-height: 1.6; color: #444;">
+                            El CEIA no busca <em>detener</em> los vuelos (la innovación), sino establecer las reglas y protocolos para garantizar que todos los proyectos vuelen de manera <strong>segura, ética y responsable</strong>, asegurando que lleguen a su destino: <span style="color: var(--accent); font-weight: 700;">la excelencia académica.</span>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Controles de Navegación -->
+        <!-- CONTROLES -->
         <div class="slide-counter" id="counter">1 / 8</div>
         <div class="controls">
             <button class="btn-nav" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button>
@@ -923,7 +647,6 @@
 
     </div>
 
-    <!-- Script de Funcionalidad -->
     <script>
         let currentSlide = 1;
         const totalSlides = 8;
@@ -931,64 +654,28 @@
         const BASE_WIDTH = 1280;
         const BASE_HEIGHT = 720;
 
-        // --- SISTEMA DE ESCALADO AUTOMÁTICO (RESPONSIVE) ---
+        // SISTEMA DE ESCALADO AUTOMÁTICO
         function resizeDeck() {
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-            
-            // Calculamos el factor de escala manteniendo el aspect ratio 16:9
-            const scaleX = windowWidth / BASE_WIDTH;
-            const scaleY = windowHeight / BASE_HEIGHT;
-            
-            // Usamos el menor de los dos para asegurar que todo quepa en pantalla
-            // Multiplicamos por 0.95 para dejar un pequeño margen y que no toque los bordes
-            const scale = Math.min(scaleX, scaleY) * 0.95;
-            
+            const scale = Math.min(window.innerWidth / BASE_WIDTH, window.innerHeight / BASE_HEIGHT) * 0.95;
             deck.style.transform = `scale(${scale})`;
         }
-
-        // Eventos para el redimensionamiento
         window.addEventListener('resize', resizeDeck);
         window.addEventListener('load', resizeDeck);
 
-        // --- NAVEGACIÓN DE DIAPOSITIVAS ---
-
+        // NAVEGACIÓN
         function updateSlide() {
-            // Remove active class from all slides
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
-            
-            // Add active class to current slide
-            const slide = document.getElementById(`slide-${currentSlide}`);
-            if(slide) slide.classList.add('active');
-
-            // Update counter
+            document.getElementById(`slide-${currentSlide}`).classList.add('active');
             document.getElementById('counter').innerText = `${currentSlide} / ${totalSlides}`;
         }
+        function nextSlide() { if(currentSlide < totalSlides) { currentSlide++; updateSlide(); } }
+        function prevSlide() { if(currentSlide > 1) { currentSlide--; updateSlide(); } }
 
-        function nextSlide() {
-            if (currentSlide < totalSlides) {
-                currentSlide++;
-                updateSlide();
-            }
-        }
-
-        function prevSlide() {
-            if (currentSlide > 1) {
-                currentSlide--;
-                updateSlide();
-            }
-        }
-
-        // Navegación con teclado
-        document.addEventListener('keydown', function(event) {
-            if (event.key === "ArrowRight") {
-                nextSlide();
-            } else if (event.key === "ArrowLeft") {
-                prevSlide();
-            }
+        document.addEventListener('keydown', (e) => {
+            if(e.key === "ArrowRight") nextSlide();
+            if(e.key === "ArrowLeft") prevSlide();
         });
         
-        // Iniciar ajuste de tamaño al cargar
         resizeDeck();
     </script>
 </body>
