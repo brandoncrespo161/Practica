@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Migrantes Climáticos - Edición Ejecutiva</title>
+    <title>Migrantes Climáticos - Versión Final Video Drive</title>
     
     <!-- Fuentes Corporativas -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,7 +79,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 30px; /* Espacio claro antes del contenido */
+            margin-bottom: 30px;
             padding-bottom: 10px;
             border-bottom: 3px solid var(--accent);
             min-height: 100px;
@@ -114,67 +114,35 @@
  
         /* --- SLIDE 1: PORTADA --- */
         .slide-cover { padding: 0; display: grid; grid-template-columns: 1fr 1.3fr; }
-        
         .cover-left {
             background: linear-gradient(150deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
+            display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden;
         }
-        
         .particle {
             position: absolute; width: 4px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 50%; animation: float 10s infinite linear;
         }
         @keyframes float { 0% { transform: translateY(0) translateX(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-700px) translateX(50px); opacity: 0; } }
+        .cover-right { padding: 80px; display: flex; flex-direction: column; justify-content: center; background: white; }
+        .cover-title-main { font-size: 48px; font-weight: 800; color: var(--primary); line-height: 1.1; margin-bottom: 20px; font-family: 'Montserrat', sans-serif; }
+        .typewriter { font-size: 20px; color: #555; border-left: 4px solid var(--accent); padding-left: 20px; min-height: 60px; display: flex; align-items: center; margin-bottom: 30px; }
  
-        .cover-right {
-            padding: 80px; display: flex; flex-direction: column; justify-content: center; background: white;
-        }
- 
-        .cover-title-main {
-            font-size: 48px; font-weight: 800; color: var(--primary); line-height: 1.1; margin-bottom: 20px; font-family: 'Montserrat', sans-serif;
-        }
- 
-        .typewriter {
-            font-size: 20px; color: #555; border-left: 4px solid var(--accent); padding-left: 20px; min-height: 60px; display: flex; align-items: center; margin-bottom: 30px;
-        }
- 
-        /* --- LAYOUT DE ALINEACIÓN ESTRICTA --- */
+        /* --- SLIDE 2: ALINEACIÓN SUPERIOR --- */
         .grid-combined {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            height: 100%;
-            align-items: start; /* ALINEACIÓN SUPERIOR ESTRICTA */
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px; height: 100%;
+            align-items: start; /* Alineación superior estricta */
         }
-        
-        .card-stack {
-            display: flex; flex-direction: column; gap: 15px;
-        }
+        .card-stack { display: flex; flex-direction: column; gap: 15px; }
         .info-card-v1 {
-            background: var(--light-bg);
-            border-radius: 10px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            border-left: 4px solid var(--accent);
-            transition: transform 0.3s;
+            background: var(--light-bg); border-radius: 10px; padding: 20px; display: flex; align-items: center; gap: 20px;
+            border-left: 4px solid var(--accent); transition: transform 0.3s;
         }
         .info-card-v1:hover { transform: translateX(5px); }
         .card-icon-v1 { font-size: 28px; color: var(--primary); min-width: 40px; text-align: center; }
-        .counter-box {
-            font-size: 50px; font-weight: 800; color: var(--accent); font-family: 'Montserrat', sans-serif;
-            line-height: 1;
-        }
+        .counter-box { font-size: 50px; font-weight: 800; color: var(--accent); font-family: 'Montserrat', sans-serif; line-height: 1; }
  
         /* --- SLIDE 3: FRACTURA --- */
         .fracture-container { display: flex; width: 100%; height: 450px; gap: 20px; }
-        .fracture-side {
-            flex: 1; padding: 30px; border-radius: 15px; transition: all 0.4s ease; position: relative; overflow: hidden;
-        }
+        .fracture-side { flex: 1; padding: 30px; border-radius: 15px; transition: all 0.4s ease; position: relative; overflow: hidden; }
         .side-law { background: #f0f9ff; border: 2px solid var(--accent); }
         .side-reality { background: #fff0f0; border: 2px solid var(--danger); }
         .f-icon { font-size: 40px; margin-bottom: 20px; }
@@ -202,14 +170,12 @@
         .flip-back { background-color: var(--primary); color: white; transform: rotateY(180deg); border-top: 5px solid var(--accent); }
         .card-num { font-size: 60px; font-weight: 800; color: rgba(0,0,0,0.05); position: absolute; top: 10px; left: 20px; }
  
-        /* --- SLIDE 5: PERFIL (Imagen Restaurada) --- */
+        /* --- SLIDE 5: PERFIL --- */
         .profile-layout { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 40px; height: 100%; }
         .profile-visual {
             background: #ddd; border-radius: 15px; position: relative; display: flex; align-items: center; justify-content: center;
-            /* RESTAURADA LA IMAGEN ORIGINAL DE FREEPIK */
             background-image: linear-gradient(rgba(31, 49, 137, 0.6), rgba(31, 49, 137, 0.6)), url('https://img.freepik.com/free-vector/refugee-crisis-concept-illustration_114360-8452.jpg?t=st=1708900000~exp=1708900600~hmac=xyz');
-            background-size: cover;
-            background-position: center;
+            background-size: cover; background-position: center;
         }
         .migrant-icon { font-size: 100px; color: white; position: relative; z-index: 2; }
         .accordion-item { border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
@@ -221,6 +187,40 @@
         .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: white; padding: 0 20px; }
         .accordion-item.active .accordion-content { max-height: 150px; }
         .accordion-item.active .accordion-header { background: var(--primary); color: white; }
+ 
+        /* --- SLIDE 6: MODAL DE VIDEO --- */
+        .video-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 100;
+            display: none; justify-content: center; align-items: center; flex-direction: column;
+            backdrop-filter: blur(5px);
+        }
+        .close-video {
+            position: absolute; top: 30px; right: 40px;
+            color: white; font-size: 40px; cursor: pointer; transition: 0.3s;
+            z-index: 101;
+        }
+        .close-video:hover { color: var(--danger); transform: scale(1.1); }
+        .video-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: linear-gradient(90deg, var(--danger) 0%, #c0392b 100%);
+            color: white; padding: 12px 25px; border-radius: 50px; border: none;
+            font-family: 'Montserrat', sans-serif; font-weight: 700; cursor: pointer;
+            margin-top: 15px; box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+            transition: 0.3s; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;
+        }
+        .video-btn:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(231, 76, 60, 0.6); }
+        
+        /* Estilos para el reproductor de video responsive */
+        #video-container video {
+            width: 80vw;
+            height: auto;
+            max-height: 80vh;
+            border-radius: 10px;
+            border: 2px solid white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            background: black;
+        }
  
         /* --- SLIDE 8: EDIFICIO --- */
         .building-container {
@@ -272,11 +272,14 @@
                     <div style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700; color: var(--secondary); margin-top: 5px;">
                         Alberto Mercado Carrasco
                     </div>
+                    <div style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700; color: var(--secondary); margin-top: 5px;">
+                        Alex Cabello Ayzama
+                    </div>
                 </div>
             </div>
         </div>
  
-        <!-- SLIDE 2: PROBLEMA GLOBAL (ALINEACIÓN ESTRICTA SUPERIOR) -->
+        <!-- SLIDE 2: PROBLEMA GLOBAL -->
         <div class="slide" id="slide-2">
             <div class="slide-header">
                 <div class="header-title">
@@ -286,7 +289,6 @@
                 <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo"></div>
             </div>
             <div class="grid-combined">
-                <!-- Columna Izquierda: Alineada Arriba -->
                 <div style="display: flex; flex-direction: column; justify-content: flex-start; padding-top: 0;"> 
                     <h3 style="color: var(--primary); font-size: 24px; margin-bottom: 20px; margin-top: 0;">Una fuerza real que reconfigura territorios</h3>
                     <p style="font-size: 16px; color: var(--text-gray); line-height: 1.8; margin-bottom: 20px;">
@@ -296,10 +298,7 @@
                         <strong>Definición Operativa:</strong> La crisis climática actúa como multiplicador de amenazas sobre estructuras institucionales debilitadas.
                     </div>
                 </div>
-                
-                <!-- Columna Derecha: Alineada Arriba -->
                 <div class="card-stack">
-                    <!-- Tarjeta 1 -->
                     <div class="info-card-v1">
                         <div class="card-icon-v1"><i class="fa-solid fa-clock-rotate-left"></i></div>
                         <div>
@@ -307,7 +306,6 @@
                             <span style="font-size: 13px;">Reconocido por ONU desde los 80. Hoy es impacto anual.</span>
                         </div>
                     </div>
-                    <!-- Tarjeta 2 -->
                     <div class="info-card-v1" style="background: white; border: 1px solid var(--accent); box-shadow: 0 5px 15px rgba(36, 156, 221, 0.2);">
                         <div class="card-icon-v1"><i class="fa-solid fa-cloud-showers-heavy" style="font-size: 35px; color: var(--accent);"></i></div>
                         <div>
@@ -318,7 +316,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Tarjeta 3 -->
                     <div class="info-card-v1">
                         <div class="card-icon-v1"><i class="fa-solid fa-scale-unbalanced"></i></div>
                         <div>
@@ -424,7 +421,7 @@
             </div>
         </div>
  
-        <!-- SLIDE 5: PERFIL DEL MIGRANTE (IMAGEN RESTAURADA) -->
+        <!-- SLIDE 5: PERFIL DEL MIGRANTE -->
         <div class="slide" id="slide-5">
             <div class="slide-header">
                 <div class="header-title">
@@ -461,7 +458,7 @@
             </div>
         </div>
  
-        <!-- SLIDE 6: CASO POOPÓ (ALINEACIÓN ESTRICTA SUPERIOR) -->
+        <!-- SLIDE 6: CASO POOPÓ (VIDEO INTERACTIVO) -->
         <div class="slide" id="slide-6">
             <div class="slide-header">
                 <div class="header-title">
@@ -470,6 +467,13 @@
                 </div>
                 <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo"></div>
             </div>
+            
+            <!-- VIDEO MODAL -->
+            <div id="videoModal" class="video-overlay">
+                <div class="close-video" onclick="closeVideo()"><i class="fa-solid fa-xmark"></i></div>
+                <div id="video-container"></div>
+            </div>
+
             <div class="grid-combined">
                 <!-- Columna Izquierda -->
                 <div style="background: #fafafa; padding: 25px; border-radius: 10px; border: 1px solid #ddd;">
@@ -479,9 +483,13 @@
                     <p style="font-size: 14px; margin-top: 5px;">
                         La comunidad indígena <strong>Uru-muratos</strong> perdió su base material y simbólica. Sin ruta de protección, se dispersaron a minas o ciudades.
                     </p>
+                    <!-- BOTÓN VIDEO -->
+                    <button class="video-btn" onclick="openVideo()">
+                        <i class="fa-solid fa-play"></i> Ver Evidencia Satelital
+                    </button>
                 </div>
                 
-                <!-- Columna Derecha ALINEADA ARRIBA (justify-content: flex-start) -->
+                <!-- Columna Derecha -->
                 <div style="display: flex; flex-direction: column; justify-content: flex-start; gap: 20px;">
                     <div style="background: var(--primary); color: white; padding: 20px; border-radius: 0 20px 20px 0; border-left: 5px solid var(--accent);">
                         <strong>Principio de Aceleración:</strong><br>
@@ -647,6 +655,31 @@
                 updateCount();
             });
         }
+
+        // 5. LÓGICA VIDEO (SLIDE 6) - Usando <video> tag nativo
+        function openVideo() {
+            const modal = document.getElementById('videoModal');
+            const container = document.getElementById('video-container');
+            
+            // Video tag para enlace directo MP4 (Imgur)
+            const embedCode = `
+                <video controls autoplay loop muted>
+                    <source src="https://i.imgur.com/kRF67l8.mp4" type="video/mp4">
+                    Tu navegador no soporta el elemento de video.
+                </video>
+            `;
+            
+            container.innerHTML = embedCode;
+            modal.style.display = 'flex';
+        }
+
+        function closeVideo() {
+            const modal = document.getElementById('videoModal');
+            const container = document.getElementById('video-container');
+            
+            modal.style.display = 'none';
+            container.innerHTML = ''; // Limpiar para detener reproducción
+        }
  
         // Iniciar
         resizeDeck();
@@ -654,4 +687,3 @@
     </script>
 </body>
 </html>
-```
