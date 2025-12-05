@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programación Básica - Brandon Crespo</title>
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Librería Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        /* --- CONFIGURACIÓN GENERAL --- */
+        * { box-sizing: border-box; }
+        body {
+            background-color: #020617;
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            color: #cbd5e1;
+        }
+
+        /* --- ESCENARIO DE ESCALADO --- */
+        #viewport {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #scaler {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            transform-origin: center center;
+            box-shadow: 0 0 100px rgba(0,0,0,0.5);
+        }
+
+        /* --- CONTENEDOR DE DIAPOSITIVA --- */
+        .slide-container {
+            background-color: #1e293b;
+            border-radius: 16px;
+            /* REGLA CRÍTICA: Ocultar si no es activa */
+            display: none !important; 
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 40px 60px;
+            border: 1px solid #334155;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        /* REGLA CRÍTICA: Mostrar solo si es activa */
+        .slide-container.active {
+            display: flex !important;
+            z-index: 10;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.99); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* --- PORTADA --- */
+        .slide-container.title-slide {
+            padding: 0;
+            background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .title-card-overlay {
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid #38bdf8;
+            border-radius: 20px;
+            padding: 60px 80px;
+            text-align: center;
+            max-width: 900px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- TIPOGRAFÍA Y COMPONENTES --- */
+        .main-title { color: #38bdf8; font-family: 'Inter', sans-serif; font-weight: 800; font-size: 64px; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: -1px; text-shadow: 0 0 20px rgba(56, 189, 248, 0.3); }
+        .sub-title { color: #ffffff; font-size: 24px; font-weight: 500; margin: 0 0 25px 0; }
+        .pink-line { height: 4px; width: 120px; background-color: #d946ef; border-radius: 2px; margin-bottom: 30px; box-shadow: 0 0 10px rgba(217, 70, 239, 0.5); }
+        .student-name { color: #e2e8f0; font-size: 28px; font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+        .code-tag { font-family: 'JetBrains Mono', monospace; color: #94a3b8; margin-top: 15px; font-size: 18px; }
+
+        h2.slide-title { font-size: 48px; font-weight: 700; color: #38bdf8; margin: 0 0 30px 0; }
+        h3 { font-size: 28px; font-weight: 600; color: #e2e8f0; margin-bottom: 10px; }
+        p, li { font-size: 22px; line-height: 1.6; color: #cbd5e1; margin-bottom: 15px; }
+        .code-font { font-family: 'JetBrains Mono', monospace; color: #f472b6; }
+
+        .content-area { display: flex; flex-direction: column; flex-grow: 1; justify-content: center; width: 100%; }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; height: 100%; align-items: center; }
+        .tiled-content { display: flex; gap: 30px; height: 100%; align-items: stretch; }
+        .tile { background: #334155; border-radius: 12px; padding: 30px; flex: 1; display: flex; flex-direction: column; border-left: 6px solid #38bdf8; transition: transform 0.2s; }
+        
+        .interactive-btn { background: #38bdf8; color: #0f172a; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 18px; transition: all 0.2s; margin-top: 10px; box-shadow: 0 4px 0 #0284c7; }
+        .interactive-btn:hover { background: #7dd3fc; }
+        .interactive-btn.secondary { background: #475569; color: #fff; box-shadow: 0 4px 0 #334155; }
+        .hidden-content { display: none; margin-top: 15px; padding: 15px; background: #0f172a; border-radius: 8px; border: 2px solid #22c55e; }
+
+        .quiz-container { background: #0f172a; border-radius: 12px; padding: 25px; border: 2px solid #38bdf8; }
+        .quiz-option { background: #334155; padding: 15px 20px; margin-bottom: 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-family: 'JetBrains Mono', monospace; color: #fff; border: 2px solid transparent; font-size: 18px; }
+        .quiz-option:hover { background: #475569; border-color: #94a3b8; }
+        .lab-input { background: #0f172a; border: 2px solid #475569; color: #fff; padding: 15px; border-radius: 8px; width: 100%; margin-bottom: 15px; font-family: 'JetBrains Mono', monospace; font-size: 18px; }
+        .lab-result { margin-top: 15px; padding: 15px; background: #000; border-radius: 8px; font-family: 'JetBrains Mono', monospace; color: #22c55e; border: 1px solid #333; }
+        .slide-container.bleed-image-layout { padding: 0; display: grid; grid-template-columns: 1fr 1fr; }
+        .slide-container.bleed-image-layout .content-container { padding: 60px; display: flex; flex-direction: column; justify-content: center; }
+        .bleed-image-side { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- BARRA DE NAVEGACIÓN --- */
+        .navigation-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(5px);
+            padding: 10px 30px;
+            border-radius: 50px;
+            border: 1px solid #38bdf8;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            z-index: 9999;
+        }
+        .nav-btn { background: #38bdf8; color: #0f172a; border: none; width: 50px; height: 50px; border-radius: 50%; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .nav-btn:hover { background: #7dd3fc; transform: scale(1.1); }
+        .nav-btn:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; transform: none; }
+        .slide-counter { font-family: 'JetBrains Mono', monospace; font-size: 20px; color: #fff; font-weight: bold; min-width: 80px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div id="viewport">
+    <div id="scaler">
+        
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 1: PORTADA -->
+        <!-- ============================================== -->
+        <div class="slide-container title-slide active">
+            <div class="title-card-overlay">
+                <h1 class="main-title">PROGRAMACIÓN BÁSICA</h1>
+                <p class="sub-title">Actividad final de TALLER PRÁCTICO DE MOODLE - FUNDE</p>
+                <div class="pink-line"></div>
+                <h2 class="student-name">BRANDON ALEJANDRO CRESPO FLORES</h2>
+                <p class="code-tag">&lt;Hello World /&gt;</p>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 2: BLOQUE 1 -->
+        <!-- ============================================== -->
+        <div class="slide-container" style="justify-content: center; align-items: center; text-align: center;">
+            <h3 class="code-font" style="color: #f472b6; font-size: 30px;">BLOQUE 01</h3>
+            <hr style="width: 150px; border-color: #38bdf8; margin: 30px auto; border-width: 4px;">
+            <h1 style="font-size: 90px; color: #fff;">Algoritmos y<br>Lógica</h1>
+            <p style="font-size: 24px;">El primer paso para hablar con las máquinas.</p>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 3: CONCEPTO ALGORITMO -->
+        <!-- ============================================== -->
+        <div class="slide-container">
+            <h2 class="slide-title">1.1. ¿Qué es un Algoritmo?</h2>
+            <div class="content-area">
+                <div class="two-column">
+                    <div>
+                        <p>Es una <strong>secuencia ordenada de pasos</strong> para resolver un problema.</p>
+                        <div style="margin-top: 30px; background: #1e293b; padding: 20px; border-radius: 12px; border: 1px dashed #475569;">
+                            <p style="font-size: 18px; margin-bottom: 10px;"><strong>Descubre sus 3 pilares:</strong></p>
+                            <button class="interactive-btn secondary" style="width:100%" onclick="reveal('feat1')">🔍 1. Preciso</button>
+                            <div id="feat1" class="hidden-content">Pasos claros sin ambigüedades.</div>
+                            <button class="interactive-btn secondary" style="width:100%" onclick="reveal('feat2')">🔍 2. Definido</button>
+                            <div id="feat2" class="hidden-content">Siempre da el mismo resultado.</div>
+                            <button class="interactive-btn secondary" style="width:100%" onclick="reveal('feat3')">🔍 3. Finito</button>
+                            <div id="feat3" class="hidden-content">Tiene inicio y fin.</div>
+                        </div>
+                    </div>
+                    <div class="tile" style="align-items: center; justify-content: center; border: 2px solid #38bdf8;">
+                        <i class="fa-solid fa-microchip" style="font-size: 120px; color: #38bdf8; margin-bottom: 30px;"></i>
+                        <h3 style="text-align: center; font-size: 32px;">Entrada &rarr; Proceso &rarr; Salida</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 4: DIAGRAMAS -->
+        <!-- ============================================== -->
+        <div class="slide-container">
+            <h2 class="slide-title">1.2. Diagramas de Flujo</h2>
+            <div class="content-area">
+                <p>Usamos símbolos estándar (ISO) para dibujar nuestra lógica antes de codificar.</p>
+                <div class="tiled-content" style="margin-top: 40px; height: 350px;">
+                    <div class="tile" style="align-items: center; text-align: center;">
+                        <div style="width: 120px; height: 60px; border: 4px solid #f472b6; border-radius: 30px; margin-bottom: 25px; display:grid; place-items:center; font-weight:bold; background:#334155;">Inicio</div>
+                        <h3>Terminador</h3>
+                    </div>
+                    <div class="tile" style="align-items: center; text-align: center; border-left-color: #a78bfa;">
+                        <div style="width: 120px; height: 60px; border: 4px solid #a78bfa; margin-bottom: 25px; display:grid; place-items:center; font-weight:bold; background:#334155;">Proceso</div>
+                        <h3>Proceso</h3>
+                    </div>
+                    <div class="tile" style="align-items: center; text-align: center; border-left-color: #22c55e;">
+                        <div style="width: 90px; height: 90px; border: 4px solid #22c55e; transform: rotate(45deg); margin-bottom: 25px; margin-top:15px; background:#334155;"></div>
+                        <h3>Decisión</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 5: JUEGO -->
+        <!-- ============================================== -->
+        <div class="slide-container">
+            <h2 class="slide-title">🎮 Mini-Juego: Adivina el Símbolo</h2>
+            <div class="content-area">
+                <div class="two-column">
+                    <div style="display: flex; justify-content: center; align-items: center; background: #000; border-radius: 20px; padding: 20px;">
+                        <div style="width: 200px; height: 100px; background: #f472b6; transform: skew(-20deg); display: flex; align-items: center; justify-content: center; border: 4px solid #fff;">
+                            <span style="transform: skew(20deg); color: #000; font-weight: bold; font-size: 24px;">Leer Dato</span>
+                        </div>
+                    </div>
+                    <div class="quiz-container">
+                        <h3 style="margin-bottom: 20px;">¿Qué hace este símbolo?</h3>
+                        <div class="quiz-option" onclick="checkQuiz(this, false, 'game1')">a) Realizar una suma</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, true, 'game1')">b) Entrada / Salida de Datos</div>
+                        <div class="quiz-option" onclick="checkQuiz(this, false, 'game1')">c) Terminar el programa</div>
+                        <div id="game1" class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 6: PSEUDOCÓDIGO -->
+        <!-- ============================================== -->
+        <div class="slide-container bleed-image-layout">
+            <div class="content-container">
+                <h2 class="slide-title">1.2.3 Pseudocódigo</h2>
+                <p>Lenguaje intermedio entre humano y máquina.</p>
+                <div style="background: #0f172a; padding: 25px; border-radius: 12px; margin-top: 20px; font-family: 'JetBrains Mono', monospace; border: 1px solid #475569; box-shadow: inset 0 0 20px #000;">
+                    <p style="color: #a78bfa; margin:0;">Algoritmo Edad</p>
+                    <p style="margin:0 0 0 20px;">Leer edad</p>
+                    <p style="margin:10px 0 0 20px; color: #f472b6;">Si edad >= 18 Entonces</p>
+                    <p style="margin:0 0 0 40px; color: #22c55e;">Escribir "Mayor"</p>
+                    <p style="margin:0 0 0 20px; color: #f472b6;">SiNo</p>
+                    <p style="margin:0 0 0 40px; color: #ef4444;">Escribir "Menor"</p>
+                    <p style="color: #a78bfa; margin:10px 0 0 0;">FinAlgoritmo</p>
+                </div>
+            </div>
+            <div style="background: #1e293b; display: flex; align-items: center; justify-content: center; border-left: 2px solid #334155;">
+                 <i class="fa-solid fa-code" style="font-size: 180px; color: #38bdf8; opacity: 0.8;"></i>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 7: BLOQUE 2 -->
+        <!-- ============================================== -->
+        <div class="slide-container" style="justify-content: center; align-items: center; text-align: center;">
+            <h3 class="code-font" style="color: #a78bfa; font-size: 30px;">BLOQUE 02</h3>
+            <hr style="width: 150px; border-color: #f472b6; margin: 30px auto; border-width: 4px;">
+            <h1 style="font-size: 90px; color: #fff;">Estructuras de<br>Control</h1>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 8: SIMULADOR IF -->
+        <!-- ============================================== -->
+        <div class="slide-container">
+            <h2 class="slide-title">2.2. Condicionales (IF - ELSE)</h2>
+            <div class="content-area">
+                <div class="two-column">
+                    <div>
+                        <p>El <strong>IF</strong> permite tomar decisiones.</p>
+                        <div class="quiz-container">
+                            <h3>🧪 Simulador de Notas:</h3>
+                            <div class="code-font" style="background:#000; padding:10px; border-radius:6px; font-size:14px; color:#cbd5e1; margin-bottom:15px;">
+                                if (nota >= 51) print("Aprobado")<br>else print("Reprobado")
+                            </div>
+                            <div style="display:flex; gap:10px;">
+                                <button class="interactive-btn secondary" style="flex:1" onclick="simulateIf(40)">Nota = 40</button>
+                                <button class="interactive-btn" style="flex:1" onclick="simulateIf(80)">Nota = 80</button>
+                            </div>
+                            <div id="simResult" class="lab-result" style="text-align: center; font-size: 20px;">> Esperando entrada...</div>
+                        </div>
+                    </div>
+                    <!-- Visualización gráfica extra -->
+                    <div style="display:flex; justify-content:center; align-items:center;">
+                        <i class="fa-solid fa-arrows-split-up-and-left" style="font-size: 120px; color: #38bdf8;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 9: RETO LÓGICA -->
+        <!-- ============================================== -->
+        <div class="slide-container">
+            <h2 class="slide-title">🧠 Reto Mental: Lógica</h2>
+            <div class="content-area" style="align-items: center;">
+                <p style="font-size: 26px;">¿Cuál es el resultado?</p>
+                <div style="background: #1e293b; padding: 30px; border: 4px solid #38bdf8; border-radius: 16px; margin: 30px 0; width: 70%; text-align: center;">
+                    <span class="code-font" style="font-size: 36px; color: #fff;">
+                        (10 > 5) <span style="color:#f472b6">AND</span> (3 == 3)
+                    </span>
+                </div>
+                <div style="display: flex; gap: 40px; margin-top: 20px;">
+                    <button class="interactive-btn" style="background: #22c55e; width: 200px;" onclick="checkLogic(true)">VERDADERO</button>
+                    <button class="interactive-btn" style="background: #ef4444; width: 200px;" onclick="checkLogic(false)">FALSO</button>
+                </div>
+                <div id="logicFeedback" style="margin-top: 20px; font-size: 24px; font-weight: bold;"></div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 10: BUCLES -->
+        <!-- ============================================== -->
+        <div class="slide-container">
+            <h2 class="slide-title">2.3. Bucles (Repeticiones)</h2>
+            <div class="content-area">
+                <div class="two-column">
+                    <div>
+                        <p>Repite código sin copiar y pegar.</p>
+                        <div class="tile" style="margin-bottom: 20px;">
+                            <h3 class="code-font"><i class="fa-solid fa-rotate"></i> FOR</h3>
+                            <p>Cuando sabes cuántas veces repetir (Ej. 10 veces).</p>
+                        </div>
+                        <div class="tile" style="border-left-color: #a78bfa;">
+                            <h3 class="code-font"><i class="fa-solid fa-arrows-spin"></i> WHILE</h3>
+                            <p>Mientras una condición sea verdadera.</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:center; align-items:center;">
+                        <div style="border: 10px solid #334155; border-top: 10px solid #38bdf8; border-radius: 50%; width: 200px; height: 200px; animation: spin 2s linear infinite;"></div>
+                        <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+                        <div style="position: absolute; font-weight: bold; font-size: 24px;">LOOP</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 11: BLOQUE 3 -->
+        <!-- ============================================== -->
+        <div class="slide-container" style="justify-content: center; align-items: center; text-align: center;">
+            <h3 class="code-font" style="color: #22c55e; font-size: 30px;">BLOQUE 03</h3>
+            <hr style="width: 150px; border-color: #f472b6; margin: 30px auto; border-width: 4px;">
+            <h1 style="font-size: 90px; color: #fff;">Manejo de<br>Cadenas</h1>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 12: LABORATORIO STRINGS -->
+        <!-- ============================================== -->
+        <div class="slide-container">
+            <h2 class="slide-title">🧮 Laboratorio: Manipulación de Texto</h2>
+            <div class="content-area">
+                <div class="two-column">
+                    <div>
+                        <label style="font-weight: bold; color: #38bdf8;">Entrada:</label>
+                        <input type="text" id="strInput" class="lab-input" placeholder="Escribe aquí..." value="Brandon">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <button class="interactive-btn secondary" onclick="runStringLab('upper')">MAYÚSCULAS</button>
+                            <button class="interactive-btn secondary" onclick="runStringLab('lower')">minúsculas</button>
+                            <button class="interactive-btn secondary" onclick="runStringLab('length')">Contar</button>
+                            <button class="interactive-btn secondary" onclick="runStringLab('reverse')">Invertir</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-weight: bold; color: #22c55e;">Resultado:</label>
+                        <div id="strOutput" class="lab-result" style="font-size: 24px; display: flex; align-items: center; justify-content: center;">...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 13: EVALUACIÓN -->
+        <!-- ============================================== -->
+        <div class="slide-container">
+            <h2 class="slide-title">Sistema de Evaluación</h2>
+            <div class="content-area">
+                <div class="tiled-content" style="margin-top: 30px;">
+                    <div class="tile" style="text-align: center;">
+                        <h1 style="color: #38bdf8; font-size: 70px;">30%</h1>
+                        <h3>Saber Conocer</h3>
+                    </div>
+                    <div class="tile" style="border-left-color: #f472b6; text-align: center;">
+                        <h1 style="color: #f472b6; font-size: 70px;">30%</h1>
+                        <h3>Saber Hacer</h3>
+                    </div>
+                    <div class="tile" style="border-left-color: #22c55e; text-align: center;">
+                        <h1 style="color: #22c55e; font-size: 70px;">40%</h1>
+                        <h3>Saber Ser</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DIAPOSITIVA 14: CIERRE -->
+        <!-- ============================================== -->
+        <div class="slide-container" style="text-align: center; justify-content: center; align-items: center;">
+            <h1 style="color: #38bdf8; margin-bottom: 20px;">¡Gracias!</h1>
+            <p style="font-size: 28px; max-width: 800px; margin: 0 auto;">"El único modo de aprender a programar es programando."</p>
+            <div style="margin-top: 50px; padding: 40px; border: 2px solid #334155; border-radius: 16px; display: inline-block; background: #0f172a;">
+                <h3 style="color: #fff; font-size: 32px;">Brandon Alejandro Crespo Flores</h3>
+                <p style="margin: 10px 0 0 0; color: #94a3b8;">Programación Básica</p>
+            </div>
+            <button class="interactive-btn" style="margin-top: 40px; background: #f472b6; font-size: 22px; padding: 15px 40px;" onclick="celebrate()">
+                <i class="fa-solid fa-party-horn"></i> 🎉 Finalizar
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<div class="navigation-bar">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="slide-counter" id="slideCounter">1 / 14</div>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
+
+<script>
+    // --- LÓGICA DE ESCALADO AUTOMÁTICO ---
+    function fitSlidesToWindow() {
+        const scaler = document.getElementById('scaler');
+        const viewport = document.getElementById('viewport');
+        const originalWidth = 1280;
+        const originalHeight = 720;
+        const padding = 20;
+
+        const availableWidth = viewport.clientWidth - padding;
+        const availableHeight = viewport.clientHeight - padding - 80;
+
+        const scaleX = availableWidth / originalWidth;
+        const scaleY = availableHeight / originalHeight;
+        
+        const scale = Math.min(scaleX, scaleY);
+        scaler.style.transform = 'scale(' + scale + ')';
+    }
+
+    window.addEventListener('resize', fitSlidesToWindow);
+    window.addEventListener('load', fitSlidesToWindow);
+
+    // --- NAVEGACIÓN ---
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide-container');
+    const totalSlides = slides.length;
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const counterDisplay = document.getElementById('slideCounter');
+
+    function updateNavigation() {
+        // Forzar limpieza
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].classList.remove('active');
+        }
+        
+        // Activar solo la actual
+        slides[currentSlideIndex].classList.add('active');
+        
+        counterDisplay.innerText = (currentSlideIndex + 1) + " / " + totalSlides;
+        prevBtn.disabled = currentSlideIndex === 0;
+        nextBtn.disabled = currentSlideIndex === totalSlides - 1;
+    }
+
+    function changeSlide(direction) {
+        const newIndex = currentSlideIndex + direction;
+        if (newIndex >= 0 && newIndex < totalSlides) {
+            currentSlideIndex = newIndex;
+            updateNavigation();
+        }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') changeSlide(1);
+        if (e.key === 'ArrowLeft') changeSlide(-1);
+    });
+
+    updateNavigation();
+
+    // --- INTERACTIVIDAD ---
+    function reveal(id) { document.getElementById(id).style.display = 'block'; }
+
+    function checkQuiz(el, isCorrect, fid) {
+        var fb = document.getElementById(fid);
+        var sibs = el.parentElement.getElementsByClassName('quiz-option');
+        for (var i = 0; i < sibs.length; i++) { sibs[i].style.background = '#334155'; }
+        if (isCorrect) {
+            el.style.background = '#065f46';
+            if(fb) fb.innerHTML = '<span style="color: #34d399">¡Correcto!</span>';
+            try { confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } }); } catch(e){}
+        } else {
+            el.style.background = '#7f1d1d';
+            if(fb) fb.innerHTML = '<span style="color: #f87171">Incorrecto.</span>';
+        }
+    }
+
+    function simulateIf(val) {
+        var res = document.getElementById('simResult');
+        if (val >= 51) {
+            res.innerHTML = '> Nota ' + val + ': <span style="color:#22c55e">Aprobado</span>';
+        } else {
+            res.innerHTML = '> Nota ' + val + ': <span style="color:#ef4444">Reprobado</span>';
+        }
+    }
+
+    function checkLogic(userChoice) {
+        var correctAnswer = true;
+        var fb = document.getElementById('logicFeedback');
+        if (userChoice === correctAnswer) {
+            fb.innerHTML = '<span style="color:#22c55e">¡Correcto!</span>';
+            try { confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); } catch(e){}
+        } else {
+            fb.innerHTML = '<span style="color:#ef4444">Error.</span>';
+        }
+    }
+
+    function runStringLab(action) {
+        var input = document.getElementById('strInput').value;
+        var out = document.getElementById('strOutput');
+        var res = "";
+        if (!input) { out.innerText = "..."; return; }
+        if (action === 'upper') res = input.toUpperCase();
+        else if (action === 'lower') res = input.toLowerCase();
+        else if (action === 'length') res = "Longitud: " + input.length;
+        else if (action === 'reverse') res = input.split('').reverse().join('');
+        out.innerText = "> " + res;
+    }
+
+    function celebrate() {
+        try {
+            var end = Date.now() + 3000;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        } catch(e) { alert("¡Felicidades!"); }
+    }
+</script>
+
+</body>
+</html>
