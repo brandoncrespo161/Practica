@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo Verano 2026 - UPDS</title>
+    
+    <!-- Fuentes Corporativas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Colores extraídos de tu código original */
+            --primary: #1f3189;    /* Azul Oscuro UPDS */
+            --secondary: #18419b;  /* Azul Medio */
+            --accent: #249cdd;     /* Celeste UPDS */
+            --white: #ffffff;
+            --light-bg: #f4f7fa;
+            --text-dark: #333333;
+            --text-gray: #555555;
+            --danger: #e74c3c;
+            --success: #27ae60; 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #2c3e50;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .slide-deck {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--white);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            flex-shrink: 0;
+            transform-origin: center center;
+            border-radius: 8px;
+        }
+
+        /* --- DIAPOSITIVAS --- */
+        .slide {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+            transform: translateY(20px);
+            padding: 40px 80px;
+            display: flex;
+            flex-direction: column;
+            background: var(--white);
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            z-index: 10;
+        }
+
+        /* --- HEADER --- */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--accent);
+            min-height: 100px;
+            flex-shrink: 0;
+        }
+
+        .header-title h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .header-title span {
+            display: block;
+            font-size: 14px;
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        /* Logo Institucional */
+        .header-logo img {
+            height: 90px;
+            width: auto;
+            object-fit: contain;
+            margin-top: -5px;
+        }
+
+        /* --- SLIDE 1: PORTADA --- */
+        .slide-cover { padding: 0; display: grid; grid-template-columns: 1fr 1.3fr; }
+        .cover-left {
+            background: linear-gradient(150deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden;
+        }
+        .particle {
+            position: absolute; width: 4px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 50%; animation: float 10s infinite linear;
+        }
+        @keyframes float { 0% { transform: translateY(0) translateX(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-700px) translateX(50px); opacity: 0; } }
+        .cover-right { padding: 80px; display: flex; flex-direction: column; justify-content: center; background: white; }
+        .cover-title-main { font-size: 56px; font-weight: 800; color: var(--primary); line-height: 1.1; margin-bottom: 20px; font-family: 'Montserrat', sans-serif; }
+        .typewriter { font-size: 20px; color: #555; border-left: 4px solid var(--accent); padding-left: 20px; min-height: 60px; display: flex; align-items: center; margin-bottom: 30px; }
+
+        /* --- SLIDE 2: CRONOGRAMA (Grid Combined) --- */
+        .grid-combined {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px; height: 100%;
+            align-items: start;
+        }
+        .card-stack { display: flex; flex-direction: column; gap: 15px; }
+        .info-card-v1 {
+            background: var(--light-bg); border-radius: 10px; padding: 20px; display: flex; align-items: center; gap: 20px;
+            border-left: 4px solid var(--accent); transition: transform 0.3s;
+        }
+        .info-card-v1:hover { transform: translateX(5px); background: #ebf5fb; }
+        .card-icon-v1 { font-size: 28px; color: var(--primary); min-width: 40px; text-align: center; }
+        .counter-box { font-size: 40px; font-weight: 800; color: var(--accent); font-family: 'Montserrat', sans-serif; line-height: 1; }
+
+        /* --- SLIDE 3: COSTOS (Adaptación Fracture) --- */
+        .fracture-container { display: flex; width: 100%; height: 400px; gap: 20px; }
+        .fracture-side { flex: 1; padding: 30px; border-radius: 15px; transition: all 0.4s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: center; }
+        .side-law { background: #f0f9ff; border: 2px solid var(--accent); }
+        .side-reality { background: #fff0f0; border: 2px solid var(--primary); }
+        .f-icon { font-size: 50px; margin-bottom: 20px; }
+        .side-law .f-icon { color: var(--accent); }
+        .side-reality .f-icon { color: var(--primary); }
+        .fracture-line {
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(0deg);
+            background: var(--secondary); color: white; padding: 10px 30px; border-radius: 20px; font-weight: bold; z-index: 5;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-family: 'Montserrat', sans-serif; text-transform: uppercase;
+        }
+
+        /* --- SLIDE 4: FLIP CARDS (REGLAS) - FIX PIXELEO --- */
+        .flip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; height: 400px; }
+        .flip-card { 
+            background-color: transparent; 
+            perspective: 1000px; 
+            cursor: pointer; 
+        }
+        
+        .flip-card-inner {
+            position: relative; width: 100%; height: 100%; text-align: center; 
+            transition: transform 0.8s;
+            transform-style: preserve-3d; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            border-radius: 15px;
+            /* FIX RENDERIZADO 3D */
+            will-change: transform;
+        }
+        
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        
+        .flip-front, .flip-back {
+            position: absolute; width: 100%; height: 100%; 
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden; 
+            border-radius: 15px;
+            padding: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            /* FIX TEXTO BORROSO */
+            -webkit-font-smoothing: subpixel-antialiased;
+            transform: translateZ(0); /* Fuerza GPU */
+        }
+        
+        .flip-front { background-color: var(--light-bg); border-top: 5px solid var(--primary); }
+        .flip-back { 
+            background-color: var(--primary); 
+            color: white; 
+            transform: rotateY(180deg) translateZ(1px); /* translateZ ayuda a evitar parpadeo */
+            border-top: 5px solid var(--accent); 
+        }
+        
+        .card-num { font-size: 60px; font-weight: 800; color: rgba(0,0,0,0.05); position: absolute; top: 10px; left: 20px; }
+
+        /* --- SLIDE 5: ACORDEÓN (OFERTA) --- */
+        .accordion-container {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 30px; height: 100%; overflow-y: auto; padding-right: 10px;
+        }
+        /* Scrollbar personalizado */
+        .accordion-container::-webkit-scrollbar { width: 8px; }
+        .accordion-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+
+        .accordion-item { border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; overflow: hidden; background: white; }
+        .accordion-header {
+            background: var(--light-bg); padding: 15px 20px; cursor: pointer; font-weight: 700; color: var(--primary);
+            display: flex; justify-content: space-between; transition: 0.3s; align-items: center;
+        }
+        .accordion-header:hover { background: #eef2f7; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; background: white; padding: 0 20px; }
+        .accordion-item.active .accordion-content { max-height: 600px; overflow-y: auto; }
+        .accordion-item.active .accordion-header { background: var(--primary); color: white; }
+        
+        .materia-list { list-style: none; padding: 15px 0; }
+        .materia-list li { 
+            padding: 8px 0; border-bottom: 1px solid #eee; font-size: 13px; display: flex; justify-content: space-between; 
+        }
+        .materia-list li:last-child { border-bottom: none; }
+        .horario-tag { background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; color: #555; }
+        .accordion-item.active .horario-tag { color: #333; }
+
+        /* --- SLIDE 6: CIERRE --- */
+        .conclusion-box {
+            text-align: center; padding: 40px; border: 2px dashed var(--primary); border-radius: 20px; margin: auto; max-width: 800px;
+        }
+
+        /* Controles */
+        .controls { position: absolute; bottom: 30px; right: 40px; display: flex; gap: 15px; z-index: 100; }
+        .btn-nav {
+            background: var(--white); border: 2px solid var(--primary); color: var(--primary); width: 45px; height: 45px;
+            border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s;
+        }
+        .btn-nav:hover { background: var(--primary); color: white; }
+        .slide-counter { position: absolute; bottom: 30px; left: 80px; color: #ccc; font-weight: 700; font-family: 'Montserrat', sans-serif; }
+
+    </style>
+</head>
+<body>
+ 
+    <div class="slide-deck" id="slideDeck">
+ 
+        <!-- SLIDE 1: PORTADA -->
+        <div class="slide slide-cover active" id="slide-1">
+            <div class="cover-left">
+                <!-- Efecto de partículas del código original -->
+                <div class="particle" style="left: 10%; animation-duration: 7s;"></div>
+                <div class="particle" style="left: 50%; animation-duration: 15s;"></div>
+                <div class="particle" style="left: 80%; animation-duration: 9s;"></div>
+                
+                <!-- Logo Grande -->
+                <img src="https://i.imgur.com/K98aGUI.png" alt="Logo UPDS" style="width: 350px; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); position: relative; z-index: 2;">
+            </div>
+            <div class="cover-right">
+                <span style="color: var(--accent); letter-spacing: 2px; font-weight: 700; text-transform: uppercase;">Gestión Académica</span>
+                <h1 class="cover-title-main">MÓDULO DE<br>VERANO 2026</h1>
+                <div class="typewriter" id="typewriterText"></div>
+                <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 20px;">
+                    <div style="font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 700; color: var(--secondary); margin-top: 5px; display: flex; align-items: center; gap: 15px;">
+                        <i class="fa-regular fa-calendar-check"></i> Enero 2026
+                        <span style="height: 20px; w-1px; border-left: 2px solid #ddd;"></span>
+                        <i class="fa-solid fa-chalkboard-user"></i> 100% Presencial
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- SLIDE 2: CRONOGRAMA -->
+        <div class="slide" id="slide-2">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>PLANIFICACIÓN</span>
+                    <h2>Fechas Críticas</h2>
+                </div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo"></div>
+            </div>
+            <div class="grid-combined">
+                <div style="display: flex; flex-direction: column; justify-content: flex-start; padding-top: 0;"> 
+                    <h3 style="color: var(--primary); font-size: 24px; margin-bottom: 20px; margin-top: 0;">Módulo de Nivelación</h3>
+                    <p style="font-size: 16px; color: var(--text-gray); line-height: 1.8; margin-bottom: 20px;">
+                        El Módulo de Verano es una oportunidad académica <strong>paralela al Módulo 6</strong>. Está diseñado para que puedas nivelar materias reprobadas, abandonadas o no tomadas anteriormente.
+                    </p>
+                    <div style="background: #e8f4fd; padding: 20px; border-radius: 10px; border-left: 4px solid var(--accent);">
+                        <strong>Importante:</strong> Se considera un "semestre aparte", permitiéndote adelantar o recuperar sin afectar tu carga del próximo semestre.
+                    </div>
+                </div>
+                <div class="card-stack">
+                    <div class="info-card-v1">
+                        <div class="card-icon-v1"><i class="fa-solid fa-money-bill-wave"></i></div>
+                        <div>
+                            <strong>Límite Pago Presencial</strong><br>
+                            <span style="font-size: 13px; color: #555;">Miércoles, 10 de Diciembre 2025</span>
+                        </div>
+                    </div>
+                    <div class="info-card-v1">
+                        <div class="card-icon-v1"><i class="fa-solid fa-credit-card"></i></div>
+                        <div>
+                            <strong>Límite Pago Semipresencial</strong><br>
+                            <span style="font-size: 13px; color: #555;">Sábado, 13 de Diciembre 2025</span>
+                        </div>
+                    </div>
+                    <div class="info-card-v1" style="background: white; border: 1px solid var(--accent); box-shadow: 0 5px 15px rgba(36, 156, 221, 0.2);">
+                        <div class="card-icon-v1"><i class="fa-solid fa-flag-checkered" style="font-size: 35px; color: var(--accent);"></i></div>
+                        <div>
+                            <strong>Inicio de Clases</strong><br>
+                            <div style="font-size: 20px; font-weight: 800; color: var(--primary);">05 Enero 2026</div>
+                            <span style="font-size: 12px; color: #666;">Modalidad Presencial y Noche</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- SLIDE 3: COSTOS -->
+        <div class="slide" id="slide-3">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>INVERSIÓN</span>
+                    <h2>Estructura de Costos</h2>
+                </div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo"></div>
+            </div>
+            
+            <p style="text-align: center; margin-bottom: 20px; color: #666;">El módulo no está sujeto a becas, manejando un costo estándar único.</p>
+
+            <div class="fracture-container">
+                <div class="fracture-side side-law">
+                    <i class="fa-solid fa-book-open f-icon"></i>
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">Materia Estándar</h3>
+                    <div style="font-size: 60px; font-weight: 800; color: var(--primary); margin: 10px 0;">Bs. 560</div>
+                    <ul style="font-size: 14px; line-height: 1.8; list-style: none; padding: 0;">
+                        <li><i class="fa-solid fa-check" style="color: var(--accent);"></i> Sin recargos adicionales</li>
+                        <li><i class="fa-solid fa-check" style="color: var(--accent);"></i> Pago único</li>
+                    </ul>
+                </div>
+                
+                <div class="fracture-line">VS</div>
+                
+                <div class="fracture-side side-reality">
+                    <i class="fa-solid fa-chalkboard-user f-icon"></i>
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">Materia Tutorial</h3>
+                    <div style="font-size: 60px; font-weight: 800; color: var(--secondary); margin: 10px 0;">Bs. 2000</div>
+                    <ul style="font-size: 14px; line-height: 1.8; list-style: none; padding: 0;">
+                        <li><i class="fa-solid fa-circle-exclamation" style="color: var(--danger);"></i> Exclusivo última materia</li>
+                        <li><i class="fa-solid fa-info-circle" style="color: var(--secondary);"></i> Requiere solicitud especial</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- SLIDE 4: REGLAS (FLIP CARDS) -->
+        <div class="slide" id="slide-4">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>NORMATIVA</span>
+                    <h2>Reglas de Inscripción</h2>
+                </div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo"></div>
+            </div>
+            <div class="flip-grid">
+                <!-- CARD 1 -->
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-front">
+                            <span class="card-num">1</span>
+                            <i class="fa-solid fa-list-check" style="font-size: 50px; color: var(--primary); margin-bottom: 20px;"></i>
+                            <h3 style="color: var(--text-dark);">Selección Correcta</h3>
+                            <p style="margin-top: 10px; font-size: 12px; color: #777;">(Girar para detalle)</p>
+                        </div>
+                        <div class="flip-back">
+                            <h3>Evita Errores</h3>
+                            <p style="font-size: 14px; line-height: 1.5; margin-top: 15px;">
+                                Al registrarte, selecciona cuidadosamente el desplegable. <br><br>
+                                <strong style="color: var(--accent);">¡No confundir Módulo 6 con Verano 2026!</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- CARD 2 -->
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-front">
+                            <span class="card-num">2</span>
+                            <i class="fa-solid fa-users" style="font-size: 50px; color: var(--primary); margin-bottom: 20px;"></i>
+                            <h3 style="color: var(--text-dark);">Apertura de Grupos</h3>
+                            <p style="margin-top: 10px; font-size: 12px; color: #777;">(Girar para detalle)</p>
+                        </div>
+                        <div class="flip-back">
+                            <h3>Mínimo 6 Estudiantes</h3>
+                            <p style="font-size: 14px; line-height: 1.5; margin-top: 15px;">
+                                Los grupos (especialmente domingos) requieren un mínimo de inscritos para abrirse.
+                                <br>Regístrate antes del inicio para asegurar tu cupo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- CARD 3 -->
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-front">
+                            <span class="card-num">3</span>
+                            <i class="fa-solid fa-layer-group" style="font-size: 50px; color: var(--primary); margin-bottom: 20px;"></i>
+                            <h3 style="color: var(--text-dark);">Carga Académica</h3>
+                            <p style="margin-top: 10px; font-size: 12px; color: #777;">(Girar para detalle)</p>
+                        </div>
+                        <div class="flip-back">
+                            <h3>6 + 1 Materias</h3>
+                            <p style="font-size: 14px; line-height: 1.5; margin-top: 15px;">
+                                Puedes tomar tus 6 materias del semestre + 1 materia intensiva (Verano/Invierno).
+                                <br>Esto no afecta tu toma del siguiente semestre.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- SLIDE 5: OFERTA (ACORDEÓN) -->
+        <div class="slide" id="slide-5">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>PROGRAMACIÓN</span>
+                    <h2>Oferta de Materias</h2>
+                </div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo"></div>
+            </div>
+            
+            <div class="accordion-container">
+                <!-- COLUMNA IZQUIERDA: PRESENCIAL -->
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <h3 style="color: var(--primary); margin-bottom: 5px;">Modalidad Presencial (Lun-Vie)</h3>
+                    
+                    <div class="accordion-item active" onclick="toggleAccordion(this)">
+                        <div class="accordion-header">Turno Mañana (07:15 - 10:15) <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="accordion-content">
+                            <ul class="materia-list">
+                                <li><span>Álgebra Lineal</span> <span class="horario-tag">07:15</span></li>
+                                <li><span>Emprendedurismo</span> <span class="horario-tag">07:15</span></li>
+                                <li><span>Técnicas de Investigación</span> <span class="horario-tag">07:15</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- NUEVO GRUPO INTERMEDIO DETECTADO EN DOCUMENTO -->
+                    <div class="accordion-item" onclick="toggleAccordion(this)">
+                        <div class="accordion-header">Turno Medio Dia (10:30 - 13:30) <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="accordion-content">
+                            <ul class="materia-list">
+                                <li><span>Deontología y Prosocialidad</span> <span class="horario-tag">10:30</span></li>
+                                <li><span>Estadística Inferencial</span> <span class="horario-tag">10:30</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" onclick="toggleAccordion(this)">
+                        <div class="accordion-header">Turno Tarde (15:00 - 18:00) <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="accordion-content">
+                            <ul class="materia-list">
+                                <li><span>Contabilidad Empresarial I</span> <span class="horario-tag">15:00</span></li>
+                                <li><span>Estadística Descriptiva</span> <span class="horario-tag">15:00</span></li>
+                                <li><span>Fundamentos Matemáticas</span> <span class="horario-tag">15:00</span></li>
+                                <li><span>Investigación Operativa I</span> <span class="horario-tag">15:00</span></li>
+                                <li><span>Lingüística</span> <span class="horario-tag">15:00</span></li>
+                                <li><span>Microeconomía I</span> <span class="horario-tag">15:00</span></li>
+                                <li><span>Programación II</span> <span class="horario-tag">15:00</span></li>
+                                <li><span>Sistemas Operativos I</span> <span class="horario-tag">15:00</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" onclick="toggleAccordion(this)">
+                        <div class="accordion-header">Turno Noche (19:00 - 22:00) <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="accordion-content">
+                            <ul class="materia-list">
+                                <li><span>Cálculo I</span> <span class="horario-tag">19:00</span></li>
+                                <li><span>Gestión de la Calidad I</span> <span class="horario-tag">19:00</span></li>
+                                <li><span>Gestión de Rec. Humanos</span> <span class="horario-tag">19:00</span></li>
+                                <li><span>Programación Numérica y Aplicaciones</span> <span class="horario-tag">19:00</span></li>
+                                <li><span>Sistemas Digitales I</span> <span class="horario-tag">19:00</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA: SEMIPRESENCIAL -->
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <h3 style="color: var(--secondary); margin-bottom: 5px;">Semipresencial (Fin de Semana)</h3>
+                    
+                    <div class="accordion-item" onclick="toggleAccordion(this)">
+                        <div class="accordion-header">Sábado <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="accordion-content">
+                            <ul class="materia-list">
+                                <li><span>Derecho Civil I</span> <span class="horario-tag">08:15</span></li>
+                                <li><span>Deontología y Prosocialidad</span> <span class="horario-tag">15:00</span></li>
+                                <li><span>Emprendedurismo</span> <span class="horario-tag">15:00</span></li>
+                                <li><span>Fundamentos de Matemáticas</span> <span class="horario-tag">15:00</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" onclick="toggleAccordion(this)">
+                        <div class="accordion-header">Domingo (08:30 - 12:30) <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="accordion-content">
+                            <ul class="materia-list">
+                                <li><span>Administración I</span> <span class="horario-tag">DOM</span></li>
+                                <li><span>Clínica Legal I</span> <span class="horario-tag">DOM</span></li>
+                                <li><span>Clínica Legal II</span> <span class="horario-tag">DOM</span></li>
+                                <li><span>Criminología</span> <span class="horario-tag">DOM</span></li>
+                                <li><span>Derecho Penal I</span> <span class="horario-tag">DOM</span></li>
+                                <li><span>Derecho Penal II</span> <span class="horario-tag">DOM</span></li>
+                                <li><span>Derechos Humanos</span> <span class="horario-tag">DOM</span></li>
+                                <li><span>Ley del Órgano Judicial</span> <span class="horario-tag">DOM</span></li>
+                                <li><span>Lingüística</span> <span class="horario-tag">DOM</span></li>
+                                <li><span>Procedimiento Civil</span> <span class="horario-tag">DOM</span></li>
+                                <li><span>Sociología Jurídica</span> <span class="horario-tag">DOM</span></li>
+                                <li><span>Técnicas de Investigación</span> <span class="horario-tag">DOM</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item" onclick="toggleAccordion(this)">
+                        <div class="accordion-header">Lunes (Semipresencial) <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="accordion-content">
+                             <ul class="materia-list">
+                                <li><span>Estadística Descriptiva</span> <span class="horario-tag">19:00</span></li>
+                                <li><span>Introducción al Derecho</span> <span class="horario-tag">19:00</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- SLIDE 6: CIERRE -->
+        <div class="slide" id="slide-6">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>ACCIÓN</span>
+                    <h2>Conclusión</h2>
+                </div>
+                <div class="header-logo"><img src="https://i.imgur.com/K98aGUI.png" alt="Logo"></div>
+            </div>
+            
+            <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div class="conclusion-box">
+                    <h2 style="font-family: 'Montserrat', sans-serif; font-size: 40px; color: var(--primary); margin-bottom: 20px;">¡No pierdas el avance!</h2>
+                    <p style="font-size: 20px; color: #555; line-height: 1.6; margin-bottom: 40px;">
+                        "El registro oportuno garantiza tu cupo y asegura la apertura de tu materia."
+                    </p>
+                    
+                    <button class="video-btn" style="background: var(--accent); font-size: 18px; padding: 15px 40px;" onclick="window.alert('Dirígete a la Oficina de Registro o usa el Formulario en Línea.')">
+                        <i class="fa-solid fa-pen-to-square"></i> INSCRIPCIONES ABIERTAS
+                    </button>
+                    
+                    <div style="margin-top: 40px; display: flex; gap: 40px; justify-content: center;">
+                        <div style="text-align: center;">
+                            <i class="fa-solid fa-location-dot" style="font-size: 30px; color: var(--primary); margin-bottom: 10px;"></i>
+                            <div style="font-weight: 700;">Oficina de Registro</div>
+                        </div>
+                         <div style="text-align: center;">
+                            <i class="fa-solid fa-laptop" style="font-size: 30px; color: var(--primary); margin-bottom: 10px;"></i>
+                            <div style="font-weight: 700;">Formulario Web</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- CONTROLES -->
+        <div class="slide-counter" id="counter">1 / 6</div>
+        <div class="controls">
+            <button class="btn-nav" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn-nav" onclick="nextSlide()"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+ 
+    </div>
+ 
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 6;
+        const deck = document.getElementById('slideDeck');
+        const BASE_WIDTH = 1280;
+        const BASE_HEIGHT = 720;
+ 
+        // SISTEMA DE ESCALADO AUTOMÁTICO
+        function resizeDeck() {
+            const scale = Math.min(window.innerWidth / BASE_WIDTH, window.innerHeight / BASE_HEIGHT) * 0.95;
+            deck.style.transform = `scale(${scale})`;
+        }
+        window.addEventListener('resize', resizeDeck);
+        window.addEventListener('load', resizeDeck);
+ 
+        // NAVEGACIÓN
+        function updateSlide() {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            document.getElementById(`slide-${currentSlide}`).classList.add('active');
+            document.getElementById('counter').innerText = `${currentSlide} / ${totalSlides}`;
+            
+            // Trigger de animaciones
+            if(currentSlide === 1) typeWriterEffect();
+        }
+        function nextSlide() { if(currentSlide < totalSlides) { currentSlide++; updateSlide(); } }
+        function prevSlide() { if(currentSlide > 1) { currentSlide--; updateSlide(); } }
+ 
+        document.addEventListener('keydown', (e) => {
+            if(e.key === "ArrowRight") nextSlide();
+            if(e.key === "ArrowLeft") prevSlide();
+        });
+ 
+        // LÓGICA ACORDEÓN (SLIDE 5)
+        function toggleAccordion(element) {
+            // Si quieres que solo se abra uno a la vez, descomenta esto:
+            // document.querySelectorAll('.accordion-item').forEach(item => {
+            //     if(item !== element) item.classList.remove('active');
+            // });
+            element.classList.toggle('active');
+        }
+ 
+        // EFECTO DE ESCRITURA (PORTADA)
+        const textToType = "Aprovecha la oportunidad para nivelar tu avance académico.";
+        const typeContainer = document.getElementById('typewriterText');
+        let typeIndex = 0;
+ 
+        function typeWriterEffect() {
+            typeContainer.innerHTML = "";
+            typeIndex = 0;
+            function type() {
+                if (typeIndex < textToType.length) {
+                    typeContainer.innerHTML += textToType.charAt(typeIndex);
+                    typeIndex++;
+                    setTimeout(type, 30);
+                }
+            }
+            type();
+        }
+ 
+        // Iniciar
+        resizeDeck();
+        typeWriterEffect();
+    </script>
+</body>
+</html>
