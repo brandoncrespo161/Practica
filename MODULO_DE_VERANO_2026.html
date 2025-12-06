@@ -157,43 +157,87 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-family: 'Montserrat', sans-serif; text-transform: uppercase;
         }
 
-        /* --- SLIDE 4: FLIP CARDS (REGLAS) - FIX PIXELEO --- */
+        /* --- SLIDE 4: FLIP CARDS (REGLAS) - LETRAS GRANDES --- */
         .flip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; height: 400px; }
+        
         .flip-card { 
             background-color: transparent; 
-            perspective: 1000px; 
+            perspective: 2000px; 
             cursor: pointer; 
         }
         
         .flip-card-inner {
-            position: relative; width: 100%; height: 100%; text-align: center; 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            text-align: center; 
             transition: transform 0.8s;
             transform-style: preserve-3d; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
             border-radius: 15px;
-            /* FIX RENDERIZADO 3D */
-            will-change: transform;
         }
         
-        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card:hover .flip-card-inner { 
+            transform: rotateY(180deg); 
+        }
         
         .flip-front, .flip-back {
-            position: absolute; width: 100%; height: 100%; 
-            -webkit-backface-visibility: hidden; /* Safari */
-            backface-visibility: hidden; 
-            border-radius: 15px;
-            padding: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            /* FIX TEXTO BORROSO */
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            /* Fix clave: Ocultar cara trasera y forzar renderizado normal */
+            -webkit-backface-visibility: hidden; 
+            backface-visibility: hidden;
+            
+            /* Suavizado optimizado */
             -webkit-font-smoothing: subpixel-antialiased;
-            transform: translateZ(0); /* Fuerza GPU */
+            -moz-osx-font-smoothing: auto;
+            
+            border-radius: 15px;
+            padding: 30px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+            
+            /* Hack para evitar parpadeo */
+            transform: translateZ(1px);
         }
         
-        .flip-front { background-color: var(--light-bg); border-top: 5px solid var(--primary); }
+        .flip-front { 
+            background-color: var(--light-bg); 
+            border-top: 5px solid var(--primary); 
+            z-index: 2;
+        }
+        
         .flip-back { 
             background-color: var(--primary); 
             color: white; 
-            transform: rotateY(180deg) translateZ(1px); /* translateZ ayuda a evitar parpadeo */
+            transform: rotateY(180deg) translateZ(1px); 
             border-top: 5px solid var(--accent); 
+            z-index: 1;
+        }
+        
+        /* AUMENTO DE FUENTES */
+        .card-title {
+            font-size: 24px; /* Aumentado de 20px */
+            font-weight: 800;
+            margin-top: 20px;
+            text-transform: uppercase;
+            color: var(--text-dark);
+        }
+
+        .flip-back h3 {
+            font-size: 26px; /* Título trasero grande */
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .flip-back p {
+            font-size: 17px; /* Aumentado de 14px */
+            line-height: 1.5;
+            margin-top: 15px;
+            font-weight: 500;
         }
         
         .card-num { font-size: 60px; font-weight: 800; color: rgba(0,0,0,0.05); position: absolute; top: 10px; left: 20px; }
@@ -293,14 +337,14 @@
                         <div class="card-icon-v1"><i class="fa-solid fa-money-bill-wave"></i></div>
                         <div>
                             <strong>Límite Pago Presencial</strong><br>
-                            <span style="font-size: 13px; color: #555;">Miércoles, 10 de Diciembre 2025</span>
+                            <span style="font-size: 13px; color: #555;">Miércoles, 10 de diciembre de 2025</span>
                         </div>
                     </div>
                     <div class="info-card-v1">
                         <div class="card-icon-v1"><i class="fa-solid fa-credit-card"></i></div>
                         <div>
                             <strong>Límite Pago Semipresencial</strong><br>
-                            <span style="font-size: 13px; color: #555;">Sábado, 13 de Diciembre 2025</span>
+                            <span style="font-size: 13px; color: #555;">Sábado, 13 de diciembre de 2025</span>
                         </div>
                     </div>
                     <div class="info-card-v1" style="background: white; border: 1px solid var(--accent); box-shadow: 0 5px 15px rgba(36, 156, 221, 0.2);">
@@ -352,7 +396,7 @@
             </div>
         </div>
  
-        <!-- SLIDE 4: REGLAS (FLIP CARDS) -->
+        <!-- SLIDE 4: FLIP CARDS (REGLAS) -->
         <div class="slide" id="slide-4">
             <div class="slide-header">
                 <div class="header-title">
@@ -368,12 +412,12 @@
                         <div class="flip-front">
                             <span class="card-num">1</span>
                             <i class="fa-solid fa-list-check" style="font-size: 50px; color: var(--primary); margin-bottom: 20px;"></i>
-                            <h3 style="color: var(--text-dark);">Selección Correcta</h3>
-                            <p style="margin-top: 10px; font-size: 12px; color: #777;">(Girar para detalle)</p>
+                            <h3 class="card-title">Selección Correcta</h3>
+                            <p style="margin-top: 10px; font-size: 14px; color: #777;">(Girar para detalle)</p>
                         </div>
                         <div class="flip-back">
                             <h3>Evita Errores</h3>
-                            <p style="font-size: 14px; line-height: 1.5; margin-top: 15px;">
+                            <p>
                                 Al registrarte, selecciona cuidadosamente el desplegable. <br><br>
                                 <strong style="color: var(--accent);">¡No confundir Módulo 6 con Verano 2026!</strong>
                             </p>
@@ -386,12 +430,12 @@
                         <div class="flip-front">
                             <span class="card-num">2</span>
                             <i class="fa-solid fa-users" style="font-size: 50px; color: var(--primary); margin-bottom: 20px;"></i>
-                            <h3 style="color: var(--text-dark);">Apertura de Grupos</h3>
-                            <p style="margin-top: 10px; font-size: 12px; color: #777;">(Girar para detalle)</p>
+                            <h3 class="card-title">Apertura de Grupos</h3>
+                            <p style="margin-top: 10px; font-size: 14px; color: #777;">(Girar para detalle)</p>
                         </div>
                         <div class="flip-back">
                             <h3>Mínimo 6 Estudiantes</h3>
-                            <p style="font-size: 14px; line-height: 1.5; margin-top: 15px;">
+                            <p>
                                 Los grupos (especialmente domingos) requieren un mínimo de inscritos para abrirse.
                                 <br>Regístrate antes del inicio para asegurar tu cupo.
                             </p>
@@ -404,12 +448,12 @@
                         <div class="flip-front">
                             <span class="card-num">3</span>
                             <i class="fa-solid fa-layer-group" style="font-size: 50px; color: var(--primary); margin-bottom: 20px;"></i>
-                            <h3 style="color: var(--text-dark);">Carga Académica</h3>
-                            <p style="margin-top: 10px; font-size: 12px; color: #777;">(Girar para detalle)</p>
+                            <h3 class="card-title">Carga Académica</h3>
+                            <p style="margin-top: 10px; font-size: 14px; color: #777;">(Girar para detalle)</p>
                         </div>
                         <div class="flip-back">
                             <h3>6 + 1 Materias</h3>
-                            <p style="font-size: 14px; line-height: 1.5; margin-top: 15px;">
+                            <p>
                                 Puedes tomar tus 6 materias del semestre + 1 materia intensiva (Verano/Invierno).
                                 <br>Esto no afecta tu toma del siguiente semestre.
                             </p>
@@ -447,7 +491,7 @@
 
                     <!-- NUEVO GRUPO INTERMEDIO DETECTADO EN DOCUMENTO -->
                     <div class="accordion-item" onclick="toggleAccordion(this)">
-                        <div class="accordion-header">Turno Medio Dia (10:30 - 13:30) <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="accordion-header">Turno Intermedio (10:30 - 13:30) <i class="fa-solid fa-chevron-down"></i></div>
                         <div class="accordion-content">
                             <ul class="materia-list">
                                 <li><span>Deontología y Prosocialidad</span> <span class="horario-tag">10:30</span></li>
@@ -462,7 +506,7 @@
                             <ul class="materia-list">
                                 <li><span>Contabilidad Empresarial I</span> <span class="horario-tag">15:00</span></li>
                                 <li><span>Estadística Descriptiva</span> <span class="horario-tag">15:00</span></li>
-                                <li><span>Fundamentos Matemáticas</span> <span class="horario-tag">15:00</span></li>
+                                <li><span>Fundamentos de Matemáticas</span> <span class="horario-tag">15:00</span></li>
                                 <li><span>Investigación Operativa I</span> <span class="horario-tag">15:00</span></li>
                                 <li><span>Lingüística</span> <span class="horario-tag">15:00</span></li>
                                 <li><span>Microeconomía I</span> <span class="horario-tag">15:00</span></li>
@@ -478,7 +522,7 @@
                             <ul class="materia-list">
                                 <li><span>Cálculo I</span> <span class="horario-tag">19:00</span></li>
                                 <li><span>Gestión de la Calidad I</span> <span class="horario-tag">19:00</span></li>
-                                <li><span>Gestión de Rec. Humanos</span> <span class="horario-tag">19:00</span></li>
+                                <li><span>Gestión de Recursos Humanos</span> <span class="horario-tag">19:00</span></li>
                                 <li><span>Programación Numérica y Aplicaciones</span> <span class="horario-tag">19:00</span></li>
                                 <li><span>Sistemas Digitales I</span> <span class="horario-tag">19:00</span></li>
                             </ul>
