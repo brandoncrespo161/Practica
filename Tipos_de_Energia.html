@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipos de Energía - Infografía Educativa</title>
+    <!-- CAMBIO: Usamos CSS para los iconos (Link) en lugar de JS. 
+         Es más compatible con Moodle y evita errores de visualización. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ESTILOS SCOPED (AISLADOS) */
+        #infografia-container {
+            --primary-color: #0f172a;
+            --secondary-color: #0ea5e9;
+            --accent-color: #10b981;
+            --bg-color: #f8fafc;
+            --text-color: #334155;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-align: left;
+        }
+
+        #infografia-container * {
+            box-sizing: border-box;
+        }
+
+        /* --- ANIMACIONES CSS (Seguras para Moodle) --- */
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes softPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes floatIcon {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* Header Adaptable */
+        #infografia-container header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e293b 100%);
+            color: white;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        #infografia-container header h1 {
+            /* Clamp para tipografía fluida: mínimo 1.5rem, ideal 5vw, máximo 2.5rem */
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            margin-top: 0;
+            line-height: 1.2;
+            color: white;
+        }
+
+        #infografia-container header p {
+            font-size: clamp(1rem, 3vw, 1.1rem);
+            opacity: 0.9;
+            font-weight: 300;
+            margin: 0;
+            color: #e2e8f0;
+        }
+
+        /* Contenedor Interno */
+        #infografia-container .inner-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1rem 2rem 1rem;
+        }
+
+        /* Grid System Principal */
+        #infografia-container .infographic-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Breakpoint para Tablet/Escritorio (> 768px) */
+        @media (min-width: 768px) {
+            #infografia-container .infographic-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            #infografia-container .full-width {
+                grid-column: span 2;
+            }
+        }
+
+        /* Cards Responsivas */
+        #infografia-container .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            border-top: 5px solid var(--secondary-color);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Ajustes para móviles pequeños (< 480px) */
+        @media (max-width: 480px) {
+            #infografia-container header {
+                padding: 1.5rem 1rem;
+                margin-bottom: 1.5rem;
+            }
+            #infografia-container .card {
+                padding: 1.2rem 1rem; /* Reducir padding lateral en móviles */
+            }
+            #infografia-container .card-icon {
+                font-size: 2.5rem; /* Icono un poco más pequeño */
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+        }
+
+        #infografia-container .card:nth-child(1) { animation-delay: 0.2s; }
+        #infografia-container .card:nth-child(2) { animation-delay: 0.4s; }
+        #infografia-container .card:nth-child(3) { animation-delay: 0.6s; }
+        #infografia-container .card:nth-child(4) { animation-delay: 0.8s; }
+
+        #infografia-container .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        #infografia-container .card-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 3rem;
+            color: var(--secondary-color);
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
+            animation: floatIcon 6s ease-in-out infinite;
+        }
+
+        #infografia-container .card h2 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            line-height: 1.4;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.8rem;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
+
+        #infografia-container .card h2 i {
+            color: var(--secondary-color);
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        #infografia-container .card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Elementos internos */
+        #infografia-container .definition-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            background-color: #f0f9ff;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        #infografia-container .unit-box {
+            font-size: 0.9rem;
+            color: #475569;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        
+        #infografia-container .unit-box:hover {
+            background: #e2e8f0;
+        }
+
+        #infografia-container ul.list-styled {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #infografia-container ul.list-styled li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.8rem;
+            position: relative;
+        }
+
+        #infografia-container ul.list-styled li::before {
+            content: "\f058"; 
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: var(--accent-color);
+            position: absolute;
+            left: 0;
+            top: 3px;
+        }
+
+        /* Tags de tipos de energía: Super Flexibles */
+        #infografia-container .video-types-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            justify-content: space-between; /* Distribución uniforme */
+        }
+
+        #infografia-container .type-tag {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 0.6rem 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            /* Flex grow y basis ajustado para móviles */
+            flex: 1 1 90px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #infografia-container .type-tag:hover {
+            transform: translateY(-3px) scale(1.05);
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+        }
+
+        #infografia-container .type-tag i {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            transition: color 0.3s;
+        }
+        
+        #infografia-container .type-tag:hover i {
+            color: white;
+        }
+
+        /* Aplicaciones Grid: Adaptación extrema */
+        #infografia-container .apps-grid {
+            display: grid;
+            /* Se ajusta automáticamente pero nunca baja de 220px antes de hacer wrap */
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        /* En pantallas muy angostas (ej. móviles antiguos), 1 columna */
+        @media (max-width: 500px) {
+            #infografia-container .apps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #infografia-container .application-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            background: #f8fafc;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        #infografia-container .application-item:hover {
+            transform: translateX(5px);
+            border-color: var(--secondary-color);
+            background: #fff;
+        }
+
+        #infografia-container .app-icon-box {
+            background-color: var(--secondary-color);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1rem;
+        }
+
+        #infografia-container footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #e2e8f0;
+            color: #64748b;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            animation: fadeInUp 1s ease-out 1s backwards;
+        }
+        
+        #infografia-container footer strong {
+            color: var(--primary-color);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Contenedor Wrapper Principal -->
+    <div id="infografia-container">
+        
+        <header>
+            <h1>Física y Energía</h1>
+            <p>Análisis de Video: Tipos de Energía</p>
+        </header>
+
+        <div class="inner-container">
+            <div class="infographic-grid">
+
+                <!-- Pregunta 1 -->
+                <article class="card full-width">
+                    <div class="card-icon"><i class="fa-solid fa-atom"></i></div>
+                    <h2>
+                        <i class="fa-solid fa-circle-question"></i> 
+                        ¿Qué entiende por energía desde el punto de vista físico?
+                    </h2>
+                    <div class="card-content">
+                        <p style="margin-bottom: 1rem;">Desde la perspectiva de la física, la energía es un concepto fundamental cuantificable:</p>
+                        <div class="definition-text">
+                            "La energía se define como la capacidad que tiene un sistema para <strong>realizar un trabajo</strong> (aplicar una fuerza a lo largo de una distancia) o producir cambios en la materia (como calentar, mover o iluminar)."
+                        </div>
+                        <div class="unit-box">
+                            <i class="fa-solid fa-ruler-combined"></i> <strong>Unidad de medida (SI):</strong> Joule (J).
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Pregunta 2 -->
+                <article class="card">
+                    <div class="card-icon"><i class="fa-solid fa-brain"></i></div>
+                    <h2>
+                        <i class="fa-solid fa-circle-question"></i>
+                        ¿Cuáles son los tipos de energía que conoce? Mencione al menos tres.
+                    </h2>
+                    <div class="card-content">
+                        <p style="margin-bottom: 1rem;">Además de las del video, existen otras formas fundamentales:</p>
+                        <ul class="list-styled">
+                            <li>
+                                <strong>Energía Química:</strong> Almacenada en enlaces atómicos. Se libera en reacciones (baterías, alimentos).
+                            </li>
+                            <li>
+                                <strong>Energía Térmica:</strong> Asociada al movimiento interno de las partículas (calor).
+                            </li>
+                            <li>
+                                <strong>Energía Eléctrica:</strong> Causada por el movimiento de cargas eléctricas en conductores.
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+
+                <!-- Pregunta 3 -->
+                <article class="card">
+                    <div class="card-icon"><i class="fa-solid fa-video"></i></div>
+                    <h2>
+                        <i class="fa-solid fa-circle-question"></i>
+                        ¿Qué tipos de energía se observan en el video?
+                    </h2>
+                    <div class="card-content">
+                        <p style="margin-bottom: 1rem;">El video explica detalladamente los siguientes tipos:</p>
+                        <div class="video-types-grid">
+                            <div class="type-tag">
+                                <i class="fa-solid fa-sun"></i>
+                                Solar
+                            </div>
+                            <div class="type-tag">
+                                <i class="fa-solid fa-wind"></i>
+                                Eólica
+                            </div>
+                            <div class="type-tag">
+                                <i class="fa-solid fa-water"></i>
+                                Hidráulica
+                            </div>
+                            <div class="type-tag">
+                                <i class="fa-solid fa-radiation"></i>
+                                Nuclear
+                            </div>
+                            <div class="type-tag">
+                                <i class="fa-solid fa-gears"></i>
+                                Mecánica
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Pregunta 4 -->
+                <article class="card full-width" style="border-top-color: var(--accent-color);">
+                    <div class="card-icon"><i class="fa-solid fa-city"></i></div>
+                    <h2>
+                        <i class="fa-solid fa-circle-question"></i>
+                        Mencione al menos tres aplicaciones de la energía en la vida cotidiana.
+                    </h2>
+                    <div class="card-content">
+                        <p style="margin-bottom: 1.5rem;">La energía es indispensable para la sociedad moderna:</p>
+                        
+                        <div class="apps-grid">
+                            <div class="application-item">
+                                <div class="app-icon-box"><i class="fa-solid fa-bus"></i></div>
+                                <div>
+                                    <strong>Transporte</strong>
+                                    <p style="font-size: 0.9rem; margin: 0;">Transformación de energía química o eléctrica en cinética.</p>
+                                </div>
+                            </div>
+
+                            <div class="application-item">
+                                <div class="app-icon-box"><i class="fa-solid fa-mobile-screen"></i></div>
+                                <div>
+                                    <strong>Tecnología</strong>
+                                    <p style="font-size: 0.9rem; margin: 0;">Energía eléctrica en baterías para dispositivos móviles.</p>
+                                </div>
+                            </div>
+
+                            <div class="application-item">
+                                <div class="app-icon-box"><i class="fa-solid fa-temperature-arrow-up"></i></div>
+                                <div>
+                                    <strong>Climatización</strong>
+                                    <p style="font-size: 0.9rem; margin: 0;">Conversión a energía térmica para calefacción o agua caliente.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+            <footer>
+                <p>Trabajo presentado por: <strong>Brandon Alejandro Crespo Flores</strong></p>
+            </footer>
+        </div>
+    </div>
+
+</body>
+</html>
