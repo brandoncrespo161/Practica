@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programación II - Día 1: Fundamentos POO (USIP)</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark-reasonable.min.css">
+
+    <style>
+        /* --- PALETA USIP (Tu paleta preferida) --- */
+        :root {
+            --usip-main: #1a4437;    /* Verde Principal */
+            --usip-dark: #0d221b;    /* Verde Oscuro */
+            --usip-accent: #4ade80;  /* Verde Luz para interacción */
+            --white: #ffffff;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #000;
+            color: var(--white);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .slide-deck {
+            width: 100%; height: 100%; position: relative;
+            background: linear-gradient(135deg, var(--usip-main) 0%, #000 100%);
+            overflow: hidden;
+        }
+
+        /* --- DIAPOSITIVAS (Estilo V2 - El que te gustó) --- */
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            padding: 40px 60px; 
+            opacity: 0; 
+            pointer-events: none; /* Importante para que no interfiera el click */
+            transform: translateY(20px) scale(0.98);
+            transition: all 0.5s ease-in-out;
+            display: flex; flex-direction: column;
+        }
+
+        .slide.active { 
+            opacity: 1; 
+            pointer-events: all; 
+            transform: translateY(0) scale(1); 
+            z-index: 10; 
+        }
+
+        /* HEADER */
+        .slide-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 15px; border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px; flex-shrink: 0;
+        }
+
+        .header-title h2 { font-size: 28px; font-weight: 700; text-transform: uppercase; margin: 0; }
+        .header-title span { color: var(--usip-accent); font-size: 14px; letter-spacing: 3px; font-weight: 600; display: block; margin-bottom: 5px; }
+        .logo-img { height: 50px; opacity: 0.9; }
+
+        /* --- ESTILOS ESPECÍFICOS POR DIAPOSITIVA --- */
+
+        /* 1. PORTADA */
+        .slide-cover { justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle at center, var(--usip-main), #000); }
+        .cover-content { background: rgba(26, 68, 55, 0.4); padding: 50px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+
+        /* 4. FÁBRICA (MOLDE) */
+        .factory-layout { display: flex; flex-grow: 1; gap: 40px; height: 100%; }
+        .mold-section { flex: 1; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 30px; display: flex; flex-direction: column; align-items: center; border: 2px dashed var(--usip-accent); justify-content: center; }
+        .memory-zone { flex: 2; background: rgba(0,0,0,0.4); border-radius: 20px; position: relative; border: 2px solid rgba(255,255,255,0.1); overflow: hidden; box-shadow: inset 0 0 50px rgba(0,0,0,0.8); }
+        .spawned-object { width: 70px; height: 70px; background: url('https://cdn-icons-png.flaticon.com/512/541/541732.png'); background-size: cover; position: absolute; animation: bounceIn 0.6s; display: flex; justify-content: center; align-items: center; font-weight: bold; color: #3e2723; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); font-family: 'Fira Code'; font-size: 12px; }
+        @keyframes bounceIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* 3. FLIP CARDS */
+        .card-container { display: flex; gap: 40px; justify-content: center; align-items: center; height: 400px; }
+        .flip-card { background-color: transparent; width: 320px; height: 350px; perspective: 1000px; cursor: pointer; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); }
+        .flip-back { background: var(--usip-main); transform: rotateY(180deg); border-color: var(--usip-accent); }
+
+        /* 5. HOTSPOTS */
+        .code-wrapper { position: relative; max-width: 800px; margin: 20px auto; }
+        .hotspot { position: absolute; background: var(--usip-accent); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; animation: pulse 2s infinite; display: flex; justify-content: center; align-items: center; font-weight: bold; color: #000; font-size: 14px; box-shadow: 0 0 10px var(--usip-accent); }
+        .tooltip { position: absolute; background: white; color: black; padding: 15px; border-radius: 8px; width: 280px; opacity: 0; visibility: hidden; transition: 0.3s; pointer-events: none; z-index: 100; transform: translateY(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .hotspot:hover + .tooltip { opacity: 1; visibility: visible; transform: translateY(0); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        /* 8. CAJA FUERTE */
+        .vault-container { width: 450px; height: 350px; background: #2a2a2a; border-radius: 20px; margin: 20px auto; position: relative; border: 10px solid #444; display: flex; justify-content: center; align-items: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        .vault-door { width: 360px; height: 260px; background: #555; border: 4px solid #777; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; position: relative; transition: transform 0.6s ease-in-out; z-index: 2; border-radius: 5px; transform-origin: left; }
+        .vault-handle { width: 90px; height: 90px; background: #888; border-radius: 50%; border: 6px solid #aaa; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 35px; color: #333; transition: 0.3s; }
+        .vault-handle:hover { background: var(--usip-accent); border-color: var(--white); }
+        .vault-door.open { transform: rotateY(-100deg); }
+        .vault-content { position: absolute; color: #ffd700; font-size: 60px; z-index: 1; text-shadow: 0 0 20px #ffd700; }
+
+        /* CONTROLES DE NAVEGACIÓN (Botones Grandes y Claros) */
+        .controls-container { position: absolute; bottom: 30px; right: 40px; display: flex; gap: 20px; z-index: 100; }
+        .btn-nav { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); color: white; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; font-size: 20px; backdrop-filter: blur(5px); }
+        .btn-nav:hover { background: var(--usip-accent); color: var(--usip-dark); border-color: var(--usip-accent); transform: scale(1.1); box-shadow: 0 0 20px var(--usip-accent); }
+        
+        .slide-counter { position: absolute; bottom: 45px; left: 40px; opacity: 0.5; font-family: 'Fira Code', monospace; font-size: 16px; letter-spacing: 2px; }
+
+        /* Utilitarios */
+        .code-font { font-family: 'Fira Code', monospace; }
+        .text-accent { color: var(--usip-accent); }
+        .text-danger { color: var(--danger); }
+        .btn-action { background: var(--usip-accent); color: var(--usip-dark); padding: 15px 30px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; box-shadow: 0 5px 15px rgba(74, 222, 128, 0.3); transition: transform 0.1s; }
+        .btn-action:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+    <div class="slide-deck">
+
+        <div class="slide slide-cover active" id="slide-1">
+            <div class="cover-content">
+                <img src="https://i.imgur.com/p8Kw2vb.png" alt="Logo USIP" style="max-width: 250px; margin-bottom: 30px; filter: drop-shadow(0 0 10px white);">
+                <h3 style="letter-spacing: 5px; margin-bottom: 10px; opacity: 0.8;">PROGRAMACIÓN II</h3>
+                <h1 style="font-size: 50px; margin-bottom: 20px; font-weight: 800;">FUNDAMENTOS DE POO</h1>
+                <div style="border: 1px solid rgba(255,255,255,0.3); padding: 15px 40px; border-radius: 50px; display: inline-block; background: rgba(0,0,0,0.5);">
+                    <p style="font-size: 14px; opacity: 0.7; margin-bottom: 5px;">DOCENTE</p>
+                    <p style="font-size: 20px; font-weight: 700; color: var(--usip-accent);">Ing. Brandon Alejandro Crespo Flores</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-2">
+            <div class="slide-header"><div class="header-title"><span>INTRODUCCIÓN</span><h2>El Problema Actual</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            <div style="display: flex; align-items: center; justify-content: space-around; height: 80%;">
+                <div style="flex: 1;">
+                    <h3 class="text-danger" style="font-size: 32px; margin-bottom: 20px;"><i class="fa-solid fa-triangle-exclamation"></i> Programación Estructurada</h3>
+                    <p style="font-size: 22px; line-height: 1.6;">"La Receta de Cocina"</p>
+                    <ul style="margin-top: 30px; margin-left: 20px; line-height: 2; font-size: 18px; opacity: 0.9;">
+                        <li>Datos y funciones están separados.</li>
+                        <li>En sistemas grandes (ej. Aeropuertos), se vuelve un caos.</li>
+                        <li>Genera "Código Espagueti".</li>
+                    </ul>
+                </div>
+                <div style="font-size: 250px; color: rgba(255,255,255,0.05);"><i class="fa-solid fa-code-branch"></i></div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-3">
+            <div class="slide-header"><div class="header-title"><span>CONCEPTOS</span><h2>El Nuevo Paradigma: POO</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            <div class="card-container">
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-front"><i class="fa-solid fa-brain" style="font-size: 80px; opacity: 0.5; margin-bottom: 20px;"></i><h3>Mentalidad</h3><p style="opacity: 0.6; margin-top: 10px;">(Pasa el mouse)</p></div>
+                        <div class="flip-back"><h3>Objetos</h3><p style="margin-top: 20px; font-size: 16px; line-height: 1.5;">Dejamos de pensar en pasos y pensamos en <strong>COSAS</strong>.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-front"><i class="fa-solid fa-cube" style="font-size: 80px; color: var(--usip-accent); margin-bottom: 20px;"></i><h3 class="text-accent">Estructura</h3></div>
+                        <div class="flip-back"><h3>Entidad Única</h3><p style="margin-top: 20px; font-size: 16px; line-height: 1.5;">Datos + Comportamiento empaquetados en una sola caja.</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-4">
+            <div class="slide-header"><div class="header-title"><span>ANALOGÍA CLAVE</span><h2>Molde vs. Galleta</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            <div class="factory-layout">
+                <div class="mold-section">
+                    <h3 class="text-accent" style="font-size: 30px; margin-bottom: 10px;">LA CLASE</h3>
+                    <p style="margin-bottom: 30px; opacity: 0.8;">El Plano (No ocupa RAM)</p>
+                    <i class="fa-regular fa-file-code" style="font-size: 80px; margin-bottom: 40px; opacity: 0.5;"></i>
+                    <button class="btn-action" onclick="spawnCookie()"><i class="fa-solid fa-gears"></i> FABRICAR OBJETO</button>
+                    <p style="font-size: 12px; margin-top: 15px; opacity: 0.6;">(Clic para instanciar)</p>
+                </div>
+                <div class="memory-zone" id="memory-zone">
+                    <h3 style="position: absolute; top: 15px; left: 20px; opacity: 0.5; font-family: 'Fira Code';">MEMORIA RAM (Heap)</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-5">
+            <div class="slide-header"><div class="header-title"><span>CÓDIGO C++</span><h2>Sintaxis de la Clase</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            <div class="code-wrapper">
+                <pre><code class="language-cpp" style="padding: 25px; border-radius: 15px; font-size: 18px; line-height: 1.6;">
+#include <iostream>
+using namespace std;
+
+// EL MOLDE
+class Celular {
+    public:
+        string marca;
+        int bateria;
+
+        void llamar() {
+            cout << "Llamando...";
+        }
+};
+                </code></pre>
+                <div class="hotspot" style="top: 85px; left: 10px;">1</div>
+                <div class="tooltip" style="top: 85px; left: 45px;"><b>class:</b> Palabra reservada para definir el molde.</div>
+
+                <div class="hotspot" style="top: 115px; left: 60px;">2</div>
+                <div class="tooltip" style="top: 115px; left: 95px;"><b>public:</b> Modificador de acceso. Todo lo de abajo es visible.</div>
+
+                <div class="hotspot" style="bottom: 40px; left: 15px;">3</div>
+                <div class="tooltip" style="bottom: 70px; left: 45px; border-left: 4px solid red;"><b>;</b> ¡Obligatorio! Si olvidas el punto y coma, no compila.</div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-6">
+            <div class="slide-header"><div class="header-title"><span>PRÁCTICA</span><h2>Haciéndolo Realidad (Main)</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            <div style="display: flex; gap: 30px; height: 100%;">
+                <div style="flex: 1.2;">
+                    <pre><code class="language-cpp" style="padding: 25px; font-size: 16px; border-radius: 15px; height: 100%;">
+int main() {
+    // 1. Instanciar (Nace la galleta)
+    Celular miCelular; 
+
+    // 2. Dar Valores
+    miCelular.marca = "Samsung";
+    miCelular.bateria = 100;
+
+    // 3. Usar Comportamiento
+    cout << "Mi " << miCelular.marca;
+    miCelular.llamar();
+
+    return 0;
+}
+                    </code></pre>
+                </div>
+                <div style="flex: 1; background: #111; padding: 25px; border-radius: 15px; font-family: 'Fira Code'; color: #ccc; border: 1px solid #333; display: flex; flex-direction: column;">
+                    <div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">>_ Terminal Output</div>
+                    <div id="term-out" style="flex-grow: 1;"></div>
+                    <button class="btn-action" style="width: 100%; border-radius: 10px;" onclick="runTerm()">
+                        <i class="fa-solid fa-play"></i> EJECUTAR CÓDIGO
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-7">
+            <div class="slide-header"><div class="header-title"><span>SEGURIDAD</span><h2>El Peligro de "Public"</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            <div style="text-align: center; display: flex; flex-direction: column; justify-content: center; height: 70%;">
+                <div style="background: rgba(239, 68, 68, 0.1); padding: 30px; border-radius: 20px; border: 2px solid var(--danger); display: inline-block; margin: 0 auto;">
+                    <h2 class="text-danger" style="font-family: 'Fira Code'; font-size: 35px;">miCelular.bateria = -5000;</h2>
+                </div>
+                <p style="font-size: 24px; margin-top: 40px; line-height: 1.5;">
+                    ¿Tiene sentido físico? <strong>No.</strong><br>
+                    ¿El compilador lo permite si es <code>public</code>? <strong>Sí.</strong>
+                </p>
+                <div style="margin-top: 40px;">
+                    <i class="fa-solid fa-bomb" style="font-size: 100px; color: var(--danger); animation: pulse 1s infinite;"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-8">
+            <div class="slide-header"><div class="header-title"><span>SOLUCIÓN</span><h2>Encapsulamiento</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            <p style="text-align: center; margin-bottom: 20px;">Analogía: Lo importante (Private) va dentro. La manija (Public) va fuera.</p>
+            <div class="vault-container">
+                <div class="vault-content"><i class="fa-solid fa-coins"></i> PRIVATE</div>
+                <div class="vault-door" id="vDoor">
+                    <h3 style="margin-bottom: 20px; color: #333;">INTERFAZ PÚBLICA</h3>
+                    <div class="vault-handle" onclick="openVault()"><i class="fa-solid fa-key"></i></div>
+                    <p style="font-size: 12px; color: #333; margin-top: 15px;">(Clic para abrir usando la llave correcta)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-9">
+            <div class="slide-header"><div class="header-title"><span>IMPLEMENTACIÓN</span><h2>Setters y Getters</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            <div style="display: flex; gap: 30px; height: 100%;">
+                <div style="flex: 1.2;">
+                    <pre><code class="language-cpp" style="padding: 20px; font-size: 16px; border-radius: 15px; height: 100%;">
+class Celular {
+  private: 
+    int bateria; // Candado cerrado
+
+  public:
+    // Setter: El Guardia de Seguridad
+    void setBateria(int nivel) {
+      if(nivel > 0 && nivel <= 100) {
+        bateria = nivel;
+      } else {
+        cout << "Error!";
+      }
+    }
+};
+                    </code></pre>
+                </div>
+                <div style="flex: 1; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                    <h3 class="text-accent" style="margin-bottom: 20px;"><i class="fa-solid fa-vial"></i> Prueba el Setter</h3>
+                    <p style="font-size: 16px; margin-bottom: 15px;">Intenta asignar un valor. El sistema rechazará números fuera de 0-100.</p>
+                    
+                    <input type="number" id="batInput" placeholder="Ej: 150" style="padding: 15px; width: 100%; margin-bottom: 15px; border-radius: 8px; border: none; font-size: 18px;">
+                    <button class="btn-action" style="width: 100%; border-radius: 8px;" onclick="testSet()">PROBAR ASIGNACIÓN</button>
+                    
+                    <div id="setRes" style="margin-top: 25px; font-family: 'Fira Code'; font-size: 18px; min-height: 40px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-10">
+            <div class="slide-header"><div class="header-title"><span>CIERRE</span><h2>Práctica: Cuenta Bancaria</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            <div style="display: flex; gap: 50px; height: 100%;">
+                <div style="flex: 1;">
+                    <h3 class="text-accent" style="margin-bottom: 25px; font-size: 24px;">Instrucciones Paso a Paso:</h3>
+                    <ol style="line-height: 2.2; font-size: 20px; margin-left: 20px;">
+                        <li>Crea la clase <code>CuentaBancaria</code>.</li>
+                        <li>Añade atributo <strong>Privado</strong>: <code>double saldo;</code></li>
+                        <li>Añade métodos <strong>Públicos</strong>:
+                            <ul style="margin-top: 10px; font-size: 18px; color: #bbb;">
+                                <li><code>depositar(monto)</code> (Validar > 0)</li>
+                                <li><code>retirar(monto)</code> (Validar saldo suficiente)</li>
+                            </ul>
+                        </li>
+                        <li>En el <code>main</code>, prueba depositar y retirar.</li>
+                    </ol>
+                </div>
+                <div style="flex: 0.8; background: #111; padding: 30px; border-radius: 15px; border: 1px solid #333; display: flex; flex-direction: column; justify-content: center;">
+                    <h3 style="color: #fff; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">Resultado Esperado:</h3>
+                    <div style="color: var(--usip-accent); font-family: 'Fira Code'; font-size: 16px; line-height: 2;">
+                        > Cuenta creada con saldo 0.<br>
+                        > Depositando 100... Saldo: 100.<br>
+                        > Retirando 50... Saldo: 50.<br>
+                        > Retirando 200... <span style="color: var(--danger);">Error: Saldo insuficiente.</span><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide" id="slide-11" style="justify-content: center; align-items: center; text-align: center;">
+            <i class="fa-solid fa-check-circle" style="font-size: 100px; color: var(--usip-accent); margin-bottom: 30px;"></i>
+            <h1 style="font-size: 50px; margin-bottom: 20px;">¡Clase Finalizada!</h1>
+            <p style="font-size: 24px; opacity: 0.8;">Nos vemos mañana para ver: <strong>Constructores</strong></p>
+        </div>
+
+        <div class="slide-counter" id="cnt">1 / 11</div>
+        <div class="controls-container">
+            <button class="btn-nav" onclick="prev()"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn-nav" onclick="next()"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+
+        // NAVEGACIÓN
+        let current = 1;
+        const total = 11;
+        
+        function showSlide(n) {
+            // Ocultar todos
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            // Mostrar actual
+            document.getElementById(`slide-${n}`).classList.add('active');
+            // Actualizar contador
+            document.getElementById('cnt').innerText = `${n} / ${total}`;
+        }
+
+        function next() {
+            if(current < total) {
+                current++;
+                showSlide(current);
+            }
+        }
+
+        function prev() {
+            if(current > 1) {
+                current--;
+                showSlide(current);
+            }
+        }
+
+        // Teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowRight") next();
+            if (e.key === "ArrowLeft") prev();
+        });
+
+        // LÓGICA FÁBRICA (S4)
+        function spawnCookie() {
+            const zone = document.getElementById('memory-zone');
+            const obj = document.createElement('div');
+            obj.className = 'spawned-object';
+            // Posición random segura
+            const x = Math.random() * (zone.clientWidth - 80);
+            const y = Math.random() * (zone.clientHeight - 80);
+            obj.style.left = x + 'px';
+            obj.style.top = y + 'px';
+            // Texto aleatorio
+            obj.innerText = "Obj_" + Math.floor(Math.random()*99);
+            zone.appendChild(obj);
+        }
+
+        // LÓGICA TERMINAL (S6)
+        function runTerm() {
+            const t = document.getElementById('term-out');
+            t.innerHTML = "> Compilando...<br>";
+            setTimeout(() => t.innerHTML += "> Asignando memoria...<br>", 500);
+            setTimeout(() => t.innerHTML += "> Inicializando...<br>", 1000);
+            setTimeout(() => t.innerHTML += "> <span style='color:lime'>Mi Samsung</span><br>", 1500);
+            setTimeout(() => t.innerHTML += "> <span style='color:lime'>Llamando...</span>", 2000);
+        }
+
+        // LÓGICA CAJA FUERTE (S8)
+        function openVault() {
+            const door = document.getElementById('vDoor');
+            door.classList.toggle('open');
+        }
+
+        // LÓGICA SETTER (S9)
+        function testSet() {
+            const val = parseInt(document.getElementById('batInput').value);
+            const res = document.getElementById('setRes');
+            
+            if (val > 0 && val <= 100) {
+                res.innerHTML = `<span style="color: var(--usip-accent);"><i class="fa-solid fa-check"></i> Asignación Exitosa: ${val}%</span>`;
+            } else {
+                res.innerHTML = `<span style="color: var(--danger);"><i class="fa-solid fa-xmark"></i> Error: Valor inválido</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
