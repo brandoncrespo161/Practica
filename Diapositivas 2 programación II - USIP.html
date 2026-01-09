@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programación II - Profundización POO (USIP)</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark-reasonable.min.css">
+
+    <style>
+        /* --- PALETA USIP --- */
+        :root {
+            --usip-main: #1a4437;    /* Verde Principal */
+            --usip-dark: #0d221b;    /* Verde Oscuro */
+            --usip-accent: #4ade80;  /* Verde Luz para interacción */
+            --white: #ffffff;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #000;
+            color: var(--white);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .slide-deck {
+            width: 100%; height: 100%; position: relative;
+            background: linear-gradient(135deg, var(--usip-main) 0%, #000 100%);
+            overflow: hidden;
+        }
+
+        /* --- DIAPOSITIVAS --- */
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            padding: 40px 60px; 
+            opacity: 0; 
+            pointer-events: none;
+            transform: translateY(20px) scale(0.98);
+            transition: all 0.5s ease-in-out;
+            display: flex; flex-direction: column;
+        }
+
+        .slide.active { 
+            opacity: 1; 
+            pointer-events: all; 
+            transform: translateY(0) scale(1); 
+            z-index: 10; 
+        }
+
+        /* HEADER */
+        .slide-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 15px; border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px; flex-shrink: 0;
+        }
+
+        .header-title h2 { font-size: 28px; font-weight: 700; text-transform: uppercase; margin: 0; }
+        .header-title span { color: var(--usip-accent); font-size: 14px; letter-spacing: 3px; font-weight: 600; display: block; margin-bottom: 5px; }
+        .logo-img { height: 50px; opacity: 0.9; }
+
+        /* --- UTILITARIOS --- */
+        .code-font { font-family: 'Fira Code', monospace; }
+        .text-accent { color: var(--usip-accent); }
+        .text-danger { color: var(--danger); }
+        .text-info { color: var(--info); }
+        
+        .btn-action { 
+            background: var(--usip-accent); color: var(--usip-dark); 
+            padding: 12px 25px; border-radius: 50px; border: none; 
+            font-weight: bold; cursor: pointer; font-size: 14px; 
+            box-shadow: 0 5px 15px rgba(74, 222, 128, 0.3); 
+            transition: transform 0.1s; display: inline-flex; align-items: center; gap: 10px; margin-top: 10px;
+        }
+        .btn-action:active { transform: scale(0.95); }
+
+        /* --- LAYOUTS ESPECÍFICOS --- */
+        .split-layout { display: flex; gap: 40px; height: 100%; align-items: center; }
+        .code-col { flex: 1.2; height: 100%; overflow: auto; }
+        .visual-col { flex: 0.8; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); }
+
+        .concept-card {
+            background: rgba(0,0,0,0.3); border-left: 4px solid var(--usip-accent);
+            padding: 20px; margin-bottom: 15px; border-radius: 0 10px 10px 0;
+        }
+        .concept-card h4 { color: var(--usip-accent); margin-bottom: 5px; }
+
+        .terminal-input {
+            background: transparent; border: none; border-bottom: 2px solid var(--usip-accent);
+            color: white; font-family: 'Fira Code'; font-size: 18px; width: 80px; text-align: center;
+        }
+        .terminal-input:focus { outline: none; border-color: white; }
+
+        /* 1. PORTADA */
+        .slide-cover { justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle at center, var(--usip-main), #000); }
+        .cover-content { background: rgba(26, 68, 55, 0.4); padding: 50px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+
+        /* CONTROLES DE NAVEGACIÓN */
+        .controls-container { position: absolute; bottom: 30px; right: 40px; display: flex; gap: 20px; z-index: 100; }
+        .btn-nav { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); color: white; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; font-size: 20px; backdrop-filter: blur(5px); }
+        .btn-nav:hover { background: var(--usip-accent); color: var(--usip-dark); border-color: var(--usip-accent); transform: scale(1.1); box-shadow: 0 0 20px var(--usip-accent); }
+        .slide-counter { position: absolute; bottom: 45px; left: 40px; opacity: 0.5; font-family: 'Fira Code', monospace; font-size: 16px; letter-spacing: 2px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="slide-deck">
+
+        <!-- SLIDE 1: PORTADA -->
+        <div class="slide slide-cover active" id="slide-1">
+            <div class="cover-content">
+                <img src="https://i.imgur.com/p8Kw2vb.png" alt="Logo USIP" style="max-width: 250px; margin-bottom: 30px; filter: drop-shadow(0 0 10px white);">
+                <h3 style="letter-spacing: 5px; margin-bottom: 10px; opacity: 0.8;">PROGRAMACIÓN II</h3>
+                <h1 style="font-size: 45px; margin-bottom: 20px; font-weight: 800;">MÓDULO DE PROFUNDIZACIÓN POO</h1>
+                <div style="border: 1px solid rgba(255,255,255,0.3); padding: 15px 40px; border-radius: 50px; display: inline-block; background: rgba(0,0,0,0.5);">
+                    <p style="font-size: 14px; opacity: 0.7; margin-bottom: 5px;">DOCENTE</p>
+                    <p style="font-size: 20px; font-weight: 700; color: var(--usip-accent);">Ing. Brandon Alejandro Crespo Flores</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: READ-ONLY -->
+        <div class="slide" id="slide-2">
+            <div class="slide-header"><div class="header-title"><span>ENCAPSULAMIENTO AVANZADO</span><h2>1. Solo Lectura (Read-Only)</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="visual-col">
+                    <i class="fa-solid fa-dna" style="font-size: 100px; color: var(--warning); margin-bottom: 20px;"></i>
+                    <h3>Analogía: El ADN</h3>
+                    <p style="text-align: center; margin-top: 10px; opacity: 0.8;">
+                        Tú naces con un tipo de sangre. El médico puede <b>LEERLO (Get)</b>, pero nadie puede <b>CAMBIARLO (Set)</b>.
+                    </p>
+                </div>
+                <div class="code-col">
+                    <h4 class="text-accent" style="margin-bottom: 10px;">Estructura en C++:</h4>
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 20px; font-size: 16px;">
+class Humano {
+private:
+    string tipoSangre; // Se asigna al nacer
+
+public:
+    // ✅ GETTER (Existe: Se puede ver)
+    string getSangre() {
+        return this->tipoSangre;
+    }
+
+    // ❌ SETTER (ELIMINADO)
+    // Al borrar el set, la variable se vuelve
+    // inmutable desde fuera. Protegemos la integridad.
+};
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: CALCULATED GETTERS -->
+        <div class="slide" id="slide-3">
+            <div class="slide-header"><div class="header-title"><span>EFICIENCIA</span><h2>2. Getter Calculado (Falso Atributo)</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="code-col">
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 20px; font-size: 16px;">
+class Rectangulo {
+private:
+    int base, altura;
+    // ¡NO guardamos 'area' aquí! Ahorramos memoria.
+
+public:
+    // ... Setters normales para base y altura ...
+
+    // EL TRUCO: Calcular "al vuelo"
+    // El dato se crea en el instante que se pide
+    int getArea() {
+        // CPU trabaja aquí, Memoria descansa
+        return this->base * this->altura;
+    }
+};
+                    </code></pre>
+                </div>
+                <div class="visual-col" style="background: rgba(0,0,0,0.2);">
+                    <i class="fa-solid fa-calculator" style="font-size: 60px; color: var(--usip-accent); margin-bottom: 20px;"></i>
+                    <h3>Prueba en Vivo</h3>
+                    <p style="font-size: 14px; margin-bottom: 20px;">El resultado no existe en RAM, se procesa ahora.</p>
+                    
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                        Base: <input type="number" id="baseInput" value="5" class="terminal-input" oninput="calcArea()">
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 20px;">
+                        Altura: <input type="number" id="altInput" value="10" class="terminal-input" oninput="calcArea()">
+                    </div>
+                    
+                    <div style="background: var(--usip-dark); padding: 15px; border-radius: 10px; border: 1px solid var(--usip-accent); width: 100%; text-align: center;">
+                        <code>getArea() devuelve: <span id="areaResult" style="color: var(--usip-accent); font-weight: bold; font-size: 20px;">50</span></code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: WRITE-ONLY -->
+        <div class="slide" id="slide-4">
+            <div class="slide-header"><div class="header-title"><span>SEGURIDAD EXTREMA</span><h2>3. Solo Escritura (Write-Only)</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div style="display: flex; gap: 40px; align-items: center; justify-content: center; height: 100%;">
+                <div style="text-align: center; flex: 1;">
+                    <i class="fa-solid fa-user-secret" style="font-size: 120px; color: #fff; margin-bottom: 30px;"></i>
+                    <h3 class="text-accent">Ejemplo: Contraseñas</h3>
+                    <p style="font-size: 20px; margin-top: 20px; line-height: 1.6;">
+                        Puedes <b>ESCRIBIR (Set)</b> tu contraseña en el cajero.<br>
+                        Pero el cajero <b>NUNCA</b> te permite leerla (te muestra ****).
+                    </p>
+                </div>
+                <div style="flex: 1;">
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 25px; font-size: 18px;">
+class CajaFuerte {
+private:
+    int claveSecreta;
+
+public:
+    // ✅ SETTER (Para configurar)
+    void setClave(int pin) {
+        this->claveSecreta = pin;
+    }
+
+    // ❌ GETTER (ELIMINADO)
+    // Nadie puede ver la clave una vez guardada.
+    
+    // Método para verificar sin revelar
+    bool intentarAbrir(int intento) {
+        return intento == this->claveSecreta;
+    }
+};
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: ANALOGÍA INTERFACES -->
+        <div class="slide" id="slide-5">
+            <div class="slide-header"><div class="header-title"><span>ABSTRACCIÓN</span><h2>El Concepto del "Enchufe"</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            <div style="display: flex; gap: 50px; align-items: center; justify-content: center; height: 80%;">
+                <div style="text-align: center; flex: 1;">
+                    <div style="position: relative; display: inline-block;">
+                        <i class="fa-solid fa-plug-circle-check" style="font-size: 150px; color: var(--info);"></i>
+                    </div>
+                    <h3 class="text-info" style="margin-top: 20px;">La Pared (Interfaz)</h3>
+                    <p style="margin-top: 15px; font-size: 18px; line-height: 1.6;">
+                        La pared no sabe qué vas a enchufar.<br>
+                        Pero pone una <b>REGLA</b>: "Si quieres energía, debes tener 2 patas".
+                    </p>
+                </div>
+                <div style="border-left: 2px dashed rgba(255,255,255,0.2); height: 200px;"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                    <div class="concept-card">
+                        <h4><i class="fa-solid fa-tv"></i> Televisor (Clase Hija)</h4>
+                        <p>Cumple la regla: Tiene enchufe.</p>
+                    </div>
+                    <div class="concept-card">
+                        <h4><i class="fa-solid fa-blender"></i> Licuadora (Clase Hija)</h4>
+                        <p>Cumple la regla: Tiene enchufe.</p>
+                    </div>
+                    <p style="opacity: 0.7; font-size: 14px;">Ambos son distintos, pero ambos respetan el contrato de la interfaz.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: CODIGO INTERFACES -->
+        <div class="slide" id="slide-6">
+            <div class="slide-header"><div class="header-title"><span>IMPLEMENTACIÓN</span><h2>El Contrato en C++</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="code-col">
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 20px; font-size: 16px;">
+// CLASE FANTASMA (Abstracta / Interfaz)
+class Figura {
+public:
+    // "virtual" + "= 0" = CONTRATO ESTRICTO
+    // Esto es solo la regla, no hay código real aquí.
+    virtual void calcularArea() = 0; 
+};
+
+// CLASE REAL (Hijo que firma el contrato)
+class Cuadrado : public Figura {
+public:
+    int lado;
+    // OBLIGADO a implementar esto, o da error:
+    void calcularArea() {
+        cout << "Area: " << lado * lado;
+    }
+};
+                    </code></pre>
+                </div>
+                <div class="visual-col">
+                    <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; text-align: left; width: 100%;">
+                        <h4 style="color: var(--danger); margin-bottom: 10px;">Reglas de Oro:</h4>
+                        <ul style="margin-left: 20px; line-height: 1.8;">
+                            <li>No puedes crear una <code>Figura</code> (es una idea).</li>
+                            <li>Debes crear un <code>Cuadrado</code> (es real).</li>
+                            <li>Si el Cuadrado no calcula el área, el programa no compila.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: CONSTRUCTORES Y DESTRUCTORES -->
+        <div class="slide" id="slide-7">
+            <div class="slide-header"><div class="header-title"><span>CICLO DE VIDA</span><h2>Nacimiento y Muerte</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="code-col">
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 15px; font-size: 14px;">
+class Mascota {
+public:
+    // 🐣 CONSTRUCTOR (Se ejecuta AUTOMÁTICO al nacer)
+    // Inicializa variables para que no tengan "basura"
+    Mascota() {
+        cout << "[Nace]: Hola Mundo!";
+        hambre = 0; 
+    }
+
+    // 💀 DESTRUCTOR (Con tilde ~)
+    // Se ejecuta AUTOMÁTICO al morir (limpieza)
+    ~Mascota() {
+        cout << "[Muere]: Adios Mundo...";
+    }
+};
+                    </code></pre>
+                </div>
+                <div class="visual-col" style="justify-content: flex-start;">
+                    <h3 class="text-accent" style="margin-bottom: 20px;">Simulador de Memoria</h3>
+                    <div id="life-log" style="width: 100%; height: 150px; background: #000; color: #0f0; font-family: 'Fira Code'; padding: 10px; overflow-y: auto; font-size: 12px; margin-bottom: 20px; border: 1px solid #333;">
+                        > Sistema listo... esperando objeto...
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-action" onclick="birthPet()"><i class="fa-solid fa-egg"></i> Nacer (Constructor)</button>
+                        <button class="btn-action" style="background: var(--danger); color: white;" onclick="killPet()"><i class="fa-solid fa-skull"></i> Morir (Destructor)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: SOBRECARGA CONSTRUCTORES -->
+        <div class="slide" id="slide-8">
+            <div class="slide-header"><div class="header-title"><span>POLIMORFISMO EN CREACIÓN</span><h2>Sobrecarga de Constructores</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="code-col">
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 15px; font-size: 14px;">
+class Perro {
+    string nombre;
+public:
+    // OPCIÓN A: Perro genérico (Sin parámetros)
+    Perro() {
+        this->nombre = "Perro callejero";
+    }
+
+    // OPCIÓN B: Perro con dueño (Con parámetros)
+    Perro(string nombreElegido) {
+        this->nombre = nombreElegido;
+    }
+};
+
+// Main:
+// Perro p1;           -> "Perro callejero"
+// Perro p2("Bobby");  -> "Bobby"
+                    </code></pre>
+                </div>
+                <div class="visual-col">
+                    <h3 class="text-info">Fábrica de Objetos</h3>
+                    <div id="dog-display" style="margin: 20px 0; font-size: 20px; font-weight: bold; min-height: 30px; color: var(--warning);">
+                        ...
+                    </div>
+                    <button class="btn-action" onclick="createDog(1)">Crear Perro()</button>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                        <input type="text" id="dogName" placeholder="Nombre" class="terminal-input" style="width: 100px;">
+                        <button class="btn-action" onclick="createDog(2)">Crear Perro(nombre)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: PUNTERO THIS -->
+        <div class="slide" id="slide-9">
+            <div class="slide-header"><div class="header-title"><span>IDENTIDAD</span><h2>El Puntero "this"</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div style="display: flex; gap: 40px; justify-content: center; align-items: center; height: 100%;">
+                <div style="flex: 1;">
+                    <div class="concept-card">
+                        <h4><i class="fa-solid fa-triangle-exclamation"></i> El Problema: Ambigüedad</h4>
+                        <p style="font-size: 16px;">Si el parámetro se llama <code>edad</code> y la variable de clase se llama <code>edad</code>... ¿A cuál te refieres?</p>
+                    </div>
+                    <div class="concept-card" style="border-color: var(--warning);">
+                        <h4><i class="fa-solid fa-hand-point-up"></i> La Solución: this-></h4>
+                        <p style="font-size: 16px;"><code>this-></code> significa "MI PROPIA variable". Es como señalarse a uno mismo para evitar confusión.</p>
+                    </div>
+                </div>
+                <div style="flex: 1.2;">
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 25px; font-size: 18px;">
+class Persona {
+    int edad;
+public:
+    // Sombreado de variables (Shadowing)
+    void setEdad(int edad) {
+        
+        // edad = edad; // ❌ ERROR: Se copia a sí misma
+        
+        this->edad = edad; // ✅ CORRECTO
+        // "En MI caja (this), guarda el dato que llega"
+    }
+};
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: SOBRECARGA OPERADORES -->
+        <div class="slide" id="slide-10">
+            <div class="slide-header"><div class="header-title"><span>MAGIA (1.9)</span><h2>Sobrecarga de Operadores</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="code-col">
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 15px; font-size: 14px;">
+class Vector {
+public:
+    int x, y;
+    
+    // Enseñamos a SUMAR (+) dos Vectores
+    // Sintaxis: operator+
+    Vector operator+(Vector otro) {
+        Vector nuevo;
+        nuevo.x = this->x + otro.x;
+        nuevo.y = this->y + otro.y;
+        return nuevo;
+    }
+};
+
+// Uso en main:
+// Vector v3 = v1 + v2;  ¡Ahora la CPU sabe sumar objetos!
+                    </code></pre>
+                </div>
+                <div class="visual-col">
+                    <h3 class="text-accent">Suma de Coordenadas</h3>
+                    <div style="display: flex; gap: 10px; align-items: center; margin: 20px 0;">
+                        <div style="text-align: center;">
+                            <p>Vec A</p>
+                            <input type="number" id="ax" value="2" class="terminal-input" style="width: 50px">,
+                            <input type="number" id="ay" value="3" class="terminal-input" style="width: 50px">
+                        </div>
+                        <i class="fa-solid fa-plus text-accent"></i>
+                        <div style="text-align: center;">
+                            <p>Vec B</p>
+                            <input type="number" id="bx" value="1" class="terminal-input" style="width: 50px">,
+                            <input type="number" id="by" value="5" class="terminal-input" style="width: 50px">
+                        </div>
+                    </div>
+                    
+                    <button class="btn-action" onclick="sumVectors()">Ejecutar operator+</button>
+                    
+                    <div id="vecResult" style="margin-top: 20px; font-family: 'Fira Code'; font-size: 24px; color: var(--warning);">
+                        Resultado: ( ? , ? )
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: CIERRE -->
+        <div class="slide" id="slide-11" style="justify-content: center; align-items: center; text-align: center;">
+            <i class="fa-solid fa-check-double" style="font-size: 100px; color: var(--usip-accent); margin-bottom: 30px;"></i>
+            <h1 style="font-size: 50px; margin-bottom: 20px;">¡Módulo Completado!</h1>
+            <div style="text-align: left; display: inline-block; margin-top: 20px;">
+                <p><i class="fa-solid fa-check text-accent"></i> Encapsulamiento Avanzado</p>
+                <p><i class="fa-solid fa-check text-accent"></i> Interfaces y Clases Abstractas</p>
+                <p><i class="fa-solid fa-check text-accent"></i> Constructores y Destructores</p>
+                <p><i class="fa-solid fa-check text-accent"></i> Puntero This y Operadores</p>
+            </div>
+            <p style="font-size: 20px; opacity: 0.8; margin-top: 40px;">Próximo tema: <strong>Herencia Múltiple y Plantillas (Templates)</strong></p>
+        </div>
+
+        <!-- FOOTER / CONTROLS -->
+        <div class="slide-counter" id="cnt">1 / 11</div>
+        <div class="controls-container">
+            <button class="btn-nav" onclick="prev()"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn-nav" onclick="next()"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+
+        // NAVEGACIÓN
+        let current = 1;
+        const total = 11;
+        
+        function showSlide(n) {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            document.getElementById(`slide-${n}`).classList.add('active');
+            document.getElementById('cnt').innerText = `${n} / ${total}`;
+        }
+
+        function next() {
+            if(current < total) { current++; showSlide(current); }
+        }
+
+        function prev() {
+            if(current > 1) { current--; showSlide(current); }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowRight") next();
+            if (e.key === "ArrowLeft") prev();
+        });
+
+        // INTERACTIVIDAD S3 (Calculated Getter)
+        function calcArea() {
+            const b = parseInt(document.getElementById('baseInput').value) || 0;
+            const h = parseInt(document.getElementById('altInput').value) || 0;
+            document.getElementById('areaResult').innerText = b * h;
+        }
+
+        // INTERACTIVIDAD S7 (Constructores)
+        function birthPet() {
+            const log = document.getElementById('life-log');
+            log.innerHTML += `<div><span style="color:yellow">[Constructor]:</span> Un huevo se rompe. Nace Mascota!</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function killPet() {
+            const log = document.getElementById('life-log');
+            log.innerHTML += `<div><span style="color:red">[Destructor]:</span> Mascota dice adiós. Memoria liberada.</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // INTERACTIVIDAD S8 (Sobrecarga Constructores)
+        function createDog(type) {
+            const display = document.getElementById('dog-display');
+            if (type === 1) {
+                display.innerText = "Nació: Perro Callejero (Sin dueño)";
+                display.style.color = "#ccc";
+            } else {
+                const name = document.getElementById('dogName').value || "Firulais";
+                display.innerText = `Nació: ${name} (Con dueño)`;
+                display.style.color = "var(--usip-accent)";
+            }
+        }
+
+        // INTERACTIVIDAD S10 (Vectores)
+        function sumVectors() {
+            const ax = parseInt(document.getElementById('ax').value) || 0;
+            const ay = parseInt(document.getElementById('ay').value) || 0;
+            const bx = parseInt(document.getElementById('bx').value) || 0;
+            const by = parseInt(document.getElementById('by').value) || 0;
+            
+            const rx = ax + bx;
+            const ry = ay + by;
+            
+            document.getElementById('vecResult').innerText = `Resultado: ( ${rx} , ${ry} )`;
+        }
+    </script>
+</body>
+</html>
