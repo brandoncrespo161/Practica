@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programación II - Conceptos Avanzados POO (USIP)</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark-reasonable.min.css">
+
+    <style>
+        /* --- PALETA USIP --- */
+        :root {
+            --usip-main: #1a4437;    /* Verde Principal */
+            --usip-dark: #0d221b;    /* Verde Oscuro */
+            --usip-accent: #4ade80;  /* Verde Luz para interacción */
+            --white: #ffffff;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #000;
+            color: var(--white);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .slide-deck {
+            width: 100%; height: 100%; position: relative;
+            background: linear-gradient(135deg, var(--usip-main) 0%, #000 100%);
+            overflow: hidden;
+        }
+
+        /* --- DIAPOSITIVAS --- */
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            padding: 40px 60px; 
+            opacity: 0; 
+            pointer-events: none;
+            transform: translateY(20px) scale(0.98);
+            transition: all 0.5s ease-in-out;
+            display: flex; flex-direction: column;
+        }
+
+        .slide.active { 
+            opacity: 1; 
+            pointer-events: all; 
+            transform: translateY(0) scale(1); 
+            z-index: 10; 
+        }
+
+        /* HEADER */
+        .slide-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 15px; border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px; flex-shrink: 0;
+        }
+
+        .header-title h2 { font-size: 26px; font-weight: 700; text-transform: uppercase; margin: 0; }
+        .header-title span { color: var(--usip-accent); font-size: 14px; letter-spacing: 3px; font-weight: 600; display: block; margin-bottom: 5px; }
+        .logo-img { height: 50px; opacity: 0.9; }
+
+        /* --- UTILITARIOS --- */
+        .code-font { font-family: 'Fira Code', monospace; }
+        .text-accent { color: var(--usip-accent); }
+        .text-danger { color: var(--danger); }
+        .text-info { color: var(--info); }
+        .text-warning { color: var(--warning); }
+        
+        .btn-action { 
+            background: var(--usip-accent); color: var(--usip-dark); 
+            padding: 12px 25px; border-radius: 50px; border: none; 
+            font-weight: bold; cursor: pointer; font-size: 14px; 
+            box-shadow: 0 5px 15px rgba(74, 222, 128, 0.3); 
+            transition: transform 0.1s; display: inline-flex; align-items: center; gap: 10px; margin-top: 10px;
+        }
+        .btn-action:active { transform: scale(0.95); }
+
+        /* --- LAYOUTS ESPECÍFICOS --- */
+        .split-layout { display: flex; gap: 40px; height: 100%; align-items: center; }
+        .code-col { flex: 1.2; height: 100%; overflow: auto; }
+        .visual-col { flex: 0.8; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); }
+
+        .concept-card {
+            background: rgba(0,0,0,0.3); border-left: 4px solid var(--usip-accent);
+            padding: 20px; margin-bottom: 15px; border-radius: 0 10px 10px 0; width: 100%;
+        }
+        .concept-card h4 { color: var(--usip-accent); margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
+
+        .terminal-input {
+            background: transparent; border: none; border-bottom: 2px solid var(--usip-accent);
+            color: white; font-family: 'Fira Code'; font-size: 18px; width: 80px; text-align: center;
+        }
+        .terminal-input:focus { outline: none; border-color: white; }
+
+        /* 3. FLIP CARDS */
+        .card-container { display: flex; gap: 40px; justify-content: center; align-items: center; height: 350px; width: 100%; }
+        .flip-card { background-color: transparent; width: 300px; height: 320px; perspective: 1000px; cursor: pointer; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); }
+        .flip-back { background: var(--usip-main); transform: rotateY(180deg); border-color: var(--usip-accent); }
+
+        /* 1. PORTADA */
+        .slide-cover { justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle at center, var(--usip-main), #000); }
+        .cover-content { background: rgba(26, 68, 55, 0.4); padding: 50px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+
+        /* CONTROLES DE NAVEGACIÓN */
+        .controls-container { position: absolute; bottom: 30px; right: 40px; display: flex; gap: 20px; z-index: 100; }
+        .btn-nav { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); color: white; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; font-size: 20px; backdrop-filter: blur(5px); }
+        .btn-nav:hover { background: var(--usip-accent); color: var(--usip-dark); border-color: var(--usip-accent); transform: scale(1.1); box-shadow: 0 0 20px var(--usip-accent); }
+        .slide-counter { position: absolute; bottom: 45px; left: 40px; opacity: 0.5; font-family: 'Fira Code', monospace; font-size: 16px; letter-spacing: 2px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="slide-deck">
+
+        <div class="slide slide-cover active" id="slide-1">
+            <div class="cover-content">
+                <img src="https://i.imgur.com/p8Kw2vb.png" alt="Logo USIP" style="max-width: 250px; margin-bottom: 30px; filter: drop-shadow(0 0 10px white);">
+                <h3 style="letter-spacing: 5px; margin-bottom: 10px; opacity: 0.8;">PROGRAMACIÓN II</h3>
+                <h1 style="font-size: 45px; margin-bottom: 20px; font-weight: 800; line-height: 1.2;">CONCEPTOS AVANZADOS DE POO</h1>
+                <div style="border: 1px solid rgba(255,255,255,0.3); padding: 15px 40px; border-radius: 50px; display: inline-block; background: rgba(0,0,0,0.5);">
+                    <p style="font-size: 14px; opacity: 0.7; margin-bottom: 5px;">DOCENTE</p>
+                    <p style="font-size: 20px; font-weight: 700; color: var(--usip-accent);">Ing. Brandon Alejandro Crespo Flores</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-2">
+            <div class="slide-header"><div class="header-title"><span>TEMA: AMISTAD</span><h2>Clases y Funciones Friend</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="visual-col" style="background: transparent; border: none; align-items: flex-start; padding: 0;">
+                    <div class="concept-card">
+                        <h4><i class="fa-solid fa-book-journal-whills"></i> El Diario Íntimo</h4>
+                        <p style="font-size: 16px;">Tus secretos (private) están seguros. Nadie puede leerlos. Pero, ¿qué pasa si tienes un <strong>"Mejor Amigo"</strong> de total confianza? Le das la llave.</p>
+                    </div>
+                    <div class="concept-card" style="border-color: var(--warning);">
+                        <h4><i class="fa-solid fa-house-chimney-crack"></i> La Casa y el Técnico</h4>
+                        <p style="font-size: 16px;">Tu casa es privada. Nadie entra. Pero si se rompe el internet, autorizas al técnico (Friend) a entrar y tocar los cables.</p>
+                    </div>
+                </div>
+                <div class="visual-col">
+                    <i class="fa-solid fa-handshake-simple" style="font-size: 80px; color: var(--usip-accent); margin-bottom: 20px;"></i>
+                    <h3 class="text-accent">Definición</h3>
+                    <p style="text-align: center; margin-top: 15px; line-height: 1.6;">
+                        Es una "válvula de escape" controlada al encapsulamiento. Permite que funciones o clases externas accedan a miembros <code>private</code> o <code>protected</code>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-3">
+            <div class="slide-header"><div class="header-title"><span>EJEMPLO PRÁCTICO</span><h2>Función Friend: Kaioshin y Goku</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="code-col">
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 15px; font-size: 13px;">
+class Saiyajin {
+private:
+    int energia; // Nadie de afuera toca esto
+
+public:
+    Saiyajin() { energia = 0; }
+    
+    // 🔥 PERMISO ESPECIAL 🔥
+    // Declaramos que 'curarGuerrero' es AMIGA.
+    // No es un método de la clase, es un permiso.
+    friend void curarGuerrero(Saiyajin &guerrero);
+};
+
+// Función EXTERNA (Noten que no tiene Saiyajin::)
+void curarGuerrero(Saiyajin &guerrero) {
+    // ACCESO DIRECTO A LO PRIVADO
+    // Posible solo gracias a la línea 'friend'
+    guerrero.energia = 10000; 
+    cout << "Energia restaurada a 10000!";
+}
+                    </code></pre>
+                </div>
+                <div class="visual-col">
+                    <i class="fa-solid fa-heart-pulse" style="font-size: 80px; color: var(--danger); margin-bottom: 20px;"></i>
+                    <h3 class="text-danger">Intervención Divina</h3>
+                    <p style="text-align: center; margin-top: 10px; opacity: 0.8; font-size: 14px;">
+                        Kaioshin no es un Saiyajin, pero tiene permiso para tocar el alma (energía privada) de Goku.
+                    </p>
+                    <button class="btn-action" onclick="healGoku()">
+                        <i class="fa-solid fa-sparkles"></i> INVOCAR CURACIÓN
+                    </button>
+                    <div id="healResult" style="margin-top: 20px; font-family: 'Fira Code'; color: var(--usip-accent);"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-4">
+            <div class="slide-header"><div class="header-title"><span>CASO AVANZADO</span><h2>Clase Friend: Servicio Técnico</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="visual-col" style="justify-content: flex-start; padding-top: 40px;">
+                    <h3 style="margin-bottom: 20px;">Permiso Total</h3>
+                    <p style="text-align: center; line-height: 1.6; margin-bottom: 30px;">
+                        A veces no basta con una función. Queremos que <strong>TODA</strong> una clase (ServicioTecnico) pueda reparar nuestro <code>Celular</code>.
+                    </p>
+                    <div class="concept-card" style="border-color: var(--info);">
+                        <h4 class="text-info"><i class="fa-solid fa-key"></i> Llave Maestra</h4>
+                        <p>Cualquier método dentro de ServicioTecnico puede ver los tornillos y la pantalla del celular.</p>
+                    </div>
+                </div>
+                <div class="code-col">
+                     <pre><code class="language-cpp" style="border-radius: 10px; padding: 15px; font-size: 14px;">
+class Celular {
+private:
+    int estadoPantalla; // 0=Rota
+    int tornillos;
+    
+    // Damos permiso a TODA la clase ServicioTecnico
+    friend class ServicioTecnico;
+};
+
+class ServicioTecnico {
+public:
+    void reparar(Celular &c) {
+        // Puede acceder a TODO lo privado
+        c.estadoPantalla = 100; 
+        c.tornillos = 4;
+        cout << "Celular reparado por el taller.";
+    }
+};
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-5">
+            <div class="slide-header"><div class="header-title"><span>TEMA: IDENTIDAD</span><h2>El Puntero "this"</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div style="display: flex; gap: 40px; align-items: center; justify-content: center; height: 100%;">
+                <div style="flex: 1;">
+                    <h3 class="text-accent" style="margin-bottom: 20px; font-size: 28px;">Analogía: El Salón de Clases</h3>
+                    <p style="font-size: 18px; line-height: 1.6; margin-bottom: 20px;">
+                        Hay 4 personas llamadas "Juan". [cite_start]Si gritas "¡Juan!", todos voltean confundidos [cite: 705-707].
+                    </p>
+                    <div class="concept-card">
+                        [cite_start]<h4><i class="fa-solid fa-shirt"></i> La Camiseta [cite: 719-722]</h4>
+                        <p>Alguien te lanza una camiseta. Tú ya tienes una puesta.</p>
+                        <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.5;">
+                            <li>"Toca la camiseta" -> ¿Cuál? (Ambigüedad)</li>
+                            <li>"Toca <strong>MI</strong> camiseta" -> <code>this->camiseta</code></li>
+                            <li>"Toca <strong>ESA</strong> camiseta" -> parámetro</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <i class="fa-solid fa-arrow-right-long" style="font-size: 100px; color: var(--usip-accent);"></i>
+                    <h2 style="font-family: 'Fira Code'; margin-top: 20px;">this-></h2>
+                    <p style="opacity: 0.7;">Se usa flecha porque 'this' es una dirección (un puntero).</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-6">
+            <div class="slide-header"><div class="header-title"><span>PRÁCTICA THIS</span><h2>Desambiguación en Setters</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="code-col">
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 20px; font-size: 16px;">
+class Saiyajin {
+private:
+    int ki; // Atributo de la clase
+
+public:
+    // El parámetro se llama IGUAL que el atributo
+    void establecerKi(int ki) {
+        
+        // ki = ki;  ❌ ERROR: Se asigna a sí mismo
+        
+        // this->ki : La variable de ESTE objeto
+        // ki       : La variable que recibimos
+        
+        this->ki = ki; // ✅ CORRECTO
+    }
+    
+    int getKi() { return this->ki; }
+};
+                    </code></pre>
+                </div>
+                <div class="visual-col">
+                    <i class="fa-solid fa-fingerprint" style="font-size: 60px; color: var(--warning); margin-bottom: 20px;"></i>
+                    <h3>Identidad del Objeto</h3>
+                    <p style="margin-bottom: 20px; opacity: 0.8;">Prueba asignar valor usando 'this':</p>
+                    
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 20px;">
+                        <input type="number" id="kiInput" placeholder="Ej: 8000" class="terminal-input" style="width: 120px;">
+                        <button class="btn-action" onclick="setKiDemo()">Asignar</button>
+                    </div>
+                    
+                    <div id="kiResult" style="font-family: 'Fira Code'; font-size: 18px; color: var(--usip-accent);">
+                        Estado actual: 0
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-7">
+            <div class="slide-header"><div class="header-title"><span>TEMA: SOBRECARGA</span><h2>"Enseñando trucos nuevos"</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div style="text-align: center; max-width: 900px; margin: 0 auto;">
+                <h3 style="margin-bottom: 30px; font-size: 28px;">Redefiniendo el símbolo +</h3>
+                
+                <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 40px;">
+                    <div class="concept-card" style="width: 30%;">
+                        <h4><i class="fa-solid fa-calculator"></i> Matemáticas</h4>
+                        <p>1 + 1 = 2</p>
+                    </div>
+                    <div class="concept-card" style="width: 30%;">
+                        <h4><i class="fa-solid fa-utensils"></i> Cocina</h4>
+                        <p>Harina + Agua = Masa</p>
+                    </div>
+                    <div class="concept-card" style="width: 30%;">
+                        <h4><i class="fa-solid fa-flask"></i> Química</h4>
+                        <p>H + O = Agua</p>
+                    </div>
+                </div>
+
+                <p style="font-size: 22px; line-height: 1.6;">
+                    Nosotros definimos qué significa el símbolo <code>+</code> para nuestros objetos. 
+                    ¿Sumar Saiyajins? ¿Fusionarlos?
+                </p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-8">
+            <div class="slide-header"><div class="header-title"><span>EJEMPLO FUSIÓN</span><h2>El Operator+</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="code-col">
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 15px; font-size: 14px;">
+// Dentro de la clase Saiyajin
+// Definimos qué pasa al sumar (this + otro)
+Saiyajin operator+(Saiyajin &otro) {
+    
+    // 1. Creamos el resultado vacío
+    Saiyajin resultado; 
+    
+    // 2. Sumamos los poderes
+    // this->ki (Goku) + otro.ki (Vegeta)
+    resultado.ki = this->ki + otro.ki;
+    
+    // 3. Devolvemos la fusión
+    return resultado; 
+}
+
+// En el main:
+Saiyajin gogeta = goku + vegeta;
+                    </code></pre>
+                </div>
+                <div class="visual-col">
+                    <h3 class="text-info">Simulador de Fusión</h3>
+                    <p style="font-size: 14px; margin-bottom: 15px;">Sumar dos objetos Saiyajin:</p>
+                    <div style="display: flex; gap: 10px; align-items: center; margin: 20px 0;">
+                        <input type="number" id="kiGoku" value="5000" class="terminal-input" style="width: 80px;">
+                        <span style="font-size: 20px;">+</span>
+                        <input type="number" id="kiVegeta" value="4000" class="terminal-input" style="width: 80px;">
+                    </div>
+                    
+                    <button class="btn-action" style="background: var(--info); color: white;" onclick="fuseSaiyajins()">
+                        EJECUTAR operator+
+                    </button>
+                    
+                    <div id="fusionResult" style="margin-top: 25px; font-family: 'Fira Code'; font-size: 20px; border: 1px dashed var(--info); padding: 10px; border-radius: 10px;">
+                        Esperando...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-9">
+            <div class="slide-header"><div class="header-title"><span>TEMA: STATIC</span><h2>Variables de Clase</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="visual-col" style="background: none; border: none; padding: 0;">
+                    <h3 class="text-warning" style="margin-bottom: 20px; font-size: 28px;">"Lo que es de todos"</h3>
+                    <div class="concept-card">
+                        <h4><i class="fa-solid fa-book"></i> El Cuaderno (No-Static)</h4>
+                        <p>Cada alumno tiene el suyo. Es privado y único. Si escribes en uno, no aparece en los demás.</p>
+                    </div>
+                    <div class="concept-card" style="border-color: var(--warning);">
+                        <h4><i class="fa-solid fa-chalkboard"></i> El Pizarrón (Static)</h4>
+                        <p>Hay <strong>UNO SOLO</strong> para toda la clase. Si el profesor escribe algo, todos ven lo mismo.</p>
+                    </div>
+                </div>
+                <div class="visual-col" style="border-color: var(--warning);">
+                    <div style="font-size: 40px; margin-bottom: 20px; font-family: 'Fira Code';">static int total;</div>
+                    <div style="width: 100%; height: 80px; background: #333; border: 3px solid var(--warning); display: flex; align-items: center; justify-content: center; font-family: 'Fira Code'; font-size: 30px; color: var(--warning); box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);" id="staticMem">
+                        0
+                    </div>
+                    <p style="margin-top: 15px; font-size: 14px; opacity: 0.8;">Memoria Global Única Compartida</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-10">
+            <div class="slide-header"><div class="header-title"><span>EJEMPLO CENSO</span><h2>Contador Global</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="code-col">
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 15px; font-size: 14px;">
+class Saiyajin {
+private:
+    // Esta variable NO se duplica por cada objeto
+    static int cantidadTotal; 
+public:
+    Saiyajin() {
+        // Cada vez que nace uno, subimos el pizarrón
+        cantidadTotal++; 
+    }
+    
+    // Método estático (Se puede usar sin objetos)
+    static int getCantidad() {
+        return cantidadTotal;
+    }
+};
+
+// IMPORTANTE: Inicialización fuera de la clase
+int Saiyajin::cantidadTotal = 0;
+                    </code></pre>
+                </div>
+                <div class="visual-col">
+                    <h3 class="text-warning">Censo Saiyajin</h3>
+                    <div id="factory-log" style="height: 150px; width: 100%; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 10px; margin-bottom: 10px; font-family: 'Fira Code'; font-size: 12px; border: 1px solid #444;">
+                        > Sistema de conteo iniciado...
+                    </div>
+                    <div style="font-size: 20px; margin-bottom: 10px;">
+                        Pizarrón Global: <span id="globalCounter" style="color: var(--warning); font-weight: bold; font-size: 24px;">0</span>
+                    </div>
+                    <button class="btn-action" onclick="spawnSaiyajin()">
+                        <i class="fa-solid fa-plus"></i> NACER SAIYAJIN
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-11">
+            <div class="slide-header"><div class="header-title"><span>TEMA: REFERENCIAS</span><h2>El Símbolo &</h2></div><img src="https://i.imgur.com/p8Kw2vb.png" class="logo-img"></div>
+            
+            <div class="split-layout">
+                <div class="visual-col" style="background: transparent; border: none; padding: 0;">
+                    <div class="concept-card" style="border-left-color: #777;">
+                        <h4><i class="fa-regular fa-copy"></i> Paso por Valor (Sin &)</h4>
+                        <p style="font-size: 14px;">Sacas una <strong>FOTOCOPIA</strong> del dibujo original. Si pintas la fotocopia, el original no cambia. Es lento si el libro es grande.</p>
+                    </div>
+                    <div class="concept-card" style="border-left-color: var(--usip-accent);">
+                        <h4><i class="fa-solid fa-link"></i> Paso por Referencia (Con &)</h4>
+                        <p style="font-size: 14px;">Prestas el <strong>ORIGINAL</strong>. Si lo pintan, cambia de verdad. Es instantáneo (solo pasas la dirección).</p>
+                    </div>
+                </div>
+                <div class="code-col">
+                    <h4 style="margin-bottom: 10px;">Comparación Crítica:</h4>
+                    <pre><code class="language-cpp" style="border-radius: 10px; padding: 15px; font-size: 14px;">
+// ❌ SIN '&' (COPIA)
+void curarFalso(Saiyajin copia) {
+    copia.vida = 100; 
+    // Al terminar, la copia se destruye.
+    // El Goku original sigue herido.
+}
+
+// ✅ CON '&' (ORIGINAL)
+void curarReal(Saiyajin &original) {
+    original.vida = 100;
+    // Modificamos la memoria real.
+    // El Goku original se cura.
+}
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-12" style="justify-content: center; align-items: center; text-align: center;">
+            <i class="fa-solid fa-graduation-cap" style="font-size: 100px; color: var(--usip-accent); margin-bottom: 30px;"></i>
+            <h1 style="font-size: 40px; margin-bottom: 20px;">¡Clase Completada!</h1>
+            <div style="text-align: left; display: inline-block; margin-top: 20px; font-size: 18px; line-height: 1.8;">
+                <p><i class="fa-solid fa-check text-accent"></i> <strong>Friend:</strong> La excepción a la regla privada.</p>
+                <p><i class="fa-solid fa-check text-accent"></i> <strong>This:</strong> Identidad y desambiguación.</p>
+                <p><i class="fa-solid fa-check text-accent"></i> <strong>Sobrecarga:</strong> Sumar objetos con +.</p>
+                <p><i class="fa-solid fa-check text-accent"></i> <strong>Static:</strong> Datos compartidos globales.</p>
+                <p><i class="fa-solid fa-check text-accent"></i> <strong>Referencia (&):</strong> Eficiencia y verdad.</p>
+            </div>
+            <p style="font-size: 18px; opacity: 0.8; margin-top: 40px;">Próxima clase: <strong>Herencia y Polimorfismo</strong></p>
+        </div>
+
+        <div class="slide-counter" id="cnt">1 / 12</div>
+        <div class="controls-container">
+            <button class="btn-nav" onclick="prev()"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn-nav" onclick="next()"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+
+        // NAVEGACIÓN
+        let current = 1;
+        const total = 12;
+        
+        function showSlide(n) {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            document.getElementById(`slide-${n}`).classList.add('active');
+            document.getElementById('cnt').innerText = `${n} / ${total}`;
+        }
+
+        function next() {
+            if(current < total) { current++; showSlide(current); }
+        }
+
+        function prev() {
+            if(current > 1) { current--; showSlide(current); }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowRight") next();
+            if (e.key === "ArrowLeft") prev();
+        });
+
+        // DEMO 1: FRIEND HEAL
+        function healGoku() {
+            const res = document.getElementById('healResult');
+            res.innerHTML = "> Accediendo a memoria privada...<br>> <span style='color:#4ade80; font-weight:bold;'>ENERGÍA RESTAURADA: 10,000</span>";
+        }
+
+        // DEMO 2: THIS POINTER
+        let currentKi = 0;
+        function setKiDemo() {
+            const input = document.getElementById('kiInput').value || 0;
+            currentKi = input;
+            document.getElementById('kiResult').innerText = `this->ki ahora vale: ${currentKi}`;
+        }
+
+        // DEMO 3: FUSION
+        function fuseSaiyajins() {
+            const k1 = parseInt(document.getElementById('kiGoku').value) || 0;
+            const k2 = parseInt(document.getElementById('kiVegeta').value) || 0;
+            const total = k1 + k2;
+            document.getElementById('fusionResult').innerHTML = `Gogeta Nace con KI: <strong>${total}</strong>`;
+        }
+
+        // DEMO 4: STATIC COUNTER
+        let globalCount = 0;
+        function spawnSaiyajin() {
+            globalCount++;
+            document.getElementById('globalCounter').innerText = globalCount;
+            document.getElementById('staticMem').innerText = globalCount;
+            
+            const log = document.getElementById('factory-log');
+            log.innerHTML += `<div>> Saiyajin #${globalCount} ha nacido.</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+    </script>
+</body>
+</html>
