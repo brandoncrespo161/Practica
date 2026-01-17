@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación: A Favor de la Eutanasia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0c10;
+            --text-main: #c5c6c7;
+            --highlight: #66fcf1; /* Turquesa neón */
+            --highlight-dim: #45a29e;
+            --card-bg: rgba(31, 40, 51, 0.8);
+            --glass-border: 1px solid rgba(102, 252, 241, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Open Sans', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Fondo dinámico sutil */
+        .bg-gradient {
+            position: absolute;
+            width: 200vw;
+            height: 200vh;
+            background: radial-gradient(circle at 50% 50%, rgba(69, 162, 158, 0.15), transparent 60%);
+            animation: moveBg 20s infinite alternate;
+            z-index: -1;
+        }
+        @keyframes moveBg { 0% {transform: translate(-10%, -10%);} 100% {transform: translate(10%, 10%);} }
+
+        /* Contenedor Principal */
+        .slide-deck {
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: scale(0.95) translateY(30px);
+            transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+            pointer-events: none;
+            padding: 20px;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: all;
+            z-index: 10;
+        }
+
+        /* Tipografía */
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: clamp(3rem, 6vw, 5rem);
+            text-transform: uppercase;
+            line-height: 0.9;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(102, 252, 241, 0.3);
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            color: var(--highlight);
+            margin-bottom: 40px;
+            text-align: center;
+            border-bottom: 2px solid var(--highlight-dim);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .big-number {
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.05);
+            position: absolute;
+            top: 0;
+            left: 20px;
+            z-index: -1;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Tarjetas de Puntos Clave */
+        .points-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+        }
+
+        .point-card {
+            background: var(--card-bg);
+            border: var(--glass-border);
+            padding: 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .point-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--highlight);
+            background: rgba(69, 162, 158, 0.2);
+        }
+
+        .point-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .point-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #d1d1d1;
+            opacity: 0.6; /* Oculto parcialmente al inicio */
+            max-height: 50px;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .point-card.revealed .point-content {
+            opacity: 1;
+            max-height: 200px;
+            color: #fff;
+        }
+
+        .point-card.revealed .point-title {
+            color: var(--highlight);
+        }
+
+        /* Cita de Cierre */
+        .quote-box {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-style: italic;
+            text-align: center;
+            border-left: 5px solid var(--highlight);
+            padding-left: 30px;
+            max-width: 800px;
+        }
+
+        /* Navegación */
+        .nav-controls {
+            position: absolute;
+            bottom: 30px;
+            right: 50px;
+            display: flex;
+            gap: 20px;
+            z-index: 20;
+        }
+
+        button.nav-btn {
+            background: transparent;
+            border: 2px solid var(--highlight);
+            color: var(--highlight);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button.nav-btn:hover {
+            background: var(--highlight);
+            color: #000;
+            box-shadow: 0 0 20px var(--highlight);
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: var(--highlight);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-gradient"></div>
+
+    <div class="slide-deck">
+
+        <div class="slide active">
+            <h1 style="color: var(--highlight);">Defensa Ética<br><span style="color: #fff; font-size: 0.6em;">de la Eutanasia</span></h1>
+            <p style="font-size: 1.5rem; margin-top: 30px; letter-spacing: 2px; text-transform: uppercase;">Libertad • Dignidad • Compasión</p>
+        </div>
+
+        <div class="slide">
+            <div class="big-number">01</div>
+            <h2>El Principio de Autonomía</h2>
+            <div class="points-container">
+                <div class="point-card" onclick="reveal(this)">
+                    <div class="point-title">⚖️ Derecho vs. Obligación</div>
+                    <div class="point-content">
+                        La vida es un derecho fundamental, pero no una obligación impuesta. Quien posee un derecho debe tener la facultad de renunciar a él.
+                    </div>
+                </div>
+                <div class="point-card" onclick="reveal(this)">
+                    <div class="point-title">🚫 Coherencia Legal</div>
+                    <div class="point-content">
+                        Si la ley me permite rechazar una quimioterapia sabiendo que moriré, ya respeta mi decisión sobre mi final. La eutanasia es ejercer esa misma libertad de forma activa.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="big-number">02</div>
+            <h2>Dignidad Humana</h2>
+            <div class="points-container">
+                <div class="point-card" onclick="reveal(this)">
+                    <div class="point-title">🧬 Biografía vs. Biología</div>
+                    <div class="point-content">
+                        Estar vivo no es solo tener pulso (vida biológica). Es tener consciencia, identidad y relaciones (vida biográfica). Sin consciencia, no hay vida humana plena.
+                    </div>
+                </div>
+                <div class="point-card" onclick="reveal(this)">
+                    <div class="point-title">🛑 Fin al Ensañamiento</div>
+                    <div class="point-content">
+                        Mantener artificialmente un cuerpo que sufre sin esperanza no es medicina, es obstinación terapéutica. La dignidad implica poder irse antes de la degradación total.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="big-number">03</div>
+            <h2>Compasión y No-Maleficencia</h2>
+            <div class="points-container">
+                <div class="point-card" onclick="reveal(this)">
+                    <div class="point-title">❤️ El Deber de No Dañar</div>
+                    <div class="point-content">
+                        Obligar a alguien a soportar un dolor intratable es una forma de daño. Cuando no se puede curar, el deber ético es aliviar el sufrimiento, no prolongarlo.
+                    </div>
+                </div>
+                <div class="point-card" onclick="reveal(this)">
+                    <div class="point-title">🤝 El Último Acto de Ayuda</div>
+                    <div class="point-content">
+                        Ayudar a morir en paz a quien lo suplica racionalmente es el acto de compasión más profundo que la medicina puede ofrecer ante la futilidad.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="big-number">04</div>
+            <h2>Justicia y Realidad</h2>
+            <div class="points-container">
+                <div class="point-card" onclick="reveal(this)">
+                    <div class="point-title">🌍 Realidad Social</div>
+                    <div class="point-content">
+                        La eutanasia clandestina ya existe y es insegura. Necesitamos sacarla de la oscuridad.
+                    </div>
+                </div>
+                <div class="point-card" onclick="reveal(this)">
+                    <div class="point-title">🛡️ Regular es Proteger</div>
+                    <div class="point-content">
+                        Una Ley de Eutanasia protege a los vulnerables mediante evaluaciones psicológicas y comités médicos, algo que la prohibición actual no ofrece.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="quote-box">
+                "La verdadera ética no consiste en mantener un corazón latiendo a toda costa, sino en respetar la libertad del ser humano que habita ese cuerpo."
+            </div>
+            <h3 style="margin-top: 50px; color: var(--highlight);">Gracias.</h3>
+        </div>
+
+    </div>
+
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="changeSlide(-1)">❮</button>
+        <button class="nav-btn" onclick="changeSlide(1)">❯</button>
+    </div>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+
+        function updateProgress() {
+            const percent = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = percent + '%';
+        }
+
+        function changeSlide(dir) {
+            slides[currentSlide].classList.remove('active');
+            
+            currentSlide += dir;
+            
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+            
+            slides[currentSlide].classList.add('active');
+            updateProgress();
+        }
+
+        function reveal(card) {
+            // Cierra otros en la misma slide si quieres efecto acordeón, 
+            // o simplemente déjalos abiertos. Aquí permitimos múltiples abiertos.
+            card.classList.toggle('revealed');
+        }
+
+        // Teclado
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+            if(e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        updateProgress();
+    </script>
+</body>
+</html>
