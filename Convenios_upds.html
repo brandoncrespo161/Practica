@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directorio de Convenios UPDS - Cochabamba</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Paleta Institucional UPDS */
+            --primary: #1f3189;     
+            --secondary: #18419b;   
+            --accent: #249cdd;      
+            --white: #ffffff;
+            --light-bg: #f0f4f8;
+            --text-dark: #2d3748;
+            --text-gray: #4a5568;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- CABECERA (HEADER) MEJORADA --- */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 50px 20px 80px 20px; /* Más espacio abajo para montar el buscador */
+            text-align: center;
+            color: var(--white);
+            position: relative;
+        }
+
+        .header img {
+            height: 120px; /* LOGO MUCHO MÁS GRANDE */
+            width: auto;
+            background: var(--white);
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            object-fit: contain;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            margin: 0;
+            font-size: 32px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 16px;
+            margin-top: 10px;
+            font-weight: 400;
+            opacity: 0.85;
+        }
+
+        /* --- BUSCADOR FLOTANTE --- */
+        .search-container {
+            max-width: 700px;
+            margin: -35px auto 40px auto; /* Montado sobre el header */
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 20px 25px 20px 60px;
+            font-size: 16px;
+            color: var(--text-dark);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 51, 102, 0.08);
+            outline: none;
+            font-family: 'Open Sans', sans-serif;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .search-box:focus {
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(36, 156, 221, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 45px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            font-size: 20px;
+        }
+
+        /* --- CONTENEDOR DE TARJETAS --- */
+        .grid-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 25px;
+        }
+
+        /* --- DISEÑO DE TARJETA (NUEVA JERARQUÍA) --- */
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 30px; /* Más aire y elegancia */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid var(--border-color);
+            border-top: 5px solid var(--accent);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+        }
+
+        /* 1. EL NOMBRE ES LO PRINCIPAL */
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 0 10px 0;
+            line-height: 1.3;
+            order: 1; /* Forzamos a que esté arriba */
+        }
+
+        /* 2. LA CATEGORÍA VA DESPUÉS (Sutil) */
+        .card-category {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--secondary);
+            background-color: #e6f0fa;
+            padding: 6px 12px;
+            border-radius: 6px;
+            align-self: flex-start;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            order: 2;
+        }
+
+        /* 3. EL BENEFICIO */
+        .card-content-wrapper {
+            order: 3;
+            flex-grow: 1;
+        }
+
+        .card-benefit {
+            font-size: 14px;
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .leer-mas {
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            display: inline-block;
+            margin-top: 8px;
+            transition: color 0.2s;
+        }
+
+        .leer-mas:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        /* 4. EL FOOTER (FECHA) */
+        .card-footer {
+            order: 4;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-gray);
+        }
+
+        .card-footer i {
+            color: var(--accent);
+            font-size: 16px;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-gray);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .no-results i {
+            font-size: 40px;
+            color: #cbd5e0;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <img src="https://i.imgur.com/K98aGUI.png" alt="Logo UPDS">
+        <h1>Directorio de Convenios</h1>
+        <p>Beneficios exclusivos para la comunidad UPDS Sede Cochabamba</p>
+    </header>
+
+    <div class="search-container">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="searchInput" class="search-box" placeholder="Busca por institución, rubro o beneficio..." onkeyup="filtrarDatos()">
+    </div>
+
+    <div class="grid-container" id="conveniosContainer">
+        </div>
+
+    <script>
+        // ==========================================
+        // BASE DE DATOS JSON INCRUSTADA
+        // ==========================================
+        const convenios = [
+            {
+                "empresa": "Federación Sindical de Trabajadores Petroleros de Bolivia",
+                "categoria": "Becas",
+                "beneficio": "Se acuerda implementar un sistema de beneficios para los afiliados a la Federación o sus hijos, de tal manera que tengan acceso a la formación académica profesional.",
+                "fecha": "28/02/2028"
+            },
+            {
+                "empresa": "AEISEC en Bolivia",
+                "categoria": "Prácticas Profesionales y Cooperación",
+                "beneficio": "Prácticas profesionales internacionales. Actividades de Responsabilidad Social Universitaria y académicas.",
+                "fecha": "26/01/2031"
+            },
+            {
+                "empresa": "Ministerio Público - Fiscalía General del Estado",
+                "categoria": "Prácticas Profesionales",
+                "beneficio": "Convenio de prácticas profesionales y ejecución de actividades académicas.",
+                "fecha": "05/12/2028"
+            },
+            {
+                "empresa": "Datax S.R.L.",
+                "categoria": "Cooperación e Investigación",
+                "beneficio": "Actividades Académicas y de investigación conjunta.",
+                "fecha": "21/01/2028"
+            },
+            {
+                "empresa": "Colegio de Profesionales en Ciencias Administrativas y Empresariales (CADEC)",
+                "categoria": "Prácticas, Cooperación e Investigación",
+                "beneficio": "Ejecutar y desarrollar actividades académicas, cursos, capacitaciones, investigación, acceso a bibliotecas, prácticas profesionales en todas las facultades y RSU.",
+                "fecha": "21/10/2028"
+            },
+            {
+                "empresa": "Colegio Médico de Cochabamba",
+                "categoria": "Investigación y Prácticas",
+                "beneficio": "Ejecución de actividades Académicas, extensión y RSU. Cooperación en ejecución de proyectos de investigación y prácticas profesionales.",
+                "fecha": "06/11/2027"
+            },
+            {
+                "empresa": "Banco Nacional de Bolivia",
+                "categoria": "Prácticas Profesionales",
+                "beneficio": "Convenio para el desarrollo de prácticas profesionales y actividades académicas.",
+                "fecha": "04/11/2028"
+            },
+            {
+                "empresa": "Compañía Papelera de Industria y Comercio Mendoza S.A. (COPELME S.A.)",
+                "categoria": "Prácticas Profesionales y RSU",
+                "beneficio": "Desarrollo de Prácticas Profesionales y actividades de Responsabilidad Social Universitaria.",
+                "fecha": "26/11/2028"
+            },
+            {
+                "empresa": "Universidad Nacional de la Rioja UNLAR",
+                "categoria": "Cooperación Internacional",
+                "beneficio": "Establecer las bases para la mutua cooperación en el desarrollo de proyectos que incluyan actividades académicas y de investigación.",
+                "fecha": "13/10/2030"
+            },
+            {
+                "empresa": "Gestora Pública de la Seguridad Social de Largo Plazo",
+                "categoria": "Prácticas Profesionales",
+                "beneficio": "Implementar un sistema de prácticas pre profesionales (pasantías) para estudiantes o egresados de las diferentes carreras de la UPDS.",
+                "fecha": "02/10/2030"
+            },
+            {
+                "empresa": "JCI Femenino Cochabamba",
+                "categoria": "Cooperación y RSU",
+                "beneficio": "Actividades académicas y de RSU, con opción a prácticas profesionales e internacionales. Activaciones y trabajos de investigación.",
+                "fecha": "01/09/2027"
+            },
+            {
+                "empresa": "Alianza Vida",
+                "categoria": "Prácticas Profesionales",
+                "beneficio": "Normar institucionalmente el proceso de selección de estudiantes de la Universidad para que realicen prácticas en las reparticiones de la ALIANZA.",
+                "fecha": "09/09/2027"
+            },
+            {
+                "empresa": "Pro Mujer",
+                "categoria": "Interinstitucional",
+                "beneficio": "Señalar los lineamientos generales y compromisos que sirvan de base para los acuerdos específicos entre la UPDS y la Fundación PRO MUJER IFD.",
+                "fecha": "15/09/2028"
+            },
+            {
+                "empresa": "Gimnasio ALPHA BY TEAM FERREL",
+                "categoria": "Intercambio de Servicios",
+                "beneficio": "Descuentos exclusivos para la comunidad UPDS en servicios y productos. Posibilidad de Prácticas Profesionales.",
+                "fecha": "30/06/2027"
+            },
+            {
+                "empresa": "Cámara Mundial de Conferencistas, Expositores y Oradores",
+                "categoria": "Cooperación y Extensión",
+                "beneficio": "Actividades académicas, de extensión, investigación, talleres, cursos, seminarios internacionales y actividades de RSE/RSU.",
+                "fecha": "06/06/2028"
+            },
+            {
+                "empresa": "Pre School Pasitos Seguros",
+                "categoria": "Intercambio de Servicios y Prácticas",
+                "beneficio": "Descuento en servicios para la comunidad UPDS, así como también actividades de acción social y prácticas profesionales.",
+                "fecha": "13/05/2027"
+            },
+            {
+                "empresa": "Emanuel Sie Soluciones Informáticas",
+                "categoria": "Prácticas Profesionales",
+                "beneficio": "Enfocado en prácticas profesionales, actividades de Extensión, RSU e investigación conjunta.",
+                "fecha": "14/05/2027"
+            },
+            {
+                "empresa": "Embotelladoras Bolivianas Unidas S.A. - EMBOL",
+                "categoria": "Prácticas Profesionales",
+                "beneficio": "Convenio institucional enfocado estrictamente en la realización de prácticas profesionales y pre profesionales.",
+                "fecha": "26/05/2026"
+            },
+            {
+                "empresa": "Colegio de Ingenieros Comerciales de Cochabamba",
+                "categoria": "Prácticas, Cooperación y RSU",
+                "beneficio": "Convenio Marco de cooperación para la ejecución de actividades académicas, prácticas profesionales, investigación y RSU.",
+                "fecha": "28/05/2027"
+            },
+            {
+                "empresa": "Centro Boliviano Americano - CBA",
+                "categoria": "Intercambio de Servicios y Becas",
+                "beneficio": "Convenio enfocado en descuento y difusión de la enseñanza del idioma inglés, actividades académicas, prácticas y extensión.",
+                "fecha": "30/06/2027"
+            },
+            {
+                "empresa": "Servicio Departamental de Salud Pando",
+                "categoria": "Cooperación en Salud",
+                "beneficio": "Fomentar las actividades académicas de los estudiantes de medicina y realizar proyectos de investigación conjunta.",
+                "fecha": "24/04/2028"
+            },
+            {
+                "empresa": "Hospital Boliviano Japonés Dr. Roberto Galindo Terán",
+                "categoria": "Prácticas Profesionales en Salud",
+                "beneficio": "Establecer lazos de cooperación para la divulgación, capacitación e investigación. Facilitar prácticas profesionales de los estudiantes.",
+                "fecha": "24/04/2028"
+            },
+            {
+                "empresa": "Servicio Municipal de Agua Potable y Alcantarillado - SEMAPA",
+                "categoria": "Prácticas Profesionales y Cooperación",
+                "beneficio": "Convenio marco de cooperación para la formación práctica, fortalecimiento institucional, interacción social e investigación.",
+                "fecha": "14/01/2029"
+            },
+            {
+                "empresa": "Banco para el Fomento a Iniciativas Económicas S.A. (Banco FIE)",
+                "categoria": "Prácticas Profesionales",
+                "beneficio": "Desarrollo de Prácticas profesionales e implementación del programa de extensión universitaria.",
+                "fecha": "18/01/2027"
+            },
+            {
+                "empresa": "PEP Running",
+                "categoria": "Intercambio de Servicios",
+                "beneficio": "Beneficio para la Comunidad UPDS en servicios y productos de la empresa. Deportes, asesoramiento y organización de carreras fitness.",
+                "fecha": "07/02/2027"
+            },
+            {
+                "empresa": "Colegio de Ingenieros Petroleros y de Energías",
+                "categoria": "Prácticas Profesionales e Investigación",
+                "beneficio": "Mutua cooperación para el desarrollo de proyectos académicos. Realizar investigaciones y prácticas en energías renovables.",
+                "fecha": "18/02/2027"
+            },
+            {
+                "empresa": "Consejo de la Magistratura Cochabamba",
+                "categoria": "Prácticas Profesionales y Becas",
+                "beneficio": "Planificación y desarrollo de actividades académicas, acción social, descuentos, prácticas profesionales e investigación.",
+                "fecha": "19/12/2029"
+            },
+            {
+                "empresa": "Cámara de Industria, Comercio y Servicios de Cochabamba (ICAM)",
+                "categoria": "Cooperación y Prácticas",
+                "beneficio": "Mutua cooperación para la ejecución y planificación de actividades de RSE, seminarios, talleres y ejecución de prácticas profesionales.",
+                "fecha": "06/06/2026"
+            },
+            {
+                "empresa": "Colegio Departamental de Economistas de Cochabamba",
+                "categoria": "Prácticas Profesionales y Cooperación",
+                "beneficio": "Desarrollo y ejecución de proyectos académicos, actividades de RSE, programas en ciencias económicas y prácticas profesionales.",
+                "fecha": "15/07/2026"
+            },
+            {
+                "empresa": "Clínica Copacabana S.R.L.",
+                "categoria": "Cooperación Institucional",
+                "beneficio": "Mutua Cooperación para actividades de RSE, formación académica, prácticas profesionales, seminarios y talleres en ciencias de la salud.",
+                "fecha": "11/07/2026"
+            },
+            {
+                "empresa": "Nuevatel",
+                "categoria": "Prácticas Profesionales",
+                "beneficio": "Implementar las Prácticas Profesionales, Modalidades de Graduación, objetivos y metas a lograr de manera conjunta.",
+                "fecha": "Indefinido"
+            },
+            {
+                "empresa": "Impuestos Nacionales",
+                "categoria": "Interinstitucional",
+                "beneficio": "Convenio marco de colaboración interinstitucional mutua para beneficio de la comunidad universitaria.",
+                "fecha": "Indefinido"
+            },
+            {
+                "empresa": "Instituto Boliviano de Normalización y Calidad (IBNORCA)",
+                "categoria": "Investigación",
+                "beneficio": "Otorgar el Acceso gratuito de la IBNOTECA a la Universidad para el uso y aplicación de normas técnicas entre sus docentes y estudiantes.",
+                "fecha": "31/12/2024"
+            }
+        ];
+
+        const contenedor = document.getElementById('conveniosContainer');
+
+        // Renderizado de las tarjetas con truncamiento de texto
+        function renderizarTarjetas(datos) {
+            contenedor.innerHTML = '';
+            
+            if (datos.length === 0) {
+                contenedor.innerHTML = `
+                    <div class="no-results">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <h2>No encontramos lo que buscas</h2>
+                        <p>Intenta usar otras palabras clave como "Prácticas", "Salud" o el nombre de una empresa.</p>
+                    </div>`;
+                return;
+            }
+
+            datos.forEach(item => {
+                const limiteCaracteres = 100;
+                let textoMostrar = item.beneficio;
+                let botonHtml = '';
+
+                // Lógica del botón "Ver más"
+                if (item.beneficio.length > limiteCaracteres) {
+                    textoMostrar = item.beneficio.substring(0, limiteCaracteres) + '...';
+                    
+                    const tCompleto = item.beneficio.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                    const tCorto = textoMostrar.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                    
+                    botonHtml = `<span class="leer-mas" onclick="alternarTexto(this, '${tCompleto}', '${tCorto}')">Ver más <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 3px;"></i></span>`;
+                }
+
+                // Validación de fechas
+                let textoFecha = item.fecha;
+                let iconoFecha = "fa-calendar-check";
+                if(textoFecha.includes("Indefinido")) {
+                    iconoFecha = "fa-infinity";
+                    textoFecha = "Vigencia Indefinida";
+                } else {
+                    textoFecha = "Válido hasta: " + textoFecha;
+                }
+
+                const tarjeta = `
+                    <div class="card">
+                        <h3 class="card-title">${item.empresa}</h3>
+                        <span class="card-category">${item.categoria}</span>
+                        
+                        <div class="card-content-wrapper">
+                            <p class="card-benefit">${textoMostrar}</p>
+                            ${botonHtml}
+                        </div>
+
+                        <div class="card-footer">
+                            <i class="fa-solid ${iconoFecha}"></i> 
+                            <span>${textoFecha}</span>
+                        </div>
+                    </div>
+                `;
+                contenedor.innerHTML += tarjeta;
+            });
+        }
+
+        // Lógica de expandir texto
+        function alternarTexto(btn, textoCompleto, textoCorto) {
+            const parrafo = btn.previousElementSibling;
+            
+            if (btn.innerText.includes('Ver más')) {
+                parrafo.innerText = textoCompleto;
+                btn.innerHTML = 'Ver menos <i class="fa-solid fa-chevron-up" style="font-size: 10px; margin-left: 3px;"></i>';
+            } else {
+                parrafo.innerText = textoCorto;
+                btn.innerHTML = 'Ver más <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 3px;"></i>';
+            }
+        }
+
+        // Motor de búsqueda en tiempo real
+        function filtrarDatos() {
+            const textoBuscado = document.getElementById('searchInput').value.toLowerCase();
+            
+            const datosFiltrados = convenios.filter(item => {
+                return item.empresa.toLowerCase().includes(textoBuscado) || 
+                       item.categoria.toLowerCase().includes(textoBuscado) || 
+                       item.beneficio.toLowerCase().includes(textoBuscado);
+            });
+            
+            renderizarTarjetas(datosFiltrados);
+        }
+
+        window.onload = () => renderizarTarjetas(convenios);
+    </script>
+</body>
+</html>
