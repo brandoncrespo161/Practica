@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>POS - Mar de Plata</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { colors: { brand: '#007672', brandDark: '#005a57', brandLight: '#e6f2f1' } }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+        .font-serif-brand { font-family: 'Playfair Display', serif; }
+        .keypad-btn { transition: all 0.1s ease-in-out; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .keypad-btn:active { background-color: #007672; color: white; transform: scale(0.92); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        #ticket-template { font-family: monospace; width: 300px; padding: 20px; background: white; color: black; display: none; }
+    </style>
+</head>
+<body class="antialiased text-slate-800 flex justify-center bg-slate-200">
+
+    <div class="w-full max-w-md min-h-screen bg-white shadow-2xl flex flex-col relative overflow-hidden">
+        
+        <header class="bg-brand p-5 text-white shadow-lg z-20 rounded-b-3xl">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/20 w-10 h-10 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-gem text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-serif-brand tracking-widest uppercase italic leading-none">Mar de Plata</h1>
+                        <p class="text-[9px] opacity-80 tracking-[0.2em] uppercase font-bold mt-1">Terminal Inteligente</p>
+                    </div>
+                </div>
+                <button onclick="showView('summary-view')" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 active:scale-90 transition-all">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </button>
+            </div>
+            
+            <div class="mt-4 bg-brandDark/40 p-3 rounded-2xl border border-white/10 flex justify-between items-center">
+                <div>
+                    <span class="text-[9px] uppercase font-bold opacity-70 block mb-0.5">Total USD</span>
+                    <span id="header-total-usd" class="text-xl font-black">$ 0.00</span>
+                </div>
+                <div class="border-l border-white/20 pl-3">
+                    <span class="text-[9px] uppercase font-bold opacity-70 block mb-0.5">Total Bs.</span>
+                    <span id="header-total-bs" class="text-xl font-black">Bs 0.00</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow p-6 overflow-y-auto hide-scrollbar pb-28">
+            
+            <div id="view-categories" class="space-y-5 animate-in slide-in-from-bottom-4 duration-300">
+                <div class="text-center mb-4"><span class="text-brand text-xs font-black uppercase tracking-widest">1. Selección</span></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="nextStep('qty', 'Anillo')" class="aspect-square bg-slate-50 border-2 border-slate-100 rounded-3xl hover:border-brand flex flex-col items-center justify-center gap-2 active:scale-95 transition-all"><span class="text-5xl">💍</span><span class="font-bold text-slate-600 text-xs uppercase">Anillos</span></button>
+                    <button onclick="nextStep('qty', 'Cadena')" class="aspect-square bg-slate-50 border-2 border-slate-100 rounded-3xl hover:border-brand flex flex-col items-center justify-center gap-2 active:scale-95 transition-all"><span class="text-5xl">📿</span><span class="font-bold text-slate-600 text-xs uppercase">Cadenas</span></button>
+                    <button onclick="nextStep('qty', 'Reloj')" class="aspect-square bg-slate-50 border-2 border-slate-100 rounded-3xl hover:border-brand flex flex-col items-center justify-center gap-2 active:scale-95 transition-all"><span class="text-5xl">⌚</span><span class="font-bold text-slate-600 text-xs uppercase">Relojes</span></button>
+                    <button onclick="nextStep('qty', 'Aretes')" class="aspect-square bg-slate-50 border-2 border-slate-100 rounded-3xl hover:border-brand flex flex-col items-center justify-center gap-2 active:scale-95 transition-all"><span class="text-5xl">👂</span><span class="font-bold text-slate-600 text-xs uppercase">Aretes</span></button>
+                </div>
+            </div>
+
+            <div id="view-qty" class="hidden space-y-8 text-center">
+                <span class="text-brand text-xs font-black uppercase">2. Unidades</span>
+                <div class="flex items-center justify-center gap-8 py-8">
+                    <button onclick="adjustQty(-1)" class="w-16 h-16 bg-slate-100 rounded-full text-3xl font-bold active:scale-90">-</button>
+                    <span id="display-qty" class="text-7xl font-black text-brand">1</span>
+                    <button onclick="adjustQty(1)" class="w-16 h-16 bg-brand text-white rounded-full text-3xl font-bold active:scale-90">+</button>
+                </div>
+                <button onclick="nextStep('price')" class="w-full bg-slate-800 text-white py-5 rounded-2xl font-black uppercase active:scale-95">Siguiente</button>
+            </div>
+
+            <div id="view-price" class="hidden space-y-4 text-center">
+                <span class="text-brand text-xs font-black uppercase">3. Moneda y Valor</span>
+                <div class="flex justify-center gap-2 mt-3">
+                    <button onclick="setCurrency('USD')" id="btn-usd" class="w-1/2 py-2 rounded-xl font-bold border-2 border-brand bg-brandLight text-brand">Dólares ($)</button>
+                    <button onclick="setCurrency('BS')" id="btn-bs" class="w-1/2 py-2 rounded-xl font-bold border-2 border-slate-200 bg-white text-slate-400">Bolivianos (Bs)</button>
+                </div>
+                <div class="mt-3 bg-slate-50 p-5 rounded-3xl border-2 border-brand/20 flex justify-center items-center gap-2">
+                    <span id="currency-symbol" class="text-2xl font-bold text-slate-400">$</span>
+                    <span id="display-price" class="text-5xl font-black">0</span>
+                </div>
+                <div class="grid grid-cols-3 gap-3 pt-1">
+                    <button onclick="pressKey('1')" class="keypad-btn h-16 border rounded-2xl font-black text-2xl">1</button>
+                    <button onclick="pressKey('2')" class="keypad-btn h-16 border rounded-2xl font-black text-2xl">2</button>
+                    <button onclick="pressKey('3')" class="keypad-btn h-16 border rounded-2xl font-black text-2xl">3</button>
+                    <button onclick="pressKey('4')" class="keypad-btn h-16 border rounded-2xl font-black text-2xl">4</button>
+                    <button onclick="pressKey('5')" class="keypad-btn h-16 border rounded-2xl font-black text-2xl">5</button>
+                    <button onclick="pressKey('6')" class="keypad-btn h-16 border rounded-2xl font-black text-2xl">6</button>
+                    <button onclick="pressKey('7')" class="keypad-btn h-16 border rounded-2xl font-black text-2xl">7</button>
+                    <button onclick="pressKey('8')" class="keypad-btn h-16 border rounded-2xl font-black text-2xl">8</button>
+                    <button onclick="pressKey('9')" class="keypad-btn h-16 border rounded-2xl font-black text-2xl">9</button>
+                    <button onclick="pressKey('.')" class="keypad-btn h-16 border bg-slate-100 rounded-2xl font-black text-3xl">.</button>
+                    <button onclick="pressKey('0')" class="keypad-btn h-16 border rounded-2xl font-black text-2xl">0</button>
+                    <button onclick="pressKey('DEL')" class="h-16 bg-rose-50 border border-rose-100 text-rose-500 rounded-2xl font-black text-2xl active:bg-rose-500 active:text-white"><i class="fa-solid fa-delete-left"></i></button>
+                </div>
+                <button onclick="nextStep('payment')" class="w-full mt-2 bg-brand text-white py-5 rounded-2xl font-black uppercase active:scale-95">Siguiente</button>
+            </div>
+
+            <div id="view-payment" class="hidden space-y-5">
+                <div class="text-center mb-6"><span class="text-brand text-xs font-black uppercase">4. Método de Pago</span></div>
+                <div class="space-y-3">
+                    <button onclick="setPayment('Efectivo', this)" class="pay-option w-full p-5 border-2 border-brand bg-brandLight text-brand rounded-2xl flex justify-between font-bold"><span class="flex items-center gap-4"><i class="fa-solid fa-money-bill-1-wave w-6"></i> EFECTIVO</span><i class="fa-solid fa-circle-check"></i></button>
+                    <button onclick="setPayment('Tarjeta', this)" class="pay-option w-full p-5 border-2 border-slate-200 text-slate-500 rounded-2xl flex justify-between font-bold"><span class="flex items-center gap-4"><i class="fa-solid fa-credit-card w-6"></i> TARJETA</span><i class="fa-solid fa-circle text-slate-200"></i></button>
+                    <button onclick="setPayment('Transferencia QR', this)" class="pay-option w-full p-5 border-2 border-slate-200 text-slate-500 rounded-2xl flex justify-between font-bold"><span class="flex items-center gap-4"><i class="fa-solid fa-qrcode w-6"></i> QR TRANSFERENCIA</span><i class="fa-solid fa-circle text-slate-200"></i></button>
+                </div>
+                <button onclick="nextStep('confirm')" class="w-full mt-4 bg-slate-800 text-white py-5 rounded-2xl font-black uppercase active:scale-95">Siguiente</button>
+            </div>
+
+            <div id="view-confirm" class="hidden space-y-6">
+                <div class="text-center"><span class="text-brand text-xs font-black uppercase">5. Confirmación</span></div>
+                
+                <textarea id="sale-notes" rows="3" placeholder="Toque aquí para escribir comentarios..." class="w-full p-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-brand outline-none text-sm shadow-inner"></textarea>
+                
+                <button onclick="finalizeSale()" class="w-full bg-brand text-white py-6 rounded-2xl font-black text-xl active:scale-95 flex justify-center items-center gap-2"><i class="fa-solid fa-save"></i> GUARDAR VENTA</button>
+            </div>
+
+            <div id="summary-view" class="hidden space-y-4">
+                <div class="flex justify-between items-center bg-slate-100 p-4 rounded-2xl">
+                    <h2 class="text-lg font-black text-slate-800">Inteligencia de Datos</h2>
+                    <button onclick="showView('view-categories')" class="text-brand font-bold uppercase text-xs px-3 py-1 bg-brand/10 rounded-lg">← Volver</button>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <select id="filter-cat" onchange="applyFilters()" class="p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 outline-none">
+                        <option value="ALL">Todas las Joyas</option>
+                        <option value="Anillo">💍 Anillos</option>
+                        <option value="Cadena">📿 Cadenas</option>
+                        <option value="Reloj">⌚ Relojes</option>
+                        <option value="Aretes">👂 Aretes</option>
+                    </select>
+                    <select id="filter-pay" onchange="applyFilters()" class="p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 outline-none">
+                        <option value="ALL">Todo Pago</option>
+                        <option value="Efectivo">💵 Efectivo</option>
+                        <option value="Tarjeta">💳 Tarjeta</option>
+                        <option value="Transferencia QR">📱 QR</option>
+                    </select>
+                    <input type="date" id="filter-date" onchange="applyFilters()" class="col-span-2 p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 outline-none">
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase text-center mb-2">Distribución de Ventas</h3>
+                    <div class="relative w-full h-48"> <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+
+                <button onclick="exportExcel()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black uppercase shadow-lg shadow-green-200 flex justify-center items-center gap-2 active:scale-95">
+                    <i class="fa-solid fa-file-excel"></i> EXPORTAR A EXCEL
+                </button>
+
+                <div id="sales-log" class="space-y-3 pb-6"></div>
+            </div>
+
+        </main>
+
+        <div id="modal-success" class="hidden absolute inset-0 z-50 bg-brand/95 backdrop-blur-sm flex items-center justify-center p-6 text-white text-center">
+            <div class="w-full max-w-sm">
+                <div class="w-20 h-20 bg-white text-brand rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-check text-4xl"></i></div>
+                <h2 class="text-3xl font-serif-brand italic mb-2">Transacción Exitosa</h2>
+                <div class="space-y-3 mt-8">
+                    <button onclick="generatePDF()" class="w-full bg-white text-brand py-4 rounded-xl font-black uppercase shadow-xl flex justify-center items-center gap-2"><i class="fa-solid fa-file-pdf text-red-500"></i> DESCARGAR RECIBO PDF</button>
+                    <button onclick="location.reload()" class="w-full bg-brandDark text-white border border-white/20 py-4 rounded-xl font-bold uppercase">Nueva Venta</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="pdf-container" class="hidden">
+            <div id="ticket-template">
+                <div style="text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
+                    <h2 style="margin: 0; font-size: 24px;">MAR DE PLATA</h2>
+                    <p style="margin: 0; font-size: 12px;">JOYERÍA EXCLUSIVA</p>
+                    <p style="margin: 0; font-size: 10px;">Cochabamba - Bolivia</p>
+                </div>
+                <p><strong>Recibo N°:</strong> <span id="t-id"></span></p>
+                <p><strong>Fecha:</strong> <span id="t-date"></span></p>
+                <div style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
+                    <p><strong>Cant. Artículo</strong> <span style="float: right;">Importe</span></p>
+                    <p><span id="t-qty"></span>x <span id="t-cat"></span> <span style="float: right;" id="t-price"></span></p>
+                </div>
+                <p style="font-size: 12px; margin-top: 5px;">Notas: <span id="t-notes"></span></p>
+                <h3 style="text-align: right; margin: 0;">TOTAL: <span id="t-total"></span></h3>
+                <p style="text-align: right; font-size: 12px; margin-top: 5px;">Pago: <span id="t-pay"></span></p>
+                <div style="text-align: center; margin-top: 20px; font-size: 10px;">
+                    <p>¡Gracias por su compra!</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let state = {
+            category: '', qty: 1, currency: 'USD', price: '0', payment: 'Efectivo', notes: '',
+            history: JSON.parse(localStorage.getItem('mdp_history') || '[]'),
+            lastSale: null
+        };
+        let chartInstance = null;
+
+        // Formatear fecha para el input tipo date (YYYY-MM-DD)
+        const todayISO = new Date().toISOString().split('T')[0];
+
+        function init() { 
+            updateHeaders();
+            document.getElementById('filter-date').value = todayISO; // Pre-seleccionar hoy
+        }
+
+        function showView(viewId) {
+            ['view-categories', 'view-qty', 'view-price', 'view-payment', 'view-confirm', 'summary-view'].forEach(v => document.getElementById(v).classList.add('hidden'));
+            document.getElementById(viewId).classList.remove('hidden');
+            if(viewId === 'summary-view') { applyFilters(); }
+        }
+
+        function nextStep(view, data) {
+            if(data) state.category = data;
+            showView('view-' + view);
+        }
+
+        function adjustQty(val) {
+            state.qty = Math.max(1, state.qty + val);
+            document.getElementById('display-qty').innerText = state.qty;
+        }
+
+        function setCurrency(curr) {
+            state.currency = curr;
+            document.getElementById('btn-usd').className = curr === 'USD' ? "w-1/2 py-2 rounded-xl font-bold border-2 border-brand bg-brandLight text-brand" : "w-1/2 py-2 rounded-xl font-bold border-2 border-slate-200 bg-white text-slate-400";
+            document.getElementById('btn-bs').className = curr === 'BS' ? "w-1/2 py-2 rounded-xl font-bold border-2 border-brand bg-brandLight text-brand" : "w-1/2 py-2 rounded-xl font-bold border-2 border-slate-200 bg-white text-slate-400";
+            document.getElementById('currency-symbol').innerText = curr === 'USD' ? '$' : 'Bs';
+        }
+
+        function pressKey(key) {
+            if(key === 'DEL') state.price = state.price.slice(0, -1) || '0';
+            else if (key === '.') { if (!state.price.includes('.')) state.price += '.'; }
+            else { state.price === '0' ? state.price = key : state.price += key; }
+            document.getElementById('display-price').innerText = state.price;
+        }
+
+        function setPayment(method, btn) {
+            state.payment = method;
+            document.querySelectorAll('.pay-option').forEach(b => {
+                b.className = "pay-option w-full p-5 border-2 border-slate-200 text-slate-500 rounded-2xl flex justify-between font-bold";
+                b.querySelector('i.fa-solid.fa-circle-check, i.fa-solid.fa-circle').className = "fa-solid fa-circle text-slate-200";
+            });
+            btn.className = "pay-option w-full p-5 border-2 border-brand bg-brandLight text-brand rounded-2xl flex justify-between font-bold";
+            btn.querySelector('i').nextElementSibling.className = "fa-solid fa-circle-check";
+        }
+
+        function finalizeSale() {
+            const total = parseFloat(state.price || 0) * state.qty;
+            const notes = document.getElementById('sale-notes').value;
+            
+            state.lastSale = {
+                id: 'MDP-' + Math.floor(Math.random()*10000),
+                category: state.category, qty: state.qty, currency: state.currency, total: total, payment: state.payment,
+                notes: notes,
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                date: new Date().toLocaleDateString(),
+                isoDate: new Date().toISOString().split('T')[0] // Guarda YYYY-MM-DD para el filtro exacto
+            };
+            state.history.unshift(state.lastSale);
+            localStorage.setItem('mdp_history', JSON.stringify(state.history));
+            
+            // PDF DATA
+            document.getElementById('t-id').innerText = state.lastSale.id;
+            document.getElementById('t-date').innerText = `${state.lastSale.date} ${state.lastSale.time}`;
+            document.getElementById('t-qty').innerText = state.lastSale.qty;
+            document.getElementById('t-cat').innerText = state.lastSale.category;
+            let sym = state.currency === 'USD' ? '$' : 'Bs';
+            document.getElementById('t-price').innerText = `${sym} ${(parseFloat(state.price)).toFixed(2)}`;
+            document.getElementById('t-total').innerText = `${sym} ${total.toFixed(2)}`;
+            document.getElementById('t-pay').innerText = state.lastSale.payment;
+            document.getElementById('t-notes').innerText = state.lastSale.notes || 'Ninguna';
+
+            // Audio & Voz
+            try {
+                const actx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = actx.createOscillator(); const gain = actx.createGain();
+                osc.connect(gain); gain.connect(actx.destination);
+                osc.frequency.value = 1046.50; gain.gain.value = 0.1;
+                osc.start(); gain.gain.exponentialRampToValueAtTime(0.00001, actx.currentTime + 0.5); osc.stop(actx.currentTime + 0.5);
+            } catch(e) {}
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); 
+                let m = new SpeechSynthesisUtterance(`Venta guardada. Total: ${total} ${state.currency === 'USD' ? 'dólares' : 'bolivianos'}.`);
+                m.lang = 'es-ES'; window.speechSynthesis.speak(m);
+            }
+
+            document.getElementById('modal-success').classList.remove('hidden');
+        }
+
+        function updateHeaders() {
+            const tUSD = state.history.filter(s => s.currency === 'USD').reduce((a, s) => a + s.total, 0);
+            const tBS = state.history.filter(s => s.currency === 'BS').reduce((a, s) => a + s.total, 0);
+            document.getElementById('header-total-usd').innerText = `$ ${tUSD.toFixed(2)}`;
+            document.getElementById('header-total-bs').innerText = `Bs ${tBS.toFixed(2)}`;
+        }
+
+        // --- FILTROS, GRÁFICOS Y EXPORTACIONES ---
+
+        function applyFilters() {
+            const fCat = document.getElementById('filter-cat').value;
+            const fPay = document.getElementById('filter-pay').value;
+            const fDate = document.getElementById('filter-date').value;
+            
+            let filtered = state.history.filter(s => {
+                let matchCat = fCat === 'ALL' || s.category.includes(fCat);
+                let matchPay = fPay === 'ALL' || s.payment === fPay;
+                // Si el filtro de fecha tiene un valor, se compara con el isoDate de la venta. Si no, se muestran todas.
+                let matchDate = !fDate || s.isoDate === fDate; 
+                return matchCat && matchPay && matchDate;
+            });
+            
+            renderLog(filtered);
+            updateChart(filtered);
+        }
+
+        function renderLog(data) {
+            const container = document.getElementById('sales-log');
+            container.innerHTML = data.map(s => {
+                let sym = s.currency === 'USD' ? '$' : 'Bs';
+                let emo = s.category.includes('Anillo') ? '💍' : s.category.includes('Cadena') ? '📿' : s.category.includes('Reloj') ? '⌚' : '👂';
+                let notasHTML = s.notes ? `<p class="text-[9px] text-slate-500 italic mt-1">"${s.notes}"</p>` : '';
+                
+                return `<div class="bg-white p-3 rounded-xl shadow-sm flex justify-between items-center text-sm border border-slate-100">
+                    <div class="flex gap-2 items-center">
+                        <div class="text-2xl">${emo}</div>
+                        <div>
+                            <p class="font-bold text-slate-700">${s.category} (x${s.qty})</p>
+                            <p class="text-[9px] text-slate-400 uppercase">${s.payment} - ${s.time}</p>
+                            ${notasHTML}
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-black text-brand">${sym} ${s.total.toFixed(2)}</p>
+                        <p class="text-[9px] text-slate-300">ID: ${s.id}</p>
+                    </div>
+                </div>`;
+            }).join('') || '<p class="text-center py-6 text-slate-400 font-bold text-sm">Sin resultados para estos filtros</p>';
+        }
+
+        function updateChart(data) {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            let counts = { 'Anillos': 0, 'Cadenas': 0, 'Relojes': 0, 'Aretes': 0 };
+            data.forEach(s => {
+                if(s.category.includes('Anillo')) counts['Anillos']++;
+                else if(s.category.includes('Cadena')) counts['Cadenas']++;
+                else if(s.category.includes('Reloj')) counts['Relojes']++;
+                else counts['Aretes']++;
+            });
+
+            if(chartInstance) chartInstance.destroy();
+
+            // chartInstance config. Notice maintainAspectRatio: false
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Anillos', 'Cadenas', 'Relojes', 'Aretes'],
+                    datasets: [{
+                        data: Object.values(counts),
+                        backgroundColor: ['#007672', '#009692', '#33a5a2', '#66c0be'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // CRÍTICO PARA EVITAR EL BUG DEL INFINITO
+                    plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: {size: 10} } } }
+                }
+            });
+        }
+
+        function generatePDF() {
+            document.getElementById('pdf-container').classList.remove('hidden');
+            const element = document.getElementById('ticket-template');
+            element.style.display = 'block';
+            
+            html2pdf().set({
+                margin: 5, filename: `Recibo_${state.lastSale.id}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: [80, 150], orientation: 'portrait' } 
+            }).from(element).save().then(() => {
+                element.style.display = 'none';
+                document.getElementById('pdf-container').classList.add('hidden');
+            });
+        }
+
+        function exportExcel() {
+            if(state.history.length === 0) return alert("No hay datos para exportar");
+            
+            const excelData = state.history.map(s => ({
+                "ID Transacción": s.id,
+                "Fecha": s.date,
+                "Hora": s.time,
+                "Categoría": s.category,
+                "Unidades": s.qty,
+                "Moneda": s.currency,
+                "Total Pagado": s.total,
+                "Método de Pago": s.payment,
+                "Observaciones": s.notes
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(excelData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Reporte_Ventas");
+            XLSX.writeFile(wb, "MarDePlata_Reporte.xlsx");
+        }
+
+        init();
+    </script>
+</body>
+</html>
