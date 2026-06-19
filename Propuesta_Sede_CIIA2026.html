@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuesta Sede - Congreso CIIA 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #1f3189;
+            --secondary: #18419b;
+            --accent: #249cdd;
+            --white: #ffffff;
+            --light-bg: #f4f7fa;
+            --text-dark: #333333;
+            --text-gray: #555555;
+            --success: #27ae60;
+            --warning: #f39c12;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Open Sans', sans-serif; background-color: #1e293b; height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        
+        .slide-deck { width: 1280px; height: 720px; background-color: var(--white); position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow: hidden; flex-shrink: 0; transform-origin: center center; transition: transform 0.2s ease-out; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: all 0.4s ease-in-out; padding: 50px 80px; display: flex; flex-direction: column; background: var(--white); z-index: 1; }
+        .slide.active { opacity: 1; visibility: visible; z-index: 10; }
+
+        .slide-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 3px solid var(--accent); }
+        .header-title h2 { font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 700; color: var(--primary); text-transform: uppercase; }
+        .header-title span { display: block; font-size: 13px; color: var(--accent); font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+
+        .content-wrapper { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; height: 100%; overflow: hidden; }
+        
+        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; height: 100%; }
+        
+        .img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .img-grid img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .img-large { width: 100%; height: 415px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+        .feature-box { background: var(--light-bg); padding: 25px; border-radius: 12px; border-left: 5px solid var(--accent); margin-bottom: 20px; }
+        .feature-box h3 { font-family: 'Montserrat', sans-serif; font-size: 20px; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .feature-box p { font-size: 16px; color: var(--text-dark); line-height: 1.6; margin-bottom: 10px; }
+        .feature-box ul { list-style: none; padding-left: 0; }
+        .feature-box ul li { font-size: 16px; color: var(--text-dark); margin-bottom: 10px; padding-left: 25px; position: relative; }
+        .feature-box ul li::before { content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: var(--success); position: absolute; left: 0; }
+
+        .pricing-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; }
+        .pricing-table th { background: var(--primary); color: white; padding: 15px; text-align: left; font-family: 'Montserrat', sans-serif; font-size: 16px; }
+        .pricing-table td { padding: 15px; border-bottom: 1px solid #eee; font-size: 16px; }
+        .price-highlight { font-size: 24px; font-weight: 700; color: var(--accent); }
+
+        .services-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .services-table th { background: #e2e8f0; color: var(--primary); padding: 10px; text-align: left; }
+        .services-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
+        
+        .alert-box { background: #fef3c7; border-left: 5px solid var(--warning); padding: 15px; border-radius: 8px; margin-top: 20px; font-weight: 600; color: #92400e; }
+
+        /* PORTADA FIX: Control estricto de alturas y márgenes */
+        .slide-cover { padding: 0; display: grid; grid-template-columns: 1.3fr 1fr; overflow: hidden; height: 100%; }
+        
+        .cover-left { background: linear-gradient(150deg, rgba(15, 23, 42, 0.95) 0%, rgba(20, 45, 120, 0.95) 100%), url('https://i.imgur.com/bJhWSp8.jpeg') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 60px; }
+        
+        .cover-right { display: flex; flex-direction: column; justify-content: center; align-items: center; background: #fff; padding: 40px; height: 100%; }
+        
+        /* Imágenes de portada con límite de altura para no romper el diseño */
+        .cover-img { width: 100%; height: 280px; object-fit: cover; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        
+        .cover-title-main { font-size: 44px; font-weight: 800; color: var(--white); line-height: 1.1; margin-bottom: 15px; font-family: 'Montserrat', sans-serif; text-shadow: 0 4px 10px rgba(0,0,0,0.6); }
+        
+        .controls { position: absolute; bottom: 30px; right: 40px; display: flex; gap: 15px; z-index: 100; }
+        .btn-nav { background: var(--white); border: 2px solid var(--primary); color: var(--primary); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .btn-nav:hover { background: var(--primary); color: white; }
+        .slide-counter { position: absolute; bottom: 30px; left: 80px; color: #aaa; font-weight: 700; font-family: 'Montserrat', sans-serif; }
+    </style>
+</head>
+<body>
+
+    <div class="slide-deck" id="slideDeck">
+
+        <div class="slide slide-cover active" id="slide-1">
+            <div class="cover-left">
+                <img src="https://i.imgur.com/ZJmHaDS.png" alt="Logo UPDS" style="height: 110px; margin-bottom: 25px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));">
+                
+                <span style="color: #60a5fa; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; display: block;">Propuesta de Sede Oficial</span>
+                
+                <h1 class="cover-title-main">CONGRESO INTERNACIONAL CIIA 2026</h1>
+                
+                <p style="font-size: 18px; color: #f8fafc; line-height: 1.5; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Presentación de instalaciones: Casa Campestre de la Sociedad de Ingenieros de Bolivia (SIB) Cochabamba.</p>
+            </div>
+            <div class="cover-right">
+                <img src="https://i.imgur.com/Zz5lik4.jpeg" alt="Instalaciones" class="cover-img" style="margin-bottom: 20px;">
+                <img src="https://i.imgur.com/UZmeYGR.jpeg" alt="Instalaciones 2" class="cover-img">
+            </div>
+        </div>
+
+        <div class="slide" id="slide-2">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>Espacios y Logística</span>
+                    <h2>Infraestructura y Capacidad</h2>
+                </div>
+                <img src="https://i.imgur.com/ZJmHaDS.png" alt="Logo" style="height: 45px; filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%); opacity: 0.8;">
+            </div>
+            <div class="content-wrapper two-columns">
+                <div class="left-col">
+                    <div class="feature-box">
+                        <h3><i class="fa-solid fa-users"></i> Aforo del Recinto</h3>
+                        <p>La Casa Campestre cuenta con la amplitud necesaria para albergar un evento de gran magnitud como el CIIA 2026.</p>
+                        <p style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 15px 0;">700 a 800 personas</p>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h3><i class="fa-solid fa-car"></i> Estacionamiento</h3>
+                        <p>Se dispone de un área de parqueo privado con capacidad para <strong>30 a 40 vehículos</strong>, garantizando comodidad para autoridades, expositores y organizadores.</p>
+                    </div>
+
+                    <div class="alert-box" style="background: #e0f2fe; border-color: var(--accent); color: var(--primary);">
+                        <i class="fa-solid fa-building-circle-check"></i> <strong>EXCLUSIVIDAD TOTAL:</strong> Se aclara que la Casa Campestre en su totalidad estará a disposición exclusiva de la Universidad para el desarrollo ininterrumpido del Congreso.
+                    </div>
+                </div>
+                <div class="right-col">
+                    <img src="https://i.imgur.com/9I9YnlB.jpeg" alt="Áreas Verdes" class="img-large">
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-3">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>Comodidad para los Asistentes</span>
+                    <h2>Distribución de Servicios Sanitarios</h2>
+                </div>
+                <img src="https://i.imgur.com/ZJmHaDS.png" alt="Logo" style="height: 45px; filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%); opacity: 0.8;">
+            </div>
+            <div class="content-wrapper two-columns">
+                <div class="left-col">
+                    <p style="font-size: 16px; margin-bottom: 20px;">El recinto está debidamente equipado con cubículos sanitarios distribuidos estratégicamente para atender la alta demanda de un congreso de esta capacidad sin saturar las instalaciones.</p>
+                    
+                    <table class="pricing-table" style="margin-top: 0;">
+                        <thead>
+                            <tr>
+                                <th>Ubicación</th>
+                                <th><i class="fa-solid fa-person-dress"></i> Mujeres</th>
+                                <th><i class="fa-solid fa-person"></i> Varones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Planta Baja</strong> (Área Principal)</td>
+                                <td>4 cubículos</td>
+                                <td>4 cubículos</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Segundo Piso</strong></td>
+                                <td>2 cubículos</td>
+                                <td>2 cubículos</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sala Parrillera</strong> (Área externa)</td>
+                                <td>2 cubículos</td>
+                                <td>2 cubículos</td>
+                            </tr>
+                            <tr style="background-color: var(--light-bg); font-weight: bold;">
+                                <td>TOTAL DISPONIBLE</td>
+                                <td>8 cubículos</td>
+                                <td>8 cubículos</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="right-col img-grid">
+                    <img src="https://i.imgur.com/WeXgBKo.jpeg" alt="Baños 1">
+                    <img src="https://i.imgur.com/M9srAAa.jpeg" alt="Baños 2">
+                    <img src="https://i.imgur.com/47kAE8k.jpeg" alt="Interiores" style="grid-column: span 2;">
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-4">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>Accesibilidad</span>
+                    <h2>Ubicación Estratégica</h2>
+                </div>
+                <img src="https://i.imgur.com/ZJmHaDS.png" alt="Logo" style="height: 45px; filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%); opacity: 0.8;">
+            </div>
+            <div class="content-wrapper two-columns">
+                <div class="left-col" style="display: flex; flex-direction: column; justify-content: center;">
+                    <div class="feature-box" style="border-left-color: var(--primary);">
+                        <h3><i class="fa-solid fa-location-dot"></i> Dirección de la Sede</h3>
+                        <p><strong>Casa Campestre - Sociedad de Ingenieros de Bolivia (SIB)</strong></p>
+                        <p>Cochabamba, Bolivia.</p>
+                        <p style="margin-top: 15px; color: var(--text-gray);">Un entorno que combina la formalidad de un congreso internacional con la tranquilidad y amplitud de áreas verdes, ideal para el networking académico y profesional.</p>
+                    </div>
+                </div>
+                <div class="right-col" style="display: flex; align-items: center;">
+                    <div style="width: 100%; height: 415px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 2px solid #e2e8f0;">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.412708166038!2d-66.23676692394658!3d-17.34386286301596!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x93e3750009fb215f%3A0x9e2f16ab3e3d730!2sCASA%20CAMPESTRE%20SIB%20COCHABAMBA!5e0!3m2!1ses!2sbo!4v1781870786515!5m2!1ses!2sbo" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-5">
+            <div class="slide-header">
+                <div class="header-title">
+                    <span>Presupuesto y Convenios</span>
+                    <h2>Inversión y Alianza Estratégica</h2>
+                </div>
+                <img src="https://i.imgur.com/ZJmHaDS.png" alt="Logo" style="height: 45px; filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%); opacity: 0.8;">
+            </div>
+            <div class="content-wrapper two-columns">
+                <div class="left-col">
+                    <div class="feature-box" style="border-left-color: var(--primary);">
+                        <h3><i class="fa-solid fa-file-contract"></i> Opciones de Alquiler</h3>
+                        <table class="pricing-table" style="margin-top: 10px;">
+                            <tr>
+                                <td><strong>Precio Regular (Con Convenio)</strong></td>
+                                <td class="price-highlight" style="color: var(--text-dark); font-size: 20px;">2,500 Bs.</td>
+                            </tr>
+                            <tr style="background: #eef2ff;">
+                                <td><strong>Precio Especial (Co-organizadores)</strong></td>
+                                <td class="price-highlight" style="color: var(--primary);">2,000 Bs.</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="feature-box" style="border-left-color: var(--success); margin-top: 20px;">
+                        <h3><i class="fa-solid fa-handshake"></i> Beneficios de Co-organización (SIB)</h3>
+                        <p>Al incluir a la Sociedad de Ingenieros como auspiciadores/coorganizadores del CIIA 2026, ellos se comprometen a:</p>
+                        <ul>
+                            <li>Realizar difusión activa del Congreso en todas sus redes sociales oficiales.</li>
+                            <li>Incentivar a sus ingenieros afiliados para que se inscriban y participen.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="right-col">
+                    <div class="feature-box" style="background: #f8fafc; height: 100%; display:flex; flex-direction: column;">
+                        <h3><i class="fa-solid fa-plus-circle"></i> Servicios Opcionales Ofrecidos</h3>
+                        <p style="font-size: 14px; margin-bottom: 10px;">La SIB nos facilita la siguiente cotización de servicios de apoyo. <strong>Ninguno de estos servicios es obligatorio de adquirir</strong>:</p>
+                        
+                        <table class="services-table">
+                            <thead>
+                                <tr>
+                                    <th>Detalle del Servicio</th>
+                                    <th>Precio Ref. (Bs)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Amplificación con pantallas</td><td>3,750.00</td></tr>
+                                <tr><td>Buses Ida y vuelta</td><td>500.00</td></tr>
+                                <tr><td>Sillas plásticas simples / Fundas</td><td>3.00 c/u</td></tr>
+                                <tr><td>Mesas con mantelería</td><td>50.00 c/u</td></tr>
+                                <tr><td>Servicio de cafetería (100 pax)</td><td>300.00</td></tr>
+                                <tr><td>Refrigerio</td><td>10.00 c/u</td></tr>
+                                <tr><td>Garzones / Personal de limpieza</td><td>250.00 c/u</td></tr>
+                                <tr><td>Gaseosas (Paq. 8 botellas 2.5 L)</td><td>96.00 c/paq</td></tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="alert-box" style="margin-top: auto; font-size: 13px; padding: 10px;">
+                            <i class="fa-solid fa-circle-exclamation"></i> <strong>Nota:</strong> No estamos comprometidos a adquirir ningún otro servicio de la SIB para acceder al recinto.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide-counter" id="counter">1 / 5</div>
+        <div class="controls">
+            <button class="btn-nav" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn-nav" onclick="nextSlide()"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 5;
+        const deck = document.getElementById('slideDeck');
+
+        function resizeDeck() {
+            const scale = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.95;
+            deck.style.transform = `scale(${scale})`;
+        }
+        window.addEventListener('resize', resizeDeck);
+        window.addEventListener('load', resizeDeck);
+
+        function updateSlide() {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            document.getElementById(`slide-${currentSlide}`).classList.add('active');
+            document.getElementById('counter').innerText = `${currentSlide} / ${totalSlides}`;
+        }
+        function nextSlide() { if(currentSlide < totalSlides) { currentSlide++; updateSlide(); } }
+        function prevSlide() { if(currentSlide > 1) { currentSlide--; updateSlide(); } }
+
+        document.addEventListener('keydown', (e) => {
+            if(e.key === "ArrowRight") nextSlide();
+            if(e.key === "ArrowLeft") prevSlide();
+        });
+    </script>
+</body>
+</html>
