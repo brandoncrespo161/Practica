@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador Masivo de Entradas - ciiA 2026 UPDS</title>
+    <title>Sistema de Acreditación - ciiA 2026 UPDS</title>
     
-    <!-- Librerías para leer Excel y generar PDF -->
+    <!-- Librerías para leer/crear Excel y generar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -30,45 +30,57 @@
             margin: 0;
         }
 
-        /* --- CONTROLES DE INTERFAZ --- */
-        .controls-container {
+        /* --- PANELES DE CONTROL --- */
+        .dashboard {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .panel {
             background-color: #ffffff;
-            padding: 30px;
+            padding: 25px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 30px;
-            text-align: center;
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
         }
 
-        .controls-container h2 {
+        .panel h2 {
             color: var(--primary-bg);
             margin-top: 0;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             text-transform: uppercase;
+            border-bottom: 2px solid var(--upds-yellow);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
 
-        .upload-area {
-            border: 2px dashed #cccccc;
-            padding: 20px;
-            border-radius: 6px;
-            background-color: #f9f9f9;
-            margin: 20px 0;
-        }
-
-        input[type="file"] {
+        input[type="text"], input[type="file"] {
             width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
             font-size: 1rem;
-            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        input[type="text"] {
+            text-transform: uppercase;
         }
 
         button {
             background-color: var(--primary-bg);
             color: var(--text-light);
             border: none;
-            padding: 12px 20px;
-            font-size: 1rem;
+            padding: 12px 15px;
+            font-size: 0.95rem;
             border-radius: 4px;
             cursor: pointer;
             width: 100%;
@@ -78,39 +90,62 @@
             text-transform: uppercase;
         }
 
-        button:hover {
-            background-color: #024350;
-        }
+        button:hover { background-color: #024350; }
 
-        .btn-descargar {
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-bg);
+            border: 2px solid var(--primary-bg);
+        }
+        .btn-outline:hover { background-color: var(--primary-bg); color: #fff; }
+
+        .btn-action {
             background-color: var(--upds-yellow);
             color: #000;
+        }
+        .btn-action:hover { background-color: #d69500; }
+
+        /* Contenedor de acciones globales (Imprimir / Descargar) */
+        .global-actions {
+            width: 100%;
+            max-width: 800px;
             display: none; 
-            margin-top: 10px;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            justify-content: center;
+        }
+        .global-actions button { margin-bottom: 0; width: auto; padding: 12px 30px; }
+
+        #statusText {
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary-bg);
+            margin-top: -10px;
+            margin-bottom: 20px;
         }
 
-        .btn-descargar:hover {
-            background-color: #d69500;
-        }
-
-        /* --- CONTENEDOR DE TICKETS (DONDE SE GENERAN TODOS) --- */
+        /* --- CONTENEDOR DE TICKETS --- */
         #ticketsContainer {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 30px; /* Espacio entre boletos */
+            gap: 30px;
             width: 100%;
             padding-bottom: 50px;
         }
 
-        /* --- ESTILOS DEL TICKET (Mantenidos intactos) --- */
+        /* --- ESTILOS DEL TICKET --- */
         .ticket-wrapper {
-            perspective: 1000px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Esta regla evita que un boleto se corte por la mitad al pasar a otra página en el PDF */
             page-break-inside: avoid;
+            padding: 10px; /* Previene el recorte de bordes durante la exportación PDF */
         }
 
         .ticket {
@@ -230,44 +265,63 @@
             color: var(--upds-yellow);
             font-size: 0.95rem;
         }
+
+        /* --- REGLAS DE IMPRESIÓN --- */
+        @media print {
+            body { background-color: white; margin: 0; padding: 0; }
+            .dashboard, .global-actions, #statusText { display: none !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .ticket { box-shadow: none; margin: 0 auto 30px auto; }
+            #ticketsContainer { padding: 0; gap: 30px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Panel de Control -->
-    <div class="controls-container" data-html2canvas-ignore="true">
-        <h2>Acreditación Masiva - ciiA</h2>
-        <p style="font-size: 0.9rem; color: #555;">Sube un archivo Excel (.xlsx). La primera columna debe tener el encabezado "NOMBRES".</p>
+    <div class="dashboard" data-html2canvas-ignore="true">
         
-        <div class="upload-area">
-            <input type="file" id="excelInput" accept=".xlsx, .xls">
+        <!-- Panel 1: Generación Individual -->
+        <div class="panel">
+            <h2>1. Generación Individual</h2>
+            <p style="font-size: 0.85rem; color: #666;">Ingrese un nombre para emitir un pase único.</p>
+            <input type="text" id="inputNombre" placeholder="Ej: Apellido y Nombre" autocomplete="off">
+            <button onclick="generarEntradaIndividual()">Generar Entrada Única</button>
         </div>
-        
-        <button onclick="procesarExcel()">Generar Entradas</button>
-        <button class="btn-descargar" id="btnDescargarPDF" onclick="descargarPDF()">📥 Descargar en PDF</button>
-        
-        <div id="statusText" style="margin-top: 15px; font-weight: bold; color: #025764;"></div>
+
+        <!-- Panel 2: Generación por Lote (Excel) -->
+        <div class="panel">
+            <h2>2. Generación por Lotes (Excel)</h2>
+            <p style="font-size: 0.85rem; color: #666;">Adjunte la lista de asistentes debidamente formateada.</p>
+            <button class="btn-outline" onclick="descargarPlantillaExcel()">Descargar Plantilla Excel</button>
+            <hr style="width:100%; border:0; border-top:1px solid #eee; margin:10px 0;">
+            <input type="file" id="excelInput" accept=".xlsx, .xls">
+            <button onclick="procesarExcel()">Generar Accesos desde Excel</button>
+        </div>
+
     </div>
 
-    <!-- Contenedor donde se imprimirán los boletos -->
+    <!-- Acciones Globales -->
+    <div id="statusText" data-html2canvas-ignore="true"></div>
+    <div class="global-actions" id="globalActions" data-html2canvas-ignore="true">
+        <button class="btn-action" onclick="window.print()">Imprimir Entradas</button>
+        <button class="btn-action" onclick="descargarPDF()">Exportar a PDF</button>
+        <button class="btn-outline" onclick="limpiarEntradas()">Limpiar Pantalla</button>
+    </div>
+
+    <!-- Contenedor donde se imprimen los boletos -->
     <div id="ticketsContainer"></div>
 
-    <!-- PLANTILLA OCULTA DEL TICKET (Se clona por cada asistente) -->
+    <!-- PLANTILLA OCULTA DEL TICKET -->
     <template id="ticketTemplate">
         <div class="ticket-wrapper">
             <div class="ticket">
-                <!-- ROBOT -->
                 <img src="https://i.imgur.com/9w7JfBZ.jpeg" alt="Robot IA" class="robot-img">
-
                 <div class="ticket-left">
-                    <!-- LOGO CIIA -->
                     <img src="https://i.imgur.com/a2vVPlk.png" alt="Logo ciiA" class="logo-ciia-img">
                     <div class="participante-label">Asistente Registrado</div>
-                    <h4 class="participante-nombre"></h4> <!-- Aquí se inyecta el nombre -->
+                    <h4 class="participante-nombre"></h4>
                 </div>
-                
                 <div class="ticket-right">
-                    <!-- LOGO UPDS -->
                     <img src="https://i.imgur.com/ZJmHaDS.png" alt="UPDS Logo" class="upds-logo">
                     <div class="fecha-lugar">
                         <strong>Miércoles 16 de Septiembre</strong><br>
@@ -281,41 +335,79 @@
     </template>
 
     <script>
-        // Función para procesar el Excel cargado
+        const ticketsContainer = document.getElementById('ticketsContainer');
+        const statusText = document.getElementById('statusText');
+        const globalActions = document.getElementById('globalActions');
+        const template = document.getElementById('ticketTemplate');
+
+        function mostrarAcciones() {
+            globalActions.style.display = "flex";
+        }
+
+        function limpiarEntradas() {
+            ticketsContainer.innerHTML = '';
+            globalActions.style.display = "none";
+            statusText.innerText = '';
+        }
+
+        function crearTicket(nombre) {
+            const clone = template.content.cloneNode(true);
+            clone.querySelector('.participante-nombre').innerText = nombre;
+            ticketsContainer.appendChild(clone);
+        }
+
+        function generarEntradaIndividual() {
+            const nombre = document.getElementById("inputNombre").value.trim();
+            if (nombre === "") {
+                alert("Ingrese el nombre del asistente.");
+                return;
+            }
+            limpiarEntradas();
+            crearTicket(nombre);
+            statusText.innerText = "Entrada individual generada de forma exitosa.";
+            mostrarAcciones();
+        }
+
+        function descargarPlantillaExcel() {
+            // Se genera una estructura de archivo estricta con una sola celda
+            const datosPlantilla = [
+                ["NOMBRES"]
+            ];
+            
+            const ws = XLSX.utils.aoa_to_sheet(datosPlantilla);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Asistentes");
+            
+            XLSX.writeFile(wb, "Plantilla_Acreditacion_ciiA.xlsx");
+        }
+
         function procesarExcel() {
             const input = document.getElementById('excelInput');
-            const statusText = document.getElementById('statusText');
-            const ticketsContainer = document.getElementById('ticketsContainer');
             
             if (!input.files || input.files.length === 0) {
-                alert("Por favor, selecciona un archivo Excel primero.");
+                alert("Seleccione el documento Excel para continuar.");
                 return;
             }
 
+            statusText.innerText = "Procesando documento...";
+            limpiarEntradas();
+
             const file = input.files[0];
             const reader = new FileReader();
-            
-            statusText.innerText = "Procesando archivo...";
-            ticketsContainer.innerHTML = ''; // Limpiar entradas anteriores
 
             reader.onload = function(e) {
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, {type: 'array'});
                 
-                // Seleccionamos la primera hoja del Excel
-                const primeraHojaName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[primeraHojaName];
+                const primeraHoja = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(primeraHoja, {header: 1});
                 
-                // Convertimos la hoja a JSON (matriz)
-                const jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-                
-                if(jsonData.length === 0) {
-                    statusText.innerText = "El archivo está vacío.";
+                if(jsonData.length <= 1) {
+                    statusText.innerText = "El archivo se encuentra vacío o carece de registros válidos.";
                     return;
                 }
 
-                // Identificar en qué índice está la columna "NOMBRES"
-                let nombreIndex = 0; // Asumimos que es la columna A por defecto
+                let nombreIndex = 0; 
                 const encabezados = jsonData[0];
                 for (let i = 0; i < encabezados.length; i++) {
                     if (typeof encabezados[i] === 'string' && encabezados[i].toUpperCase().includes("NOMBRE")) {
@@ -325,57 +417,55 @@
                 }
 
                 let boletosGenerados = 0;
-                const template = document.getElementById('ticketTemplate');
-
-                // Iteramos desde la fila 1 (saltando el encabezado)
+                
                 for (let i = 1; i < jsonData.length; i++) {
                     const fila = jsonData[i];
                     const nombre = fila[nombreIndex];
 
                     if (nombre && nombre.toString().trim() !== "") {
-                        // Clonar la plantilla del boleto
-                        const clone = template.content.cloneNode(true);
-                        
-                        // Insertar el nombre
-                        clone.querySelector('.participante-nombre').innerText = nombre.toString().trim();
-                        
-                        // Agregar al contenedor principal
-                        ticketsContainer.appendChild(clone);
+                        crearTicket(nombre.toString().trim());
                         boletosGenerados++;
                     }
                 }
 
                 if (boletosGenerados > 0) {
-                    statusText.innerText = `¡Éxito! Se generaron ${boletosGenerados} accesos.`;
-                    document.getElementById('btnDescargarPDF').style.display = "block";
+                    statusText.innerText = `Proceso completado. Se han generado ${boletosGenerados} accesos.`;
+                    mostrarAcciones();
                 } else {
-                    statusText.innerText = "No se encontraron nombres válidos en el archivo.";
+                    statusText.innerText = "Error: Ausencia de registros bajo el parámetro 'NOMBRES'.";
                 }
             };
-
             reader.readAsArrayBuffer(file);
         }
 
-        // Función para exportar los boletos a un documento PDF unificado
         function descargarPDF() {
             const element = document.getElementById('ticketsContainer');
-            const statusText = document.getElementById('statusText');
-            
-            statusText.innerText = "Generando PDF, por favor espere...";
+            statusText.innerText = "Procesando exportación a PDF. Esto puede tomar unos segundos...";
 
-            // Configuraciones de html2pdf
+            // Rectificación de origen para garantizar la captura integral
+            window.scrollTo(0, 0);
+
             const opt = {
-                margin:       [10, 0, 10, 0], // Margen superior e inferior
-                filename:     'Acreditaciones_ciiA_UPDS.pdf',
+                margin:       10, 
+                filename:     'Pases_Congreso_ciiA_2026.pdf',
                 image:        { type: 'jpeg', quality: 1 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }, 
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    logging: false,
+                    scrollY: 0,
+                    windowY: 0,
+                    windowWidth: 1200 // Forza una resolución amplia para prevenir el recorte lateral
+                },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' } 
-                // orientation: landscape permite que los boletos de 800px entren perfectamente a lo ancho de la hoja
             };
 
-            // Ejecutar la exportación
             html2pdf().set(opt).from(element).save().then(() => {
-                statusText.innerText = "¡PDF descargado con éxito!";
+                statusText.innerText = "Documento PDF descargado correctamente.";
+            }).catch(err => {
+                statusText.innerText = "Se produjo un error al compilar el documento.";
+                console.error(err);
             });
         }
     </script>
