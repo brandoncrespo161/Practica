@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Acreditación - ciiA 2026 UPDS</title>
     
-    <!-- Librerías para leer/crear Excel y generar PDF -->
+    <!-- Librería exclusiva para lectura de Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         :root {
@@ -105,7 +104,7 @@
         }
         .btn-action:hover { background-color: #d69500; }
 
-        /* Contenedor de acciones globales (Imprimir / Descargar) */
+        /* Contenedor de acciones globales */
         .global-actions {
             width: 100%;
             max-width: 800px;
@@ -134,7 +133,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 30px;
+            gap: 40px;
             width: 100%;
             padding-bottom: 50px;
         }
@@ -145,19 +144,21 @@
             flex-direction: column;
             align-items: center;
             page-break-inside: avoid;
-            padding: 10px; /* Previene el recorte de bordes durante la exportación PDF */
+            break-inside: avoid;
         }
 
         .ticket {
             background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
             width: 800px; 
             height: 270px; 
-            border-radius: 12px;
+            /* Se aplica clip-path para forzar los bordes curvos en la impresión nativa */
+            border-radius: 12px !important;
+            clip-path: inset(0 0 0 0 round 12px);
             display: flex;
             position: relative;
             box-shadow: 0 15px 30px rgba(0,0,0,0.3);
             color: var(--text-light);
-            overflow: hidden;
+            overflow: hidden !important;
             border: 1px solid rgba(255,255,255,0.15);
         }
 
@@ -268,18 +269,33 @@
 
         /* --- REGLAS DE IMPRESIÓN --- */
         @media print {
-            body { background-color: white; margin: 0; padding: 0; }
+            /* Fuerza la orientación horizontal de la hoja */
+            @page {
+                size: landscape;
+                margin: 15mm;
+            }
+            body { 
+                background-color: white; 
+                margin: 0; 
+                padding: 0; 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+            }
             .dashboard, .global-actions, #statusText { display: none !important; }
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            .ticket { box-shadow: none; margin: 0 auto 30px auto; }
-            #ticketsContainer { padding: 0; gap: 30px; }
+            .ticket { 
+                box-shadow: none !important; 
+                margin: 0 auto !important; 
+            }
+            .ticket-wrapper {
+                margin-bottom: 30px;
+            }
+            #ticketsContainer { padding: 0; gap: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="dashboard" data-html2canvas-ignore="true">
-        
+    <div class="dashboard">
         <!-- Panel 1: Generación Individual -->
         <div class="panel">
             <h2>1. Generación Individual</h2>
@@ -297,14 +313,13 @@
             <input type="file" id="excelInput" accept=".xlsx, .xls">
             <button onclick="procesarExcel()">Generar Accesos desde Excel</button>
         </div>
-
     </div>
 
     <!-- Acciones Globales -->
-    <div id="statusText" data-html2canvas-ignore="true"></div>
-    <div class="global-actions" id="globalActions" data-html2canvas-ignore="true">
-        <button class="btn-action" onclick="window.print()">Imprimir Entradas</button>
-        <button class="btn-action" onclick="descargarPDF()">Exportar a PDF</button>
+    <div id="statusText"></div>
+    <div class="global-actions" id="globalActions">
+        <!-- Se unifica el botón para garantizar la máxima calidad mediante el motor nativo del navegador -->
+        <button class="btn-action" onclick="window.print()">Guardar como PDF / Imprimir</button>
         <button class="btn-outline" onclick="limpiarEntradas()">Limpiar Pantalla</button>
     </div>
 
@@ -369,7 +384,7 @@
         }
 
         function descargarPlantillaExcel() {
-            // Se genera una estructura de archivo estricta con una sola celda
+            // Estructura estricta: Únicamente el encabezado NOMBRES
             const datosPlantilla = [
                 ["NOMBRES"]
             ];
@@ -436,37 +451,6 @@
                 }
             };
             reader.readAsArrayBuffer(file);
-        }
-
-        function descargarPDF() {
-            const element = document.getElementById('ticketsContainer');
-            statusText.innerText = "Procesando exportación a PDF. Esto puede tomar unos segundos...";
-
-            // Rectificación de origen para garantizar la captura integral
-            window.scrollTo(0, 0);
-
-            const opt = {
-                margin:       10, 
-                filename:     'Pases_Congreso_ciiA_2026.pdf',
-                image:        { type: 'jpeg', quality: 1 },
-                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }, 
-                html2canvas:  { 
-                    scale: 2, 
-                    useCORS: true, 
-                    logging: false,
-                    scrollY: 0,
-                    windowY: 0,
-                    windowWidth: 1200 // Forza una resolución amplia para prevenir el recorte lateral
-                },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' } 
-            };
-
-            html2pdf().set(opt).from(element).save().then(() => {
-                statusText.innerText = "Documento PDF descargado correctamente.";
-            }).catch(err => {
-                statusText.innerText = "Se produjo un error al compilar el documento.";
-                console.error(err);
-            });
         }
     </script>
 </body>
