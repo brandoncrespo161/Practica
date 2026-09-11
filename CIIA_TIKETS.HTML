@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador Masivo de Entradas - ciiA 2026 UPDS</title>
+    
+    <!-- Librerías para leer Excel y generar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --bg-body: #f4f7f9;
+            --primary-bg: #012a32;
+            --gradient-start: #025764;
+            --gradient-end: #01161a;
+            --upds-yellow: #f3a800;
+            --text-light: #ffffff;
+            --text-muted: #8ec3cb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            margin: 0;
+        }
+
+        /* --- CONTROLES DE INTERFAZ --- */
+        .controls-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .controls-container h2 {
+            color: var(--primary-bg);
+            margin-top: 0;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+        }
+
+        .upload-area {
+            border: 2px dashed #cccccc;
+            padding: 20px;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+            margin: 20px 0;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        button {
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background-color: #024350;
+        }
+
+        .btn-descargar {
+            background-color: var(--upds-yellow);
+            color: #000;
+            display: none; 
+            margin-top: 10px;
+        }
+
+        .btn-descargar:hover {
+            background-color: #d69500;
+        }
+
+        /* --- CONTENEDOR DE TICKETS (DONDE SE GENERAN TODOS) --- */
+        #ticketsContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px; /* Espacio entre boletos */
+            width: 100%;
+            padding-bottom: 50px;
+        }
+
+        /* --- ESTILOS DEL TICKET (Mantenidos intactos) --- */
+        .ticket-wrapper {
+            perspective: 1000px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Esta regla evita que un boleto se corte por la mitad al pasar a otra página en el PDF */
+            page-break-inside: avoid;
+        }
+
+        .ticket {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            width: 800px; 
+            height: 270px; 
+            border-radius: 12px;
+            display: flex;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            color: var(--text-light);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .ticket::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10 L40 50 L90 20 M40 50 L60 90 L110 70 M40 50 L30 100 M60 90 L90 110 M90 20 L110 70' stroke='rgba(255,255,255,0.06)' stroke-width='1.5' fill='none'/%3E%3Ccircle cx='10' cy='10' r='2' fill='rgba(255,255,255,0.1)'/%3E%3Ccircle cx='40' cy='50' r='3.5' fill='rgba(255,255,255,0.2)'/%3E%3Ccircle cx='90' cy='20' r='2' fill='rgba(255,255,255,0.1)'/%3E%3Ccircle cx='60' cy='90' r='3' fill='rgba(255,255,255,0.15)'/%3E%3Ccircle cx='110' cy='70' r='2' fill='rgba(255,255,255,0.1)'/%3E%3Ccircle cx='30' cy='100' r='1.5' fill='rgba(255,255,255,0.1)'/%3E%3Ccircle cx='90' cy='110' r='2' fill='rgba(255,255,255,0.1)'/%3E%3C/svg%3E");
+            background-size: 140px 140px;
+            z-index: 1;
+            opacity: 0.9;
+        }
+
+        .ticket::after {
+            content: '';
+            position: absolute;
+            top: -20%; left: -10%; width: 50%; height: 150%;
+            background: radial-gradient(circle, rgba(0, 200, 255, 0.15) 0%, transparent 60%);
+            z-index: 1;
+        }
+
+        .robot-img {
+            position: absolute;
+            left: -20px;
+            bottom: -20px;
+            height: 125%; 
+            z-index: 2;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to right, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%);
+        }
+
+        .ticket-left {
+            padding: 25px 30px 25px 170px; 
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 3;
+            border-right: 2px dashed rgba(255,255,255,0.3);
+        }
+
+        .ticket-right {
+            width: 270px; 
+            background-color: rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 3;
+            padding: 20px 25px;
+        }
+
+        .logo-ciia-img {
+            max-width: 280px;
+            max-height: 110px;
+            object-fit: contain;
+            align-self: flex-start;
+            margin-bottom: 20px;
+            filter: brightness(1.2) contrast(1.2) drop-shadow(0px 2px 4px rgba(255,255,255,0.25));
+        }
+
+        .participante-label {
+            font-size: 0.8rem;
+            color: var(--upds-yellow);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .participante-nombre {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--text-light);
+            margin: 0;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.9), 0px 0px 10px rgba(0,0,0,0.5);
+            line-height: 1.15; 
+            word-wrap: break-word;
+        }
+
+        .upds-logo {
+            max-width: 100%;
+            height: 120px; 
+            margin-bottom: 20px;
+            object-fit: contain;
+        }
+
+        .fecha-lugar {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            line-height: 1.5;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .fecha-lugar strong {
+            color: var(--upds-yellow);
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Panel de Control -->
+    <div class="controls-container" data-html2canvas-ignore="true">
+        <h2>Acreditación Masiva - ciiA</h2>
+        <p style="font-size: 0.9rem; color: #555;">Sube un archivo Excel (.xlsx). La primera columna debe tener el encabezado "NOMBRES".</p>
+        
+        <div class="upload-area">
+            <input type="file" id="excelInput" accept=".xlsx, .xls">
+        </div>
+        
+        <button onclick="procesarExcel()">Generar Entradas</button>
+        <button class="btn-descargar" id="btnDescargarPDF" onclick="descargarPDF()">📥 Descargar en PDF</button>
+        
+        <div id="statusText" style="margin-top: 15px; font-weight: bold; color: #025764;"></div>
+    </div>
+
+    <!-- Contenedor donde se imprimirán los boletos -->
+    <div id="ticketsContainer"></div>
+
+    <!-- PLANTILLA OCULTA DEL TICKET (Se clona por cada asistente) -->
+    <template id="ticketTemplate">
+        <div class="ticket-wrapper">
+            <div class="ticket">
+                <!-- ROBOT -->
+                <img src="https://i.imgur.com/9w7JfBZ.jpeg" alt="Robot IA" class="robot-img">
+
+                <div class="ticket-left">
+                    <!-- LOGO CIIA -->
+                    <img src="https://i.imgur.com/a2vVPlk.png" alt="Logo ciiA" class="logo-ciia-img">
+                    <div class="participante-label">Asistente Registrado</div>
+                    <h4 class="participante-nombre"></h4> <!-- Aquí se inyecta el nombre -->
+                </div>
+                
+                <div class="ticket-right">
+                    <!-- LOGO UPDS -->
+                    <img src="https://i.imgur.com/ZJmHaDS.png" alt="UPDS Logo" class="upds-logo">
+                    <div class="fecha-lugar">
+                        <strong>Miércoles 16 de Septiembre</strong><br>
+                        8:00 am - 6:00 pm<br>
+                        <strong>EL PORTAL</strong><br>
+                        Av. Ricardo Jaimes Freyre 1929
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        // Función para procesar el Excel cargado
+        function procesarExcel() {
+            const input = document.getElementById('excelInput');
+            const statusText = document.getElementById('statusText');
+            const ticketsContainer = document.getElementById('ticketsContainer');
+            
+            if (!input.files || input.files.length === 0) {
+                alert("Por favor, selecciona un archivo Excel primero.");
+                return;
+            }
+
+            const file = input.files[0];
+            const reader = new FileReader();
+            
+            statusText.innerText = "Procesando archivo...";
+            ticketsContainer.innerHTML = ''; // Limpiar entradas anteriores
+
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                
+                // Seleccionamos la primera hoja del Excel
+                const primeraHojaName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[primeraHojaName];
+                
+                // Convertimos la hoja a JSON (matriz)
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                
+                if(jsonData.length === 0) {
+                    statusText.innerText = "El archivo está vacío.";
+                    return;
+                }
+
+                // Identificar en qué índice está la columna "NOMBRES"
+                let nombreIndex = 0; // Asumimos que es la columna A por defecto
+                const encabezados = jsonData[0];
+                for (let i = 0; i < encabezados.length; i++) {
+                    if (typeof encabezados[i] === 'string' && encabezados[i].toUpperCase().includes("NOMBRE")) {
+                        nombreIndex = i;
+                        break;
+                    }
+                }
+
+                let boletosGenerados = 0;
+                const template = document.getElementById('ticketTemplate');
+
+                // Iteramos desde la fila 1 (saltando el encabezado)
+                for (let i = 1; i < jsonData.length; i++) {
+                    const fila = jsonData[i];
+                    const nombre = fila[nombreIndex];
+
+                    if (nombre && nombre.toString().trim() !== "") {
+                        // Clonar la plantilla del boleto
+                        const clone = template.content.cloneNode(true);
+                        
+                        // Insertar el nombre
+                        clone.querySelector('.participante-nombre').innerText = nombre.toString().trim();
+                        
+                        // Agregar al contenedor principal
+                        ticketsContainer.appendChild(clone);
+                        boletosGenerados++;
+                    }
+                }
+
+                if (boletosGenerados > 0) {
+                    statusText.innerText = `¡Éxito! Se generaron ${boletosGenerados} accesos.`;
+                    document.getElementById('btnDescargarPDF').style.display = "block";
+                } else {
+                    statusText.innerText = "No se encontraron nombres válidos en el archivo.";
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Función para exportar los boletos a un documento PDF unificado
+        function descargarPDF() {
+            const element = document.getElementById('ticketsContainer');
+            const statusText = document.getElementById('statusText');
+            
+            statusText.innerText = "Generando PDF, por favor espere...";
+
+            // Configuraciones de html2pdf
+            const opt = {
+                margin:       [10, 0, 10, 0], // Margen superior e inferior
+                filename:     'Acreditaciones_ciiA_UPDS.pdf',
+                image:        { type: 'jpeg', quality: 1 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' } 
+                // orientation: landscape permite que los boletos de 800px entren perfectamente a lo ancho de la hoja
+            };
+
+            // Ejecutar la exportación
+            html2pdf().set(opt).from(element).save().then(() => {
+                statusText.innerText = "¡PDF descargado con éxito!";
+            });
+        }
+    </script>
+</body>
+</html>
